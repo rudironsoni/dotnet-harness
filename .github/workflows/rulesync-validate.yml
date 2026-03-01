@@ -5,7 +5,8 @@ on:
   push:
     branches: ["main"]
 
-permissions: {}
+permissions:
+  actions: write
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
