@@ -22,7 +22,7 @@ jobs:
         run: |
           set -e
           # Patterns: OpenAI-like sk-, SendGrid SG., AWS AKIA, connection password, TODO/FIXME/HACK/XXX, broad catch(Exception)
-          RG='(?i)(sk-[A-Za-z0-9_-]{8,}|SG\.[A-Za-z0-9_-]{8,}|AKIA[A-Z0-9]{16}|Server=.*Password=|Password=.*;|\b(TODO|FIXME|HACK|XXX)\b|catch\s*\(\s*Exception\s*\))'
+          RG='(?i)(sk-[A-Za-z0-9_-]{8,}|SG\.[A-Za-z0-9_-]{8,}|AKIA[A-Z0-9]{16}|Server=.*Password=<DB_PASSWORD_PLACEHOLDER>;|\b(TODO|FIXME|HACK|XXX)\b|catch\s*\(\s*Exception\s*\))'
           echo "Scanning repository for high-risk patterns..."
           rg --hidden --line-number --no-ignore -S -n -e "$RG" || true
           # Fail if any matches

@@ -201,16 +201,21 @@ public static class Program
         var match = Regex.Match(content, @"^---\n([\s\S]*?)\n---", RegexOptions.Multiline);
         if (!match.Success) return null;
 
-        try
-        {
-            var deserializer = new DeserializerBuilder()
-                .WithNamingConvention(CamelCaseNamingConvention.Instance)
-                .Build();
-            return deserializer.Deserialize<Dictionary<string, object>>(match.Groups[1].Value);
-        }
-            catch (Exception ex)
+            try
             {
-                Console.Error.WriteLine($"Unhandled exception in Program.cs: {ex}");
+                var deserializer = new DeserializerBuilder()
+                    .WithNamingConvention(CamelCaseNamingConvention.Instance)
+                    .Build();
+                return deserializer.Deserialize<Dictionary<string, object>>(match.Groups[1].Value);
+            }
+            catch (YamlDotNet.Core.YamlException ex)
+            {
+                Console.Error.WriteLine($"YAML parsing error in Program.cs: {ex.Message}");
+                throw;
+            }
+            catch (Exception)
+            {
+                // TODO: consider handling additional specific exceptions here. Rethrow to preserve original behavior.
                 throw;
             }
     }

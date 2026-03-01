@@ -1,0 +1,15 @@
+ M .github/workflows/repo-safety.yml
+ M .rulesync/skills/dotnet-csharp-async-patterns/SKILL.md
+ M .rulesync/skills/dotnet-msbuild-tasks/SKILL.md
+ M .rulesync/skills/dotnet-secrets-management/SKILL.md
+ M post_edit_matches.txt
+ M pre_edit_matches.txt
+?? $FILES_CHANGED_TMP
+?? .github/workflows/repo-safety.yml.ed
+?? .rulesync/skills/dotnet-csharp-async-patterns/SKILL.md.ed
+?? .rulesync/skills/dotnet-msbuild-tasks/SKILL.md.ed
+?? .rulesync/skills/dotnet-secrets-management/SKILL.md.ed
+?? current_branch.txt
+?? git_status.txt
+?? post_edit_matches.txt.ed
+?? pre_edit_matches.txt.ed

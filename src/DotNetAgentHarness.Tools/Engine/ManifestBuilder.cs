@@ -51,9 +51,14 @@ public static class ManifestBuilder
                 var skill = BuildSkillEntry(folderName, skillFile, content, frontmatter, referencedSkills);
                 manifest.Skills[folderName] = skill;
             }
-            catch (Exception ex)
+            catch (InvalidDataException ex)
             {
-                Console.Error.WriteLine($"Unhandled exception in ManifestBuilder.cs: {ex}");
+                Console.Error.WriteLine($"Invalid data while building manifest for {folderName}: {ex.Message}");
+                throw;
+            }
+            catch (IOException ex)
+            {
+                Console.Error.WriteLine($"I/O error while building manifest for {folderName}: {ex.Message}");
                 throw;
             }
         }

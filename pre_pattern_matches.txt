@@ -1,0 +1,121 @@
+.rulesync/skills/dotnet-aot-architecture/SKILL.md:22:patterns replacing `Activator.CreateInstance`.
+.rulesync/skills/dotnet-aot-architecture/SKILL.md:32:- Factory patterns replacing Activator.CreateInstance
+.rulesync/skills/dotnet-aot-architecture/SKILL.md:63:| `Activator.CreateInstance<T>()`              | Factory pattern with explicit `new`     | Manual                       |
+.rulesync/skills/dotnet-aot-architecture/SKILL.md:200:## Factory Patterns Replacing Activator.CreateInstance
+.rulesync/skills/dotnet-aot-architecture/SKILL.md:202:`Activator.CreateInstance` uses runtime reflection to create instances and is incompatible with AOT. Replace with
+.rulesync/skills/dotnet-aot-architecture/SKILL.md:211:    => (T)Activator.CreateInstance(typeof(T))!;
+.rulesync/skills/dotnet-aot-architecture/SKILL.md:212:// NOTE: Activator.CreateInstance uses runtime reflection and is AOT-unfriendly.
+.rulesync/skills/dotnet-aot-architecture/SKILL.md:249:    return (IPaymentProcessor)Activator.CreateInstance(processorType!)!;
+.rulesync/skills/dotnet-aot-architecture/SKILL.md:354:1. **Do not use `Activator.CreateInstance` in AOT projects.** It requires runtime reflection that is not available. Use
+.rulesync/skills/dotnet-blazor-components/SKILL.md:632:            await Task.Delay(TimeSpan.FromMinutes(5), stoppingToken);
+.rulesync/skills/dotnet-cli-distribution/SKILL.md:89:- Full reflection and dynamic code support
+.rulesync/skills/dotnet-csharp-code-smells/SKILL.md:62:| Invoking event with `null` to suppress CS0067     | Creates misleading runtime behavior; masks real bugs             | Use `#pragma warning disable CS0067` or explicit event accessors `{ add {} remove {} }` | CS0067 |
+.rulesync/skills/dotnet-csharp-code-smells/SKILL.md:63:| Dummy variable assignments to suppress CS0219     | Dead code that confuses readers                                  | Use `_ = expression;` discard or `#pragma warning disable`                              | CS0219 |
+.rulesync/skills/dotnet-csharp-code-smells/SKILL.md:64:| Blanket `#pragma warning disable` without restore | Suppresses ALL warnings for rest of file                         | Always pair with `#pragma warning restore`; suppress specific codes only                | --     |
+.rulesync/skills/dotnet-csharp-code-smells/SKILL.md:65:| `[SuppressMessage]` without justification         | Future maintainers cannot evaluate if suppression is still valid | Always include `Justification = "reason"`                                               | CA1303 |
+.rulesync/skills/dotnet-csharp-dependency-injection/SKILL.md:257:            await Task.Delay(TimeSpan.FromSeconds(5), stoppingToken);
+.rulesync/skills/dotnet-domain-modeling/SKILL.md:386:                await ((dynamic)handler).HandleAsync(
+.rulesync/skills/dotnet-domain-modeling/SKILL.md:387:                    (dynamic)domainEvent, ct);
+.rulesync/skills/dotnet-domain-modeling/SKILL.md:393:// Note: The (dynamic) dispatch pattern is simple but not AOT-compatible.
+.rulesync/skills/dotnet-playwright/SKILL.md:608:2. **Do not use `Task.Delay` for waiting.** Playwright's auto-waiting and `Expect` assertions handle timing automatically. Adding delays makes tests slow and still flaky.
+.rulesync/skills/dotnet-realtime-communication/SKILL.md:128:            await Task.Delay(1000, cancellationToken);
+.rulesync/skills/dotnet-slopwatch/SKILL.md:188:| SW002 | Warning | Warning suppression (`#pragma warning disable`, `SuppressMessage`) |
+.rulesync/skills/dotnet-slopwatch/SKILL.md:190:| SW004 | Warning | Arbitrary delays in tests (`Task.Delay`, `Thread.Sleep`) |
+.rulesync/skills/dotnet-spectre-console/SKILL.md:243:            await Task.Delay(50);
+.rulesync/skills/dotnet-spectre-console/SKILL.md:264:        await Task.Delay(1000);
+.rulesync/skills/dotnet-spectre-console/SKILL.md:267:        await Task.Delay(1000);
+.rulesync/skills/dotnet-spectre-console/SKILL.md:269:        await Task.Delay(1000);
+.rulesync/skills/dotnet-spectre-console/SKILL.md:359:Live displays update in-place for dynamic content that changes over time.
+.rulesync/skills/dotnet-spectre-console/SKILL.md:375:        await Task.Delay(1000);
+.rulesync/skills/dotnet-spectre-console/SKILL.md:379:        await Task.Delay(1000);
+.rulesync/skills/dotnet-spectre-console/SKILL.md:394:        await Task.Delay(1000);
+.rulesync/skills/dotnet-spectre-console/SKILL.md:396:        await Task.Delay(1000);
+.rulesync/skills/dotnet-spectre-console/SKILL.md:553:                await Task.Delay(2000); // simulate work
+.rulesync/skills/dotnet-background-services/SKILL.md:83:                    await Task.Delay(TimeSpan.FromSeconds(5), stoppingToken);
+.rulesync/skills/dotnet-background-services/SKILL.md:95:                await Task.Delay(TimeSpan.FromSeconds(30), stoppingToken);
+.rulesync/skills/dotnet-background-services/SKILL.md:116:4. **Back off on empty/error** -- avoid tight polling loops that waste CPU. Use `Task.Delay` with the stopping token.
+.rulesync/skills/dotnet-background-services/SKILL.md:336:Use `PeriodicTimer` instead of `Task.Delay` for more accurate periodic execution:
+.rulesync/skills/dotnet-background-services/SKILL.md:377:4. **Do not use `Thread.Sleep`** -- use `await Task.Delay(duration, stoppingToken)` or `PeriodicTimer`.
+.rulesync/skills/dotnet-blazor-patterns/SKILL.md:390:// CORRECT: Use IJSRuntime with explicit method names (no dynamic dispatch)
+.rulesync/skills/dotnet-blazor-patterns/SKILL.md:438:1. **Reflection-based DI** -- Do not use `Activator.CreateInstance` or `Type.GetType` to resolve services. Use the
+.rulesync/skills/dotnet-cryptography/SKILL.md:430:#pragma warning disable SYSLIB5006
+.rulesync/skills/dotnet-cryptography/SKILL.md:439:#pragma warning restore SYSLIB5006
+.rulesync/skills/dotnet-csproj-reading/SKILL.md:597:`#pragma` because it has no scope boundary and cannot be audited per-file.
+.rulesync/skills/dotnet-maui-aot/SKILL.md:169:- **Reflection:** Runtime type inspection, `Type.GetType()`, `Activator.CreateInstance()`
+.rulesync/skills/dotnet-maui-aot/SKILL.md:180:| Entity Framework Core         | Partial    | Precompiled queries; no dynamic LINQ                                          |
+.rulesync/skills/dotnet-maui-aot/SKILL.md:324:| `Activator.CreateInstance<T>()`   | Factory pattern with explicit registration      |
+.rulesync/skills/dotnet-10-csharp-14/anti-patterns.md:100:            await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
+.rulesync/skills/dotnet-testing-strategy/SKILL.md:374:3. **Do not use `Thread.Sleep` in tests.** Use `Task.Delay` with a cancellation token, or better, use `FakeTimeProvider.Advance()` to control time deterministically.
+.rulesync/skills/dotnet-ui-testing-core/SKILL.md:208:// BAD: Tied to dynamic content
+.rulesync/skills/dotnet-ui-testing-core/SKILL.md:292:await Task.Delay(3000);
+.rulesync/skills/dotnet-ui-testing-core/SKILL.md:296:// BAD: Polling with Thread.Sleep
+.rulesync/skills/dotnet-ui-testing-core/SKILL.md:297:// Replace with deterministic polling using Task.Delay and a timeout cancellation token
+.rulesync/skills/dotnet-ui-testing-core/SKILL.md:303:    await Task.Delay(100, cts.Token);
+.rulesync/skills/dotnet-ui-testing-core/SKILL.md:407:- **Never use `Thread.Sleep` or `Task.Delay` as a wait strategy.** Use framework-native waits that poll for conditions with timeouts.
+.rulesync/skills/dotnet-agent-gotchas/SKILL.md:341:**Warning:** Agents suppress trimming and AOT warnings with `#pragma` or `[UnconditionalSuppressMessage]` instead of
+.rulesync/skills/dotnet-agent-gotchas/SKILL.md:342:fixing the underlying reflection/dynamic usage. Suppression hides runtime failures in published apps.
+.rulesync/skills/dotnet-agent-gotchas/SKILL.md:349:["#pragma warning disable IL2026"]
+.rulesync/skills/dotnet-agent-gotchas/SKILL.md:352:var instance = Activator.CreateInstance(type!);
+.rulesync/skills/dotnet-agent-gotchas/SKILL.md:353:#pragma warning restore IL2026
+.rulesync/skills/dotnet-agent-gotchas/SKILL.md:374:    return Activator.CreateInstance(type)
+.rulesync/skills/dotnet-agent-gotchas/SKILL.md:545:#pragma warning disable CS8600, CS8602, CS8604 // suppress all nullability warnings
+.rulesync/skills/dotnet-agent-gotchas/SKILL.md:548:#pragma warning restore CS8600, CS8602, CS8604
+.rulesync/skills/dotnet-agent-gotchas/SKILL.md:584:[SuppressMessage("Design", "CA1062")]
+.rulesync/skills/dotnet-agent-gotchas/SKILL.md:593:`[SuppressMessage("Design", "CA1062", Justification = "Input validated by middleware")]`.
+.rulesync/skills/dotnet-uno-testing/SKILL.md:155:            await Task.Delay(500);
+.rulesync/skills/dotnet-wpf-modern/SKILL.md:264:- **Reduced GC pressure** from runtime improvements (dynamic PGO, on-stack replacement)
+.rulesync/skills/dotnet-build-analysis/SKILL.md:78:- CS8xxx (nullable warnings): Add null annotations, null checks, or `required` modifiers. Do NOT suppress with `#pragma`
+.rulesync/skills/dotnet-build-analysis/SKILL.md:386:[SuppressMessage("Reliability", "CA2007:ConfigureAwait",
+.rulesync/skills/dotnet-build-analysis/SKILL.md:395:#pragma warning disable CA1062
+.rulesync/skills/dotnet-build-analysis/SKILL.md:398:#pragma warning restore CA1062
+.rulesync/skills/dotnet-build-analysis/SKILL.md:623:#pragma warning disable CS8618
+.rulesync/skills/dotnet-build-analysis/SKILL.md:629:#pragma warning restore CS8618
+.rulesync/skills/dotnet-build-analysis/SKILL.md:641:[SuppressMessage("Security", "CA5351")]
+.rulesync/skills/dotnet-csharp-async-patterns/SKILL.md:333:            await Task.Delay(TimeSpan.FromSeconds(30), stoppingToken);
+.rulesync/skills/dotnet-linq-optimization/SKILL.md:156:| Queries with dynamic predicates (user search) | No -- cannot parameterize shape             |
+.rulesync/skills/dotnet-linq-optimization/SKILL.md:161:- Compiled queries cannot use dynamic `Include()` or conditional `Where()` clauses that change the expression tree shape
+.rulesync/skills/dotnet-linq-optimization/SKILL.md:463:4. **Do not use compiled queries with dynamic predicates** -- compiled queries cache the expression tree shape. If the
+.rulesync/skills/dotnet-linq-optimization/SKILL.md:464:   query shape changes per call (conditional includes, dynamic filters), the compiled query throws or produces wrong
+.rulesync/skills/dotnet-maui-testing/SKILL.md:479: - **Use explicit waits, never implicit waits or delays.** `WebDriverWait` with a condition is reliable; avoid `Thread.Sleep`.
+.rulesync/skills/dotnet-native-interop/SKILL.md:191:iOS does not allow loading dynamic libraries at runtime. Native code must be statically linked into the application binary. Use `__Internal` as the library name to call functions linked into the main executable:
+.rulesync/skills/dotnet-native-interop/SKILL.md:545:6. **Do not use dynamic library loading on iOS.** iOS prohibits loading dynamic libraries at runtime. Use `"__Internal"` as the library name for statically linked native code.
+.rulesync/skills/dotnet-roslyn-analyzers/SKILL.md:181:| `[SuppressMessage]` attribute | Suppression applies to a specific location |
+.rulesync/skills/dotnet-trimming/SKILL.md:160:### `[UnconditionalSuppressMessage]`
+.rulesync/skills/dotnet-trimming/SKILL.md:166:[UnconditionalSuppressMessage("Trimming",
+.rulesync/skills/dotnet-trimming/SKILL.md:273:| IL3052 | COM interop with dynamic code | Use `[LibraryImport]` with static marshalling |
+.rulesync/skills/dotnet-trimming/SKILL.md:365:    _plugins[typeof(T).Name] = () => (IPlugin)Activator.CreateInstance<T>();
+.rulesync/skills/dotnet-trimming/SKILL.md:399:3. **Do not suppress trim warnings without verifying safety.** `[UnconditionalSuppressMessage]` hides warnings but does not fix the underlying issue. Only suppress when you have verified the code is safe (e.g., via ILLink descriptors).
+.rulesync/skills/dotnet-accessibility/SKILL.md:180:Announce dynamic content changes to screen readers without moving focus:
+.rulesync/skills/dotnet-benchmarkdotnet/SKILL.md:543:4. **Do not add manual Thread.Sleep or Task.Delay in benchmarks** -- BenchmarkDotNet manages warmup and iteration timing
+.rulesync/skills/dotnet-blazor-testing/SKILL.md:479:- **Use `WaitForState` and `WaitForAssertion` for async components.** Do not use `Task.Delay` -- bUnit provides
+.rulesync/skills/dotnet-gc-memory/SKILL.md:660:   dynamic tuning. Use `GC.AddMemoryPressure()` to hint at unmanaged memory instead.
+.rulesync/skills/dotnet-test-quality/SKILL.md:463:| **Port conflicts** | Tests fail when another process uses the same port | Use dynamic port allocation (WebApplicationFactory handles this) |
+.rulesync/skills/dotnet-native-aot/SKILL.md:226:| `Activator.CreateInstance<T>()` | Factory method or explicit `new T()` |
+.rulesync/skills/dotnet-uno-targets/SKILL.md:577:3. **Do not use JIT-dependent patterns on iOS.** iOS prohibits JIT compilation. Code that uses `Reflection.Emit`, `Expression.Compile()`, or dynamic assembly loading will fail at runtime.
+.rulesync/skills/dotnet-serialization/SKILL.md:388:5. Replace `JObject` / `JToken` dynamic access with `JsonDocument` / `JsonElement` or strongly-typed models
+.rulesync/skills/dotnet-xml-docs/SKILL.md:86:#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+.rulesync/skills/dotnet-xml-docs/SKILL.md:93:#pragma warning restore CS1591
+.rulesync/skills/dotnet-xml-docs/SKILL.md:141:1. **Do not suppress CS1591 globally for public NuGet packages** -- global suppression via `<NoWarn>CS1591</NoWarn>` hides all missing documentation warnings. Use per-file `#pragma` suppression for intentionally undocumented types, or make internal types truly `internal`.
+src/DotNetAgentHarness.Evals/bin/Debug/net10.0/DotNetAgentHarness.Evals: binary file matches (found "\0" byte around offset 7)
+src/DotNetAgentHarness.Evals/bin/Debug/net10.0/Microsoft.Extensions.AI.Abstractions.dll: binary file matches (found "\0" byte around offset 3)
+src/DotNetAgentHarness.Evals/bin/Debug/net10.0/Microsoft.Extensions.DependencyInjection.Abstractions.dll: binary file matches (found "\0" byte around offset 3)
+src/DotNetAgentHarness.Evals/bin/Debug/net10.0/System.ClientModel.dll: binary file matches (found "\0" byte around offset 3)
+src/DotNetAgentHarness.Tools/bin/Debug/net10.0/DotNetAgentHarness.Tools: binary file matches (found "\0" byte around offset 7)
+src/DotNetAgentHarness.Tools/obj/Debug/net10.0/apphost: binary file matches (found "\0" byte around offset 7)
+src/DotNetAgentHarness.Evals/obj/Debug/net10.0/apphost: binary file matches (found "\0" byte around offset 7)
+src/DotNetAgentHarness.Evals/bin/Debug/net10.0/Spectre.Console.dll: binary file matches (found "\0" byte around offset 3)
+wiki/research/slop-report.md:21:3. Warning suppression via `#pragma warning disable` or SuppressMessage (SW002) — frequently used in skill examples and
+wiki/research/slop-report.md:26:5. Arbitrary delays in tests (SW004) — Thread.Sleep/Task.Delay used to mask flakiness. Evidence: dotnet-slopwatch
+wiki/research/slop-report.md:75:  per-file #pragma with justification comments.
+wiki/research/slop-report.md:77:- Finding 3: #pragma warning disable (broad suppression)
+wiki/research/slop-report.md:83:#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+wiki/research/slop-report.md:85:#pragma warning restore CS1591
+wiki/research/slop-report.md:90:- Suggested remediation: Narrow suppression to minimal scope (single `#pragma` + restore), document justification
+wiki/research/slop-report.md:110:- Finding 5: Arbitrary delays in tests (Task.Delay / Thread.Sleep)
+wiki/research/slop-report.md:117:await Task.Delay(1000);
+wiki/research/slop-report.md:217:   - Changes: remove blanket NoWarn; replace with targeted .editorconfig entries or per-file #pragma with justification
+wiki/research/slop-report.md:235:   - Files: places using `#pragma warning disable`, `SuppressMessage`, or perf suppressions
+wiki/research/slop-report.md:284:Regex: #pragma\s+warning\s+disable
+wiki/research/slop-report.md:294:- Find Task.Delay/Thread.Sleep in tests (heuristic):
+wiki/research/slop-report.md:319:  - grep -rEn "#pragma warning disable" --include="\*.cs" . | grep -v "obj/"
+wiki/research/slop-report.md:327:3. Are there any `#pragma warning disable` usages? Ensure scope is minimal and a justification comment exists.

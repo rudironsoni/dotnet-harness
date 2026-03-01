@@ -1,0 +1,6 @@
+.github/workflows/repo-safety.yml
+post_edit_matches.txt
+pre_edit_matches.txt
+.rulesync/skills/dotnet-csharp-async-patterns/SKILL.md
+.rulesync/skills/dotnet-msbuild-tasks/SKILL.md
+.rulesync/skills/dotnet-secrets-management/SKILL.md
