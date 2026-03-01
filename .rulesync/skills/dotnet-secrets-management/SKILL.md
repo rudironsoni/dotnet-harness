@@ -72,9 +72,9 @@ commits.
 dotnet user-secrets init
 
 # Set individual secrets (placeholders shown)
-dotnet user-secrets set "ConnectionStrings:DefaultDb" "Server=localhost;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>"
-dotnet user-secrets set "Smtp:ApiKey" "<SENDGRID_API_KEY_PLACEHOLDER>"
-dotnet user-secrets set "Jwt:SigningKey" "<JWT_SIGNING_KEY_PLACEHOLDER>"
+dotnet user-secrets set "ConnectionStrings:DefaultDb" "Server=localhost;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>" // DO NOT commit real secrets; use dotnet user-secrets or env vars
+dotnet user-secrets set "Smtp:ApiKey" "<SENDGRID_API_KEY_PLACEHOLDER>" // DO NOT commit real secrets; use dotnet user-secrets or env vars
+dotnet user-secrets set "Jwt:SigningKey" "<JWT_SIGNING_KEY_PLACEHOLDER>" // DO NOT commit real secrets; use dotnet user-secrets or env vars
 
 # List current secrets
 dotnet user-secrets list

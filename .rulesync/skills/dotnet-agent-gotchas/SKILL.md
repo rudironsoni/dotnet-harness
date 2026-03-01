@@ -346,7 +346,8 @@ fixing the underlying reflection/dynamic usage. Suppression hides runtime failur
 ```csharp
 
 // WRONG: suppressing trim warning instead of fixing it
-#pragma warning disable IL2026
+["#pragma warning disable IL2026"]
+// TODO: Audit suppression - add justification or remove
 var type = Type.GetType(typeName); // reflection not trim-safe
 var instance = Activator.CreateInstance(type!);
 #pragma warning restore IL2026
