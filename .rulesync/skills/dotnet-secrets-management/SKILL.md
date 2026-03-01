@@ -186,13 +186,13 @@ var smtpKey = builder.Configuration["Smtp:ApiKey"];
 
 ```yaml
 
-# docker-compose.yml -- inject secrets via environment
+  # docker-compose.yml -- inject secrets via environment
 services:
   api:
     image: myapp:latest
     environment:
-      - ConnectionStrings__DefaultDb=Server=db;Database=myapp;User=sa;Password=${DB_PASSWORD}
-      - Smtp__ApiKey=${SMTP_API_KEY}
+    - ConnectionStrings__DefaultDb=Server=db;Database=myapp;User=sa;Password=${DB_PASSWORD}
+    - Smtp__ApiKey=${SMTP_API_KEY}
     env_file:
       - .env  # NOT committed to source control
 
@@ -428,7 +428,7 @@ private const string ConnectionString = Environment.GetEnvironmentVariable("CONN
 // NEVER: real credentials in appsettings.json (committed to repo)
 {
   "ConnectionStrings": {
-    "DefaultDb": "Server=prod-db;Password=RealPassword123!"
+    "DefaultDb": "Server=prod-db;Password=<DB_PASSWORD_PLACEHOLDER>"
   }
 }
 
