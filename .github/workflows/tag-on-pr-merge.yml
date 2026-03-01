@@ -106,14 +106,12 @@ jobs:
 
       - name: Create GitHub Release
         if: steps.create_tag.outputs.tag_created == 'true'
-        uses: actions/create-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.create_tag.outputs.release_tag }}
-          release_name: ${{ steps.create_tag.outputs.release_tag }}
-          body: |
-            Auto-generated release for ${{ steps.create_tag.outputs.release_tag }}
+          name: ${{ steps.create_tag.outputs.release_tag }}
+          generate_release_notes: true
           draft: false
           prerelease: false
-          generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
