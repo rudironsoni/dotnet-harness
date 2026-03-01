@@ -1,0 +1,27 @@
+name: Repo Safety Checks
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  scan-secrets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install ripgrep
+        run: sudo apt-get update && sudo apt-get install -y ripgrep
+      - name: Scan for likely secrets
+        run: |
+          set -e
+          # Detect common API key patterns and known test secrets
+          rg --hidden --no-ignore-vcs --line-number "sk-live-[A-Za-z0-9]{10,}" || true
+          rg --hidden --no-ignore-vcs --line-number "SG\.[A-Za-z0-9_-]{10,}" || true
+          rg --hidden --no-ignore-vcs --line-number "P@ssw0rd!" || true
+          # Fail the job if any matches are found
+          if rg --hidden --no-ignore-vcs "sk-live-[A-Za-z0-9]{10,}|SG\.[A-Za-z0-9_-]{10,}|P@ssw0rd!"; then
+            echo "Potential secrets detected. Please remove or replace with placeholders.";
+            exit 1;
+          fi
+    # Make this an opt-in gate that runs only on pull requests (no push gating)
+    permissions: read-all

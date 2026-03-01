@@ -412,8 +412,9 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 ```csharp
 
 // NEVER: hardcoded secrets in source code
-private const string ApiKey = "sk-live-abc123def456";           // WRONG
-private const string ConnectionString = "Server=prod;Password=secret"; // WRONG
+// Replaced real keys with placeholders. Do NOT store real keys in source.
+private const string ApiKey = "<OPENAI_API_KEY_PLACEHOLDER>"; // do NOT store real keys in source
+private const string ConnectionString = Environment.GetEnvironmentVariable("CONNECTIONSTRING_DEFAULTDB") ?? "<CONNECTION_STRING_PLACEHOLDER>"; // WRONG
 
 ```csharp
 
@@ -452,7 +453,8 @@ private const string ConnectionString = "Server=prod;Password=secret"; // WRONG
 ```csharp
 
 // NEVER: connection strings directly in code
-var connection = new SqlConnection("Server=prod-db;Database=myapp;User=sa;Password=P@ssw0rd!");
+// Use IConfiguration or environment variables instead of hardcoded credentials.
+var connection = new SqlConnection(Environment.GetEnvironmentVariable("CONNECTIONSTRING_DEFAULTDB") ?? "<CONNECTION_STRING_PLACEHOLDER>");
 
 ```csharp
 

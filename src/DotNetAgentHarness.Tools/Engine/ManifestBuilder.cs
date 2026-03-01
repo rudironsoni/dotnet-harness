@@ -53,7 +53,9 @@ public static class ManifestBuilder
             }
             catch (Exception ex)
             {
-                manifest.Errors.Add(new ManifestError(folderName, ex.Message));
+                // Log the error context and rethrow to avoid silent swallowing in higher-level flows
+                Console.Error.WriteLine($"Manifest build: error processing skill '{folderName}': {ex.Message}");
+                throw;
             }
         }
 

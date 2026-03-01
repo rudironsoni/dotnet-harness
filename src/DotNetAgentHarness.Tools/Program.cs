@@ -210,7 +210,9 @@ public static class Program
         }
         catch (Exception ex)
         {
-            return new Dictionary<string, object> { ["_error"] = ex.Message };
+            // Fail loud: log context and rethrow to avoid swallowing errors silently
+            Console.Error.WriteLine($"Error parsing frontmatter for file: {ex.Message}");
+            throw;
         }
     }
 

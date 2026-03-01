@@ -164,6 +164,7 @@ Suppresses a specific trim warning when you have verified the code is safe despi
 [UnconditionalSuppressMessage("Trimming",
     "IL2026:RequiresUnreferencedCode",
     Justification = "Type is preserved via ILLink descriptor")]
+// TODO: Audit required: provide justification or remove this suppression if not necessary.
 public void CallLegacyCode() { /* ... */ }
 
 ```text

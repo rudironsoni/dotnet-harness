@@ -50,8 +50,10 @@ public class Program
         }
         catch (Exception ex)
         {
-            AnsiConsole.WriteException(ex);
-            return 1;
+            // Log exception details to stderr for CI visibility, then rethrow to preserve fail-fast behavior
+            Console.Error.WriteLine($"Evaluations run failed: {ex.Message}");
+            Console.Error.WriteLine(ex);
+            throw;
         }
     }
 }

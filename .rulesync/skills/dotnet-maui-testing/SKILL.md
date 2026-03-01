@@ -200,7 +200,8 @@ public class LoginTests : IClassFixture<AppiumFixture>
         usernameField.Clear();
         usernameField.SendKeys("testuser");
         passwordField.Clear();
-        passwordField.SendKeys("P@ssw0rd!");
+        // Use placeholder password in examples
+        passwordField.SendKeys("<TEST_PASSWORD_PLACEHOLDER>");
         loginButton.Click();
 
         // Wait for navigation
@@ -295,7 +296,8 @@ public class LoginPage
 public void Login_ValidUser_ReachesHomePage()
 {
     var loginPage = new LoginPage(_driver);
-    var homePage = loginPage.Login("alice", "P@ssw0rd!");
+    // Use placeholder password in examples
+    var homePage = loginPage.Login("alice", "<TEST_PASSWORD_PLACEHOLDER>");
 
     Assert.True(homePage.IsLoaded);
 }

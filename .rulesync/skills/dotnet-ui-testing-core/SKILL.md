@@ -133,7 +133,8 @@ public async Task Login_ValidCredentials_RedirectsToDashboard()
 {
     var loginPage = new LoginPage(Page);
 
-    var dashboard = await loginPage.LoginAsync("user@example.com", "P@ssw0rd!");
+    // Example uses placeholder password; do not commit real credentials
+    var dashboard = await loginPage.LoginAsync("user@example.com", "<TEST_PASSWORD_PLACEHOLDER>");
 
     Assert.NotNull(dashboard);
 }
