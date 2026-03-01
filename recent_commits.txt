@@ -1,0 +1,20 @@
+0a41835 fix(safety): narrow broad Exception catches (TRIAGE-001)
+079f382 chore(secrets): scrub found literal keys/passwords (targeted)
+f0e55e0 chore(analysis): add pre/post ripgrep snapshots
+a1727b9 chore(secrets): scrub literal keys and passwords in generated docs
+6318bdd chore(secrets): scrub literal keys and passwords in generated docs
+247c150 fix(reliability): log and rethrow top-level exceptions
+58fff8a chore(analysis): mark suppressions for audit
+95732fa chore(ci): add repo-safety ripgrep scan
+be5a646 chore(secrets): scrub literal API keys and passwords in .rulesync docs
+9137fcd ci: trigger workflows after history rewrite
+e4af22b chore(ci): remove PR env and simplify tag message in .github/workflows/tag-on-pr-merge.yml
+d6c50a7 chore(ci): set concurrency cancel-in-progress to false in .github/workflows/tag-on-pr-merge.yml
+43d2c9c chore(ci): replace actions/create-release@v1 with softprops/action-gh-release@v2 in .github/workflows/tag-on-pr-merge.yml
+25dfb20 chore(ci): add actions: write to job-level permissions in .github/workflows/rulesync-validate.yml
+306e4e4 chore(ci): add actions: write to job-level permissions in .github/workflows/tag-on-pr-merge.yml
+2b2d585 chore(ci): ensure actions: write permission in workflows
+c6aa997 fix(ci): use push-only trigger, minimize permissions, use actions/create-release
+0df9d48 fix(ci): correct release step indentation and ensure gh CLI
+13ac869 fix: add shell: bash to Create GitHub Release step
+760a07c feat: add GitHub Release creation to tag workflow

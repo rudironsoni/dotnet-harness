@@ -1,0 +1,543 @@
+.github/workflows/repo-safety.yml:24:          # Patterns: OpenAI-like sk-, SendGrid SG., AWS AKIA, connection password, TODO/FIXME/HACK/XXX, broad catch(Exception)
+.github/workflows/repo-safety.yml:25:          RG='(?i)(sk-[A-Za-z0-9_-]{8,}|SG\.[A-Za-z0-9_-]{8,}|AKIA[A-Z0-9]{16}|Server=.*Password=<DB_PASSWORD_PLACEHOLDER>;|\b(TODO|FIXME|HACK|XXX)\b|catch\s*\(\s*Exception\s*\))'
+.rulesync/skills/dotnet-10-csharp-14/anti-patterns.md:308:    catch (Exception)
+.rulesync/skills/dotnet-agent-gotchas/SKILL.md:350:// TODO: Audit suppression - add justification or remove
+.rulesync/skills/dotnet-agent-gotchas/SKILL.md:567:catch (Exception) { } // failure is invisible
+.rulesync/skills/dotnet-agent-gotchas/SKILL.md:572:    // TODO: add logging
+.rulesync/skills/dotnet-build-analysis/SKILL.md:388:// TODO: Audit suppression - add justification or remove if not applicable
+.rulesync/skills/dotnet-build-analysis/SKILL.md:396:// TODO: Audit suppression - add justification or remove
+.rulesync/skills/dotnet-xml-docs/SKILL.md:87:// TODO: Audit suppression - add justification or remove
+.rulesync/skills/dotnet-uno-testing/SKILL.md:221:    await _page.FillAsync("[data-testid='todo-input']", "Buy groceries");
+.rulesync/skills/dotnet-uno-testing/SKILL.md:222:    await _page.ClickAsync("[data-testid='add-todo-btn']");
+.rulesync/skills/dotnet-uno-testing/SKILL.md:224:    var items = _page.Locator("[data-testid='todo-item']");
+.rulesync/skills/serena/SKILL.md:438:   serena find_symbol --name "TODO"
+.rulesync/skills/serena/SKILL.md:441:   rg "TODO"
+post_edit_matches.txt:1:.kilocode/skills/dotnet-version-upgrade/SKILL.md:232:2. Update `global.json` to SDK `9.0.xxx`
+post_edit_matches.txt:2:.kilocode/skills/dotnet-version-upgrade/SKILL.md:242:2. Update `global.json` to SDK `10.0.xxx`
+post_edit_matches.txt:6:.roo/skills/dotnet-version-upgrade/SKILL.md:232:2. Update `global.json` to SDK `9.0.xxx`
+post_edit_matches.txt:7:.roo/skills/dotnet-version-upgrade/SKILL.md:242:2. Update `global.json` to SDK `10.0.xxx`
+post_edit_matches.txt:13:.roo/skills/dotnet-secrets-management/SKILL.md:90:    "DefaultDb": "Server=localhost;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>"
+post_edit_matches.txt:16:.roo/skills/dotnet-secrets-management/SKILL.md:182:      - ConnectionStrings__DefaultDb=Server=db;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>
+post_edit_matches.txt:18:.roo/skills/dotnet-secrets-management/SKILL.md:405:private const string ConnectionString = "Server=prod;Password=<DB_PASSWORD_PLACEHOLDER>"; // WRONG
+post_edit_matches.txt:19:.roo/skills/dotnet-secrets-management/SKILL.md:418:    "DefaultDb": "Server=prod-db;Password=<DB_PASSWORD_PLACEHOLDER>"
+post_edit_matches.txt:23:.kilocode/skills/dotnet-secrets-management/SKILL.md:90:    "DefaultDb": "Server=localhost;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>"
+post_edit_matches.txt:26:.kilocode/skills/dotnet-secrets-management/SKILL.md:182:      - ConnectionStrings__DefaultDb=Server=db;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>
+post_edit_matches.txt:28:.kilocode/skills/dotnet-secrets-management/SKILL.md:405:private const string ConnectionString = "Server=prod;Password=<DB_PASSWORD_PLACEHOLDER>"; // WRONG
+post_edit_matches.txt:29:.kilocode/skills/dotnet-secrets-management/SKILL.md:418:    "DefaultDb": "Server=prod-db;Password=<DB_PASSWORD_PLACEHOLDER>"
+post_edit_matches.txt:31:.kilocode/skills/dotnet-agent-gotchas/SKILL.md:555:catch (Exception) { } // failure is invisible
+post_edit_matches.txt:32:.kilocode/skills/dotnet-agent-gotchas/SKILL.md:560:    // TODO: add logging
+post_edit_matches.txt:34:.roo/skills/dotnet-agent-gotchas/SKILL.md:555:catch (Exception) { } // failure is invisible
+post_edit_matches.txt:35:.roo/skills/dotnet-agent-gotchas/SKILL.md:560:    // TODO: add logging
+post_edit_matches.txt:37:.kilocode/skills/dotnet-version-detection/SKILL.md:126:- `8.0.xxx` -> net8.0
+post_edit_matches.txt:38:.kilocode/skills/dotnet-version-detection/SKILL.md:127:- `9.0.xxx` -> net9.0
+post_edit_matches.txt:39:.kilocode/skills/dotnet-version-detection/SKILL.md:128:- `10.0.xxx` -> net10.0
+post_edit_matches.txt:40:.kilocode/skills/dotnet-version-detection/SKILL.md:129:- `11.0.xxx-preview.x` -> net11.0
+post_edit_matches.txt:41:.kilocode/skills/dotnet-uno-testing/SKILL.md:209:    await _page.FillAsync("[data-testid='todo-input']", "Buy groceries");
+post_edit_matches.txt:42:.kilocode/skills/dotnet-uno-testing/SKILL.md:210:    await _page.ClickAsync("[data-testid='add-todo-btn']");
+post_edit_matches.txt:43:.kilocode/skills/dotnet-uno-testing/SKILL.md:212:    var items = _page.Locator("[data-testid='todo-item']");
+post_edit_matches.txt:44:.gemini/skills/dotnet-version-upgrade/SKILL.md:232:2. Update `global.json` to SDK `9.0.xxx`
+post_edit_matches.txt:45:.gemini/skills/dotnet-version-upgrade/SKILL.md:242:2. Update `global.json` to SDK `10.0.xxx`
+post_edit_matches.txt:49:.roo/skills/dotnet-version-detection/SKILL.md:126:- `8.0.xxx` -> net8.0
+post_edit_matches.txt:50:.roo/skills/dotnet-version-detection/SKILL.md:127:- `9.0.xxx` -> net9.0
+post_edit_matches.txt:51:.roo/skills/dotnet-version-detection/SKILL.md:128:- `10.0.xxx` -> net10.0
+post_edit_matches.txt:52:.roo/skills/dotnet-version-detection/SKILL.md:129:- `11.0.xxx-preview.x` -> net11.0
+post_edit_matches.txt:53:pre_edit_matches.txt:1:.kilocode/skills/dotnet-version-upgrade/SKILL.md:232:2. Update `global.json` to SDK `9.0.xxx`
+post_edit_matches.txt:54:pre_edit_matches.txt:2:.kilocode/skills/dotnet-version-upgrade/SKILL.md:242:2. Update `global.json` to SDK `10.0.xxx`
+post_edit_matches.txt:60:pre_edit_matches.txt:8:.kilocode/skills/dotnet-secrets-management/SKILL.md:90:    "DefaultDb": "Server=localhost;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>"
+post_edit_matches.txt:63:pre_edit_matches.txt:11:.kilocode/skills/dotnet-secrets-management/SKILL.md:182:      - ConnectionStrings__DefaultDb=Server=db;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>
+post_edit_matches.txt:65:pre_edit_matches.txt:13:.kilocode/skills/dotnet-secrets-management/SKILL.md:405:private const string ConnectionString = "Server=prod;Password=<DB_PASSWORD_PLACEHOLDER>"; // WRONG
+post_edit_matches.txt:66:pre_edit_matches.txt:14:.kilocode/skills/dotnet-secrets-management/SKILL.md:418:    "DefaultDb": "Server=prod-db;Password=<DB_PASSWORD_PLACEHOLDER>"
+post_edit_matches.txt:68:pre_edit_matches.txt:16:.kilocode/skills/dotnet-agent-gotchas/SKILL.md:555:catch (Exception) { } // failure is invisible
+post_edit_matches.txt:69:pre_edit_matches.txt:17:.kilocode/skills/dotnet-agent-gotchas/SKILL.md:560:    // TODO: add logging
+post_edit_matches.txt:71:pre_edit_matches.txt:19:.kilocode/skills/dotnet-version-detection/SKILL.md:126:- `8.0.xxx` -> net8.0
+post_edit_matches.txt:72:pre_edit_matches.txt:20:.kilocode/skills/dotnet-version-detection/SKILL.md:127:- `9.0.xxx` -> net9.0
+post_edit_matches.txt:73:pre_edit_matches.txt:21:.kilocode/skills/dotnet-version-detection/SKILL.md:128:- `10.0.xxx` -> net10.0
+post_edit_matches.txt:74:pre_edit_matches.txt:22:.kilocode/skills/dotnet-version-detection/SKILL.md:129:- `11.0.xxx-preview.x` -> net11.0
+post_edit_matches.txt:75:pre_edit_matches.txt:23:.kilocode/skills/dotnet-uno-testing/SKILL.md:209:    await _page.FillAsync("[data-testid='todo-input']", "Buy groceries");
+post_edit_matches.txt:76:pre_edit_matches.txt:24:.kilocode/skills/dotnet-uno-testing/SKILL.md:210:    await _page.ClickAsync("[data-testid='add-todo-btn']");
+post_edit_matches.txt:77:pre_edit_matches.txt:25:.kilocode/skills/dotnet-uno-testing/SKILL.md:212:    var items = _page.Locator("[data-testid='todo-item']");
+post_edit_matches.txt:78:pre_edit_matches.txt:26:.gemini/skills/dotnet-version-upgrade/SKILL.md:232:2. Update `global.json` to SDK `9.0.xxx`
+post_edit_matches.txt:79:pre_edit_matches.txt:27:.gemini/skills/dotnet-version-upgrade/SKILL.md:242:2. Update `global.json` to SDK `10.0.xxx`
+post_edit_matches.txt:83:pre_edit_matches.txt:31:.agent/skills/dotnet-version-upgrade/SKILL.md:232:2. Update `global.json` to SDK `9.0.xxx`
+post_edit_matches.txt:84:pre_edit_matches.txt:32:.agent/skills/dotnet-version-upgrade/SKILL.md:242:2. Update `global.json` to SDK `10.0.xxx`
+post_edit_matches.txt:90:pre_edit_matches.txt:38:.agent/skills/dotnet-secrets-management/SKILL.md:90:    "DefaultDb": "Server=localhost;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>"
+post_edit_matches.txt:93:pre_edit_matches.txt:41:.agent/skills/dotnet-secrets-management/SKILL.md:182:      - ConnectionStrings__DefaultDb=Server=db;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>
+post_edit_matches.txt:95:pre_edit_matches.txt:43:.agent/skills/dotnet-secrets-management/SKILL.md:405:private const string ConnectionString = "Server=prod;Password=<DB_PASSWORD_PLACEHOLDER>"; // WRONG
+post_edit_matches.txt:96:pre_edit_matches.txt:44:.agent/skills/dotnet-secrets-management/SKILL.md:418:    "DefaultDb": "Server=prod-db;Password=<DB_PASSWORD_PLACEHOLDER>"
+post_edit_matches.txt:100:pre_edit_matches.txt:48:.gemini/skills/dotnet-secrets-management/SKILL.md:90:    "DefaultDb": "Server=localhost;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>"
+post_edit_matches.txt:103:pre_edit_matches.txt:51:.gemini/skills/dotnet-secrets-management/SKILL.md:182:      - ConnectionStrings__DefaultDb=Server=db;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>
+post_edit_matches.txt:105:pre_edit_matches.txt:53:.gemini/skills/dotnet-secrets-management/SKILL.md:405:private const string ConnectionString = "Server=prod;Password=<DB_PASSWORD_PLACEHOLDER>"; // WRONG
+post_edit_matches.txt:106:pre_edit_matches.txt:54:.gemini/skills/dotnet-secrets-management/SKILL.md:418:    "DefaultDb": "Server=prod-db;Password=<DB_PASSWORD_PLACEHOLDER>"
+post_edit_matches.txt:108:pre_edit_matches.txt:56:.agent/skills/dotnet-agent-gotchas/SKILL.md:555:catch (Exception) { } // failure is invisible
+post_edit_matches.txt:109:pre_edit_matches.txt:57:.agent/skills/dotnet-agent-gotchas/SKILL.md:560:    // TODO: add logging
+post_edit_matches.txt:111:pre_edit_matches.txt:59:.rulesync/skills/dotnet-xml-docs/SKILL.md:87:// TODO: Audit suppression - add justification or remove
+post_edit_matches.txt:112:pre_edit_matches.txt:60:.agent/skills/serena/SKILL.md:436:   serena find_symbol --name "TODO"
+post_edit_matches.txt:113:pre_edit_matches.txt:61:.agent/skills/serena/SKILL.md:439:   rg "TODO"
+post_edit_matches.txt:114:pre_edit_matches.txt:62:.gemini/skills/dotnet-agent-gotchas/SKILL.md:555:catch (Exception) { } // failure is invisible
+post_edit_matches.txt:115:pre_edit_matches.txt:63:.gemini/skills/dotnet-agent-gotchas/SKILL.md:560:    // TODO: add logging
+post_edit_matches.txt:117:pre_edit_matches.txt:65:.gemini/skills/serena/SKILL.md:436:   serena find_symbol --name "TODO"
+post_edit_matches.txt:118:pre_edit_matches.txt:66:.gemini/skills/serena/SKILL.md:439:   rg "TODO"
+post_edit_matches.txt:119:pre_edit_matches.txt:67:.agent/skills/dotnet-version-detection/SKILL.md:126:- `8.0.xxx` -> net8.0
+post_edit_matches.txt:120:pre_edit_matches.txt:68:.agent/skills/dotnet-version-detection/SKILL.md:127:- `9.0.xxx` -> net9.0
+post_edit_matches.txt:121:pre_edit_matches.txt:69:.agent/skills/dotnet-version-detection/SKILL.md:128:- `10.0.xxx` -> net10.0
+post_edit_matches.txt:122:pre_edit_matches.txt:70:.agent/skills/dotnet-version-detection/SKILL.md:129:- `11.0.xxx-preview.x` -> net11.0
+post_edit_matches.txt:123:pre_edit_matches.txt:71:.agent/skills/dotnet-uno-testing/SKILL.md:209:    await _page.FillAsync("[data-testid='todo-input']", "Buy groceries");
+post_edit_matches.txt:124:pre_edit_matches.txt:72:.agent/skills/dotnet-uno-testing/SKILL.md:210:    await _page.ClickAsync("[data-testid='add-todo-btn']");
+post_edit_matches.txt:125:pre_edit_matches.txt:73:.agent/skills/dotnet-uno-testing/SKILL.md:212:    var items = _page.Locator("[data-testid='todo-item']");
+post_edit_matches.txt:126:pre_edit_matches.txt:74:.gemini/skills/dotnet-version-detection/SKILL.md:126:- `8.0.xxx` -> net8.0
+post_edit_matches.txt:127:pre_edit_matches.txt:75:.gemini/skills/dotnet-version-detection/SKILL.md:127:- `9.0.xxx` -> net9.0
+post_edit_matches.txt:128:pre_edit_matches.txt:76:.gemini/skills/dotnet-version-detection/SKILL.md:128:- `10.0.xxx` -> net10.0
+post_edit_matches.txt:129:pre_edit_matches.txt:77:.gemini/skills/dotnet-version-detection/SKILL.md:129:- `11.0.xxx-preview.x` -> net11.0
+post_edit_matches.txt:130:pre_edit_matches.txt:78:.rulesync/skills/dotnet-build-analysis/SKILL.md:388:// TODO: Audit suppression - add justification or remove if not applicable
+post_edit_matches.txt:131:pre_edit_matches.txt:79:.rulesync/skills/dotnet-build-analysis/SKILL.md:396:// TODO: Audit suppression - add justification or remove
+post_edit_matches.txt:132:pre_edit_matches.txt:80:.gemini/skills/dotnet-uno-testing/SKILL.md:209:    await _page.FillAsync("[data-testid='todo-input']", "Buy groceries");
+post_edit_matches.txt:133:pre_edit_matches.txt:81:.gemini/skills/dotnet-uno-testing/SKILL.md:210:    await _page.ClickAsync("[data-testid='add-todo-btn']");
+post_edit_matches.txt:134:pre_edit_matches.txt:82:.gemini/skills/dotnet-uno-testing/SKILL.md:212:    var items = _page.Locator("[data-testid='todo-item']");
+post_edit_matches.txt:135:pre_edit_matches.txt:83:.rulesync/skills/dotnet-version-upgrade/SKILL.md:243:2. Update `global.json` to SDK `9.0.xxx`
+post_edit_matches.txt:136:pre_edit_matches.txt:84:.rulesync/skills/dotnet-version-upgrade/SKILL.md:253:2. Update `global.json` to SDK `10.0.xxx`
+post_edit_matches.txt:140:pre_edit_matches.txt:88:.rulesync/skills/dotnet-secrets-management/SKILL.md:75:dotnet user-secrets set "ConnectionStrings:DefaultDb" "Server=localhost;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>" // DO NOT commit real secrets; use dotnet user-secrets or env vars
+post_edit_matches.txt:141:pre_edit_matches.txt:89:.rulesync/skills/dotnet-secrets-management/SKILL.md:102:    "DefaultDb": "Server=localhost;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>"
+post_edit_matches.txt:142:pre_edit_matches.txt:90:.rulesync/skills/dotnet-secrets-management/SKILL.md:194:      - ConnectionStrings__DefaultDb=Server=db;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>
+post_edit_matches.txt:143:pre_edit_matches.txt:91:.rulesync/skills/dotnet-secrets-management/SKILL.md:431:    "DefaultDb": "Server=prod-db;Password=<DB_PASSWORD_PLACEHOLDER>"
+post_edit_matches.txt:144:pre_edit_matches.txt:92:.rulesync/skills/dotnet-agent-gotchas/SKILL.md:350:// TODO: Audit suppression - add justification or remove
+post_edit_matches.txt:145:pre_edit_matches.txt:93:.rulesync/skills/dotnet-agent-gotchas/SKILL.md:567:catch (Exception) { } // failure is invisible
+post_edit_matches.txt:146:pre_edit_matches.txt:94:.rulesync/skills/dotnet-agent-gotchas/SKILL.md:572:    // TODO: add logging
+post_edit_matches.txt:148:pre_edit_matches.txt:96:.rulesync/skills/dotnet-trimming/SKILL.md:169:// TODO: Audit suppression - add justification or remove
+post_edit_matches.txt:149:pre_edit_matches.txt:97:.rulesync/skills/serena/SKILL.md:438:   serena find_symbol --name "TODO"
+post_edit_matches.txt:150:pre_edit_matches.txt:98:.rulesync/skills/serena/SKILL.md:441:   rg "TODO"
+post_edit_matches.txt:151:pre_edit_matches.txt:99:.agent/skills/dotnet-10-csharp-14/anti-patterns.md:308:    catch (Exception)
+post_edit_matches.txt:152:pre_edit_matches.txt:100:.rulesync/skills/dotnet-version-detection/SKILL.md:140:- `8.0.xxx` -> net8.0
+post_edit_matches.txt:153:pre_edit_matches.txt:101:.rulesync/skills/dotnet-version-detection/SKILL.md:141:- `9.0.xxx` -> net9.0
+post_edit_matches.txt:154:pre_edit_matches.txt:102:.rulesync/skills/dotnet-version-detection/SKILL.md:142:- `10.0.xxx` -> net10.0
+post_edit_matches.txt:155:pre_edit_matches.txt:103:.rulesync/skills/dotnet-version-detection/SKILL.md:143:- `11.0.xxx-preview.x` -> net11.0
+post_edit_matches.txt:156:pre_edit_matches.txt:104:post_edit_matches.txt:1:.kilocode/skills/dotnet-version-upgrade/SKILL.md:232:2. Update `global.json` to SDK `9.0.xxx`
+post_edit_matches.txt:157:pre_edit_matches.txt:105:post_edit_matches.txt:2:.kilocode/skills/dotnet-version-upgrade/SKILL.md:242:2. Update `global.json` to SDK `10.0.xxx`
+post_edit_matches.txt:163:pre_edit_matches.txt:111:post_edit_matches.txt:8:.kilocode/skills/dotnet-secrets-management/SKILL.md:90:    "DefaultDb": "Server=localhost;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>"
+post_edit_matches.txt:166:pre_edit_matches.txt:114:post_edit_matches.txt:11:.kilocode/skills/dotnet-secrets-management/SKILL.md:182:      - ConnectionStrings__DefaultDb=Server=db;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>
+post_edit_matches.txt:168:pre_edit_matches.txt:116:post_edit_matches.txt:13:.kilocode/skills/dotnet-secrets-management/SKILL.md:405:private const string ConnectionString = "Server=prod;Password=<DB_PASSWORD_PLACEHOLDER>"; // WRONG
+post_edit_matches.txt:169:pre_edit_matches.txt:117:post_edit_matches.txt:14:.kilocode/skills/dotnet-secrets-management/SKILL.md:418:    "DefaultDb": "Server=prod-db;Password=<DB_PASSWORD_PLACEHOLDER>"
+post_edit_matches.txt:171:pre_edit_matches.txt:119:post_edit_matches.txt:16:.kilocode/skills/dotnet-agent-gotchas/SKILL.md:555:catch (Exception) { } // failure is invisible
+post_edit_matches.txt:172:pre_edit_matches.txt:120:post_edit_matches.txt:17:.kilocode/skills/dotnet-agent-gotchas/SKILL.md:560:    // TODO: add logging
+post_edit_matches.txt:174:pre_edit_matches.txt:122:post_edit_matches.txt:19:.kilocode/skills/dotnet-version-detection/SKILL.md:126:- `8.0.xxx` -> net8.0
+post_edit_matches.txt:175:pre_edit_matches.txt:123:post_edit_matches.txt:20:.kilocode/skills/dotnet-version-detection/SKILL.md:127:- `9.0.xxx` -> net9.0
+post_edit_matches.txt:176:pre_edit_matches.txt:124:post_edit_matches.txt:21:.kilocode/skills/dotnet-version-detection/SKILL.md:128:- `10.0.xxx` -> net10.0
+post_edit_matches.txt:177:pre_edit_matches.txt:125:post_edit_matches.txt:22:.kilocode/skills/dotnet-version-detection/SKILL.md:129:- `11.0.xxx-preview.x` -> net11.0
+post_edit_matches.txt:178:pre_edit_matches.txt:126:post_edit_matches.txt:23:.cline/skills/dotnet-version-upgrade/SKILL.md:232:2. Update `global.json` to SDK `9.0.xxx`
+post_edit_matches.txt:179:pre_edit_matches.txt:127:post_edit_matches.txt:24:.cline/skills/dotnet-version-upgrade/SKILL.md:242:2. Update `global.json` to SDK `10.0.xxx`
+post_edit_matches.txt:183:pre_edit_matches.txt:131:post_edit_matches.txt:28:.kilocode/skills/dotnet-uno-testing/SKILL.md:209:    await _page.FillAsync("[data-testid='todo-input']", "Buy groceries");
+post_edit_matches.txt:184:pre_edit_matches.txt:132:post_edit_matches.txt:29:.kilocode/skills/dotnet-uno-testing/SKILL.md:210:    await _page.ClickAsync("[data-testid='add-todo-btn']");
+post_edit_matches.txt:185:pre_edit_matches.txt:133:post_edit_matches.txt:30:.kilocode/skills/dotnet-uno-testing/SKILL.md:212:    var items = _page.Locator("[data-testid='todo-item']");
+post_edit_matches.txt:186:pre_edit_matches.txt:134:post_edit_matches.txt:31:.roo/skills/dotnet-version-upgrade/SKILL.md:232:2. Update `global.json` to SDK `9.0.xxx`
+post_edit_matches.txt:187:pre_edit_matches.txt:135:post_edit_matches.txt:32:.roo/skills/dotnet-version-upgrade/SKILL.md:242:2. Update `global.json` to SDK `10.0.xxx`
+post_edit_matches.txt:193:pre_edit_matches.txt:141:post_edit_matches.txt:38:.cline/skills/dotnet-secrets-management/SKILL.md:90:    "DefaultDb": "Server=localhost;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>"
+post_edit_matches.txt:196:pre_edit_matches.txt:144:post_edit_matches.txt:41:.cline/skills/dotnet-secrets-management/SKILL.md:182:      - ConnectionStrings__DefaultDb=Server=db;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>
+post_edit_matches.txt:198:pre_edit_matches.txt:146:post_edit_matches.txt:43:.cline/skills/dotnet-secrets-management/SKILL.md:405:private const string ConnectionString = "Server=prod;Password=<DB_PASSWORD_PLACEHOLDER>"; // WRONG
+post_edit_matches.txt:199:pre_edit_matches.txt:147:post_edit_matches.txt:44:.cline/skills/dotnet-secrets-management/SKILL.md:418:    "DefaultDb": "Server=prod-db;Password=<DB_PASSWORD_PLACEHOLDER>"
+.rulesync/skills/dotnet-secrets-management/SKILL.md:75:dotnet user-secrets set "ConnectionStrings:DefaultDb" "Server=localhost;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>" // DO NOT commit real secrets; use dotnet user-secrets or env vars
+.rulesync/skills/dotnet-secrets-management/SKILL.md:102:    "DefaultDb": "Server=localhost;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>"
+.rulesync/skills/dotnet-secrets-management/SKILL.md:194:    - ConnectionStrings__DefaultDb=Server=db;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>
+.rulesync/skills/dotnet-secrets-management/SKILL.md:431:    "DefaultDb": "Server=prod-db;Password=<DB_PASSWORD_PLACEHOLDER>"
+.rulesync/skills/dotnet-version-upgrade/SKILL.md:243:2. Update `global.json` to SDK `9.0.xxx`
+.rulesync/skills/dotnet-version-upgrade/SKILL.md:253:2. Update `global.json` to SDK `10.0.xxx`
+pre_edit_matches.txt:1:.kilocode/skills/dotnet-version-upgrade/SKILL.md:232:2. Update `global.json` to SDK `9.0.xxx`
+pre_edit_matches.txt:2:.kilocode/skills/dotnet-version-upgrade/SKILL.md:242:2. Update `global.json` to SDK `10.0.xxx`
+pre_edit_matches.txt:8:.kilocode/skills/dotnet-secrets-management/SKILL.md:90:    "DefaultDb": "Server=localhost;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>"
+pre_edit_matches.txt:11:.kilocode/skills/dotnet-secrets-management/SKILL.md:182:      - ConnectionStrings__DefaultDb=Server=db;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>
+pre_edit_matches.txt:13:.kilocode/skills/dotnet-secrets-management/SKILL.md:405:private const string ConnectionString = "Server=prod;Password=<DB_PASSWORD_PLACEHOLDER>"; // WRONG
+pre_edit_matches.txt:14:.kilocode/skills/dotnet-secrets-management/SKILL.md:418:    "DefaultDb": "Server=prod-db;Password=<DB_PASSWORD_PLACEHOLDER>"
+pre_edit_matches.txt:16:.kilocode/skills/dotnet-agent-gotchas/SKILL.md:555:catch (Exception) { } // failure is invisible
+pre_edit_matches.txt:17:.kilocode/skills/dotnet-agent-gotchas/SKILL.md:560:    // TODO: add logging
+pre_edit_matches.txt:19:.kilocode/skills/dotnet-version-detection/SKILL.md:126:- `8.0.xxx` -> net8.0
+pre_edit_matches.txt:20:.kilocode/skills/dotnet-version-detection/SKILL.md:127:- `9.0.xxx` -> net9.0
+pre_edit_matches.txt:21:.kilocode/skills/dotnet-version-detection/SKILL.md:128:- `10.0.xxx` -> net10.0
+pre_edit_matches.txt:22:.kilocode/skills/dotnet-version-detection/SKILL.md:129:- `11.0.xxx-preview.x` -> net11.0
+pre_edit_matches.txt:23:.kilocode/skills/dotnet-uno-testing/SKILL.md:209:    await _page.FillAsync("[data-testid='todo-input']", "Buy groceries");
+pre_edit_matches.txt:24:.kilocode/skills/dotnet-uno-testing/SKILL.md:210:    await _page.ClickAsync("[data-testid='add-todo-btn']");
+pre_edit_matches.txt:25:.kilocode/skills/dotnet-uno-testing/SKILL.md:212:    var items = _page.Locator("[data-testid='todo-item']");
+pre_edit_matches.txt:26:.gemini/skills/dotnet-version-upgrade/SKILL.md:232:2. Update `global.json` to SDK `9.0.xxx`
+pre_edit_matches.txt:27:.gemini/skills/dotnet-version-upgrade/SKILL.md:242:2. Update `global.json` to SDK `10.0.xxx`
+pre_edit_matches.txt:31:.agent/skills/dotnet-version-upgrade/SKILL.md:232:2. Update `global.json` to SDK `9.0.xxx`
+pre_edit_matches.txt:32:.agent/skills/dotnet-version-upgrade/SKILL.md:242:2. Update `global.json` to SDK `10.0.xxx`
+pre_edit_matches.txt:38:.agent/skills/dotnet-secrets-management/SKILL.md:90:    "DefaultDb": "Server=localhost;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>"
+pre_edit_matches.txt:41:.agent/skills/dotnet-secrets-management/SKILL.md:182:      - ConnectionStrings__DefaultDb=Server=db;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>
+pre_edit_matches.txt:43:.agent/skills/dotnet-secrets-management/SKILL.md:405:private const string ConnectionString = "Server=prod;Password=<DB_PASSWORD_PLACEHOLDER>"; // WRONG
+pre_edit_matches.txt:44:.agent/skills/dotnet-secrets-management/SKILL.md:418:    "DefaultDb": "Server=prod-db;Password=<DB_PASSWORD_PLACEHOLDER>"
+pre_edit_matches.txt:48:.gemini/skills/dotnet-secrets-management/SKILL.md:90:    "DefaultDb": "Server=localhost;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>"
+pre_edit_matches.txt:51:.gemini/skills/dotnet-secrets-management/SKILL.md:182:      - ConnectionStrings__DefaultDb=Server=db;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>
+pre_edit_matches.txt:53:.gemini/skills/dotnet-secrets-management/SKILL.md:405:private const string ConnectionString = "Server=prod;Password=<DB_PASSWORD_PLACEHOLDER>"; // WRONG
+pre_edit_matches.txt:54:.gemini/skills/dotnet-secrets-management/SKILL.md:418:    "DefaultDb": "Server=prod-db;Password=<DB_PASSWORD_PLACEHOLDER>"
+pre_edit_matches.txt:56:.agent/skills/dotnet-agent-gotchas/SKILL.md:555:catch (Exception) { } // failure is invisible
+pre_edit_matches.txt:57:.agent/skills/dotnet-agent-gotchas/SKILL.md:560:    // TODO: add logging
+pre_edit_matches.txt:59:.rulesync/skills/dotnet-xml-docs/SKILL.md:87:// TODO: Audit suppression - add justification or remove
+pre_edit_matches.txt:60:.agent/skills/serena/SKILL.md:436:   serena find_symbol --name "TODO"
+pre_edit_matches.txt:61:.agent/skills/serena/SKILL.md:439:   rg "TODO"
+pre_edit_matches.txt:62:.gemini/skills/dotnet-agent-gotchas/SKILL.md:555:catch (Exception) { } // failure is invisible
+pre_edit_matches.txt:63:.gemini/skills/dotnet-agent-gotchas/SKILL.md:560:    // TODO: add logging
+pre_edit_matches.txt:65:.gemini/skills/serena/SKILL.md:436:   serena find_symbol --name "TODO"
+pre_edit_matches.txt:66:.gemini/skills/serena/SKILL.md:439:   rg "TODO"
+pre_edit_matches.txt:67:.agent/skills/dotnet-version-detection/SKILL.md:126:- `8.0.xxx` -> net8.0
+pre_edit_matches.txt:68:.agent/skills/dotnet-version-detection/SKILL.md:127:- `9.0.xxx` -> net9.0
+pre_edit_matches.txt:69:.agent/skills/dotnet-version-detection/SKILL.md:128:- `10.0.xxx` -> net10.0
+pre_edit_matches.txt:70:.agent/skills/dotnet-version-detection/SKILL.md:129:- `11.0.xxx-preview.x` -> net11.0
+pre_edit_matches.txt:71:.agent/skills/dotnet-uno-testing/SKILL.md:209:    await _page.FillAsync("[data-testid='todo-input']", "Buy groceries");
+pre_edit_matches.txt:72:.agent/skills/dotnet-uno-testing/SKILL.md:210:    await _page.ClickAsync("[data-testid='add-todo-btn']");
+pre_edit_matches.txt:73:.agent/skills/dotnet-uno-testing/SKILL.md:212:    var items = _page.Locator("[data-testid='todo-item']");
+pre_edit_matches.txt:74:.gemini/skills/dotnet-version-detection/SKILL.md:126:- `8.0.xxx` -> net8.0
+pre_edit_matches.txt:75:.gemini/skills/dotnet-version-detection/SKILL.md:127:- `9.0.xxx` -> net9.0
+pre_edit_matches.txt:76:.gemini/skills/dotnet-version-detection/SKILL.md:128:- `10.0.xxx` -> net10.0
+pre_edit_matches.txt:77:.gemini/skills/dotnet-version-detection/SKILL.md:129:- `11.0.xxx-preview.x` -> net11.0
+pre_edit_matches.txt:78:.rulesync/skills/dotnet-build-analysis/SKILL.md:388:// TODO: Audit suppression - add justification or remove if not applicable
+pre_edit_matches.txt:79:.rulesync/skills/dotnet-build-analysis/SKILL.md:396:// TODO: Audit suppression - add justification or remove
+pre_edit_matches.txt:80:.gemini/skills/dotnet-uno-testing/SKILL.md:209:    await _page.FillAsync("[data-testid='todo-input']", "Buy groceries");
+pre_edit_matches.txt:81:.gemini/skills/dotnet-uno-testing/SKILL.md:210:    await _page.ClickAsync("[data-testid='add-todo-btn']");
+pre_edit_matches.txt:82:.gemini/skills/dotnet-uno-testing/SKILL.md:212:    var items = _page.Locator("[data-testid='todo-item']");
+pre_edit_matches.txt:83:.rulesync/skills/dotnet-version-upgrade/SKILL.md:243:2. Update `global.json` to SDK `9.0.xxx`
+pre_edit_matches.txt:84:.rulesync/skills/dotnet-version-upgrade/SKILL.md:253:2. Update `global.json` to SDK `10.0.xxx`
+pre_edit_matches.txt:88:.rulesync/skills/dotnet-secrets-management/SKILL.md:75:dotnet user-secrets set "ConnectionStrings:DefaultDb" "Server=localhost;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>" // DO NOT commit real secrets; use dotnet user-secrets or env vars
+pre_edit_matches.txt:89:.rulesync/skills/dotnet-secrets-management/SKILL.md:102:    "DefaultDb": "Server=localhost;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>"
+pre_edit_matches.txt:90:.rulesync/skills/dotnet-secrets-management/SKILL.md:194:      - ConnectionStrings__DefaultDb=Server=db;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>
+pre_edit_matches.txt:91:.rulesync/skills/dotnet-secrets-management/SKILL.md:431:    "DefaultDb": "Server=prod-db;Password=<DB_PASSWORD_PLACEHOLDER>"
+pre_edit_matches.txt:92:.rulesync/skills/dotnet-agent-gotchas/SKILL.md:350:// TODO: Audit suppression - add justification or remove
+pre_edit_matches.txt:93:.rulesync/skills/dotnet-agent-gotchas/SKILL.md:567:catch (Exception) { } // failure is invisible
+pre_edit_matches.txt:94:.rulesync/skills/dotnet-agent-gotchas/SKILL.md:572:    // TODO: add logging
+pre_edit_matches.txt:96:.rulesync/skills/dotnet-trimming/SKILL.md:169:// TODO: Audit suppression - add justification or remove
+pre_edit_matches.txt:97:.rulesync/skills/serena/SKILL.md:438:   serena find_symbol --name "TODO"
+pre_edit_matches.txt:98:.rulesync/skills/serena/SKILL.md:441:   rg "TODO"
+pre_edit_matches.txt:99:.agent/skills/dotnet-10-csharp-14/anti-patterns.md:308:    catch (Exception)
+pre_edit_matches.txt:100:.rulesync/skills/dotnet-version-detection/SKILL.md:140:- `8.0.xxx` -> net8.0
+pre_edit_matches.txt:101:.rulesync/skills/dotnet-version-detection/SKILL.md:141:- `9.0.xxx` -> net9.0
+pre_edit_matches.txt:102:.rulesync/skills/dotnet-version-detection/SKILL.md:142:- `10.0.xxx` -> net10.0
+pre_edit_matches.txt:103:.rulesync/skills/dotnet-version-detection/SKILL.md:143:- `11.0.xxx-preview.x` -> net11.0
+pre_edit_matches.txt:104:post_edit_matches.txt:1:.kilocode/skills/dotnet-version-upgrade/SKILL.md:232:2. Update `global.json` to SDK `9.0.xxx`
+pre_edit_matches.txt:105:post_edit_matches.txt:2:.kilocode/skills/dotnet-version-upgrade/SKILL.md:242:2. Update `global.json` to SDK `10.0.xxx`
+pre_edit_matches.txt:111:post_edit_matches.txt:8:.kilocode/skills/dotnet-secrets-management/SKILL.md:90:    "DefaultDb": "Server=localhost;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>"
+pre_edit_matches.txt:114:post_edit_matches.txt:11:.kilocode/skills/dotnet-secrets-management/SKILL.md:182:      - ConnectionStrings__DefaultDb=Server=db;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>
+pre_edit_matches.txt:116:post_edit_matches.txt:13:.kilocode/skills/dotnet-secrets-management/SKILL.md:405:private const string ConnectionString = "Server=prod;Password=<DB_PASSWORD_PLACEHOLDER>"; // WRONG
+pre_edit_matches.txt:117:post_edit_matches.txt:14:.kilocode/skills/dotnet-secrets-management/SKILL.md:418:    "DefaultDb": "Server=prod-db;Password=<DB_PASSWORD_PLACEHOLDER>"
+pre_edit_matches.txt:119:post_edit_matches.txt:16:.kilocode/skills/dotnet-agent-gotchas/SKILL.md:555:catch (Exception) { } // failure is invisible
+pre_edit_matches.txt:120:post_edit_matches.txt:17:.kilocode/skills/dotnet-agent-gotchas/SKILL.md:560:    // TODO: add logging
+pre_edit_matches.txt:122:post_edit_matches.txt:19:.kilocode/skills/dotnet-version-detection/SKILL.md:126:- `8.0.xxx` -> net8.0
+pre_edit_matches.txt:123:post_edit_matches.txt:20:.kilocode/skills/dotnet-version-detection/SKILL.md:127:- `9.0.xxx` -> net9.0
+pre_edit_matches.txt:124:post_edit_matches.txt:21:.kilocode/skills/dotnet-version-detection/SKILL.md:128:- `10.0.xxx` -> net10.0
+pre_edit_matches.txt:125:post_edit_matches.txt:22:.kilocode/skills/dotnet-version-detection/SKILL.md:129:- `11.0.xxx-preview.x` -> net11.0
+pre_edit_matches.txt:126:post_edit_matches.txt:23:.cline/skills/dotnet-version-upgrade/SKILL.md:232:2. Update `global.json` to SDK `9.0.xxx`
+pre_edit_matches.txt:127:post_edit_matches.txt:24:.cline/skills/dotnet-version-upgrade/SKILL.md:242:2. Update `global.json` to SDK `10.0.xxx`
+pre_edit_matches.txt:131:post_edit_matches.txt:28:.kilocode/skills/dotnet-uno-testing/SKILL.md:209:    await _page.FillAsync("[data-testid='todo-input']", "Buy groceries");
+pre_edit_matches.txt:132:post_edit_matches.txt:29:.kilocode/skills/dotnet-uno-testing/SKILL.md:210:    await _page.ClickAsync("[data-testid='add-todo-btn']");
+pre_edit_matches.txt:133:post_edit_matches.txt:30:.kilocode/skills/dotnet-uno-testing/SKILL.md:212:    var items = _page.Locator("[data-testid='todo-item']");
+pre_edit_matches.txt:134:post_edit_matches.txt:31:.roo/skills/dotnet-version-upgrade/SKILL.md:232:2. Update `global.json` to SDK `9.0.xxx`
+pre_edit_matches.txt:135:post_edit_matches.txt:32:.roo/skills/dotnet-version-upgrade/SKILL.md:242:2. Update `global.json` to SDK `10.0.xxx`
+pre_edit_matches.txt:141:post_edit_matches.txt:38:.cline/skills/dotnet-secrets-management/SKILL.md:90:    "DefaultDb": "Server=localhost;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>"
+pre_edit_matches.txt:144:post_edit_matches.txt:41:.cline/skills/dotnet-secrets-management/SKILL.md:182:      - ConnectionStrings__DefaultDb=Server=db;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>
+pre_edit_matches.txt:146:post_edit_matches.txt:43:.cline/skills/dotnet-secrets-management/SKILL.md:405:private const string ConnectionString = "Server=prod;Password=<DB_PASSWORD_PLACEHOLDER>"; // WRONG
+pre_edit_matches.txt:147:post_edit_matches.txt:44:.cline/skills/dotnet-secrets-management/SKILL.md:418:    "DefaultDb": "Server=prod-db;Password=<DB_PASSWORD_PLACEHOLDER>"
+pre_edit_matches.txt:149:post_edit_matches.txt:46:.cline/skills/dotnet-agent-gotchas/SKILL.md:555:catch (Exception) { } // failure is invisible
+pre_edit_matches.txt:150:post_edit_matches.txt:47:.cline/skills/dotnet-agent-gotchas/SKILL.md:560:    // TODO: add logging
+pre_edit_matches.txt:154:post_edit_matches.txt:51:.roo/skills/dotnet-secrets-management/SKILL.md:90:    "DefaultDb": "Server=localhost;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>"
+pre_edit_matches.txt:157:post_edit_matches.txt:54:.roo/skills/dotnet-secrets-management/SKILL.md:182:      - ConnectionStrings__DefaultDb=Server=db;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>
+pre_edit_matches.txt:159:post_edit_matches.txt:56:.roo/skills/dotnet-secrets-management/SKILL.md:405:private const string ConnectionString = "Server=prod;Password=<DB_PASSWORD_PLACEHOLDER>"; // WRONG
+pre_edit_matches.txt:160:post_edit_matches.txt:57:.roo/skills/dotnet-secrets-management/SKILL.md:418:    "DefaultDb": "Server=prod-db;Password=<DB_PASSWORD_PLACEHOLDER>"
+pre_edit_matches.txt:162:post_edit_matches.txt:59:.github/workflows/repo-safety.yml:24:          # Patterns: OpenAI-like sk-, SendGrid SG., AWS AKIA, connection password, TODO/FIXME/HACK/XXX, broad catch(Exception)
+pre_edit_matches.txt:163:post_edit_matches.txt:60:.github/workflows/repo-safety.yml:25:          RG='(?i)(sk-[A-Za-z0-9_-]{8,}|SG\.[A-Za-z0-9_-]{8,}|AKIA[A-Z0-9]{16}|Server=.*Password=<DB_PASSWORD_PLACEHOLDER>;|\b(TODO|FIXME|HACK|XXX)\b|catch\s*\(\s*Exception\s*\))'
+pre_edit_matches.txt:164:post_edit_matches.txt:61:.roo/skills/dotnet-agent-gotchas/SKILL.md:555:catch (Exception) { } // failure is invisible
+pre_edit_matches.txt:165:post_edit_matches.txt:62:.roo/skills/dotnet-agent-gotchas/SKILL.md:560:    // TODO: add logging
+pre_edit_matches.txt:167:post_edit_matches.txt:64:.roo/skills/dotnet-version-detection/SKILL.md:126:- `8.0.xxx` -> net8.0
+pre_edit_matches.txt:168:post_edit_matches.txt:65:.roo/skills/dotnet-version-detection/SKILL.md:127:- `9.0.xxx` -> net9.0
+pre_edit_matches.txt:169:post_edit_matches.txt:66:.roo/skills/dotnet-version-detection/SKILL.md:128:- `10.0.xxx` -> net10.0
+pre_edit_matches.txt:170:post_edit_matches.txt:67:.roo/skills/dotnet-version-detection/SKILL.md:129:- `11.0.xxx-preview.x` -> net11.0
+pre_edit_matches.txt:171:post_edit_matches.txt:68:.gemini/skills/dotnet-version-upgrade/SKILL.md:232:2. Update `global.json` to SDK `9.0.xxx`
+pre_edit_matches.txt:172:post_edit_matches.txt:69:.gemini/skills/dotnet-version-upgrade/SKILL.md:242:2. Update `global.json` to SDK `10.0.xxx`
+pre_edit_matches.txt:176:post_edit_matches.txt:73:.cline/skills/dotnet-version-detection/SKILL.md:126:- `8.0.xxx` -> net8.0
+pre_edit_matches.txt:177:post_edit_matches.txt:74:.cline/skills/dotnet-version-detection/SKILL.md:127:- `9.0.xxx` -> net9.0
+pre_edit_matches.txt:178:post_edit_matches.txt:75:.cline/skills/dotnet-version-detection/SKILL.md:128:- `10.0.xxx` -> net10.0
+pre_edit_matches.txt:179:post_edit_matches.txt:76:.cline/skills/dotnet-version-detection/SKILL.md:129:- `11.0.xxx-preview.x` -> net11.0
+pre_edit_matches.txt:180:post_edit_matches.txt:77:.roo/skills/dotnet-uno-testing/SKILL.md:209:    await _page.FillAsync("[data-testid='todo-input']", "Buy groceries");
+pre_edit_matches.txt:181:post_edit_matches.txt:78:.roo/skills/dotnet-uno-testing/SKILL.md:210:    await _page.ClickAsync("[data-testid='add-todo-btn']");
+pre_edit_matches.txt:182:post_edit_matches.txt:79:.roo/skills/dotnet-uno-testing/SKILL.md:212:    var items = _page.Locator("[data-testid='todo-item']");
+pre_edit_matches.txt:183:post_edit_matches.txt:80:.cline/skills/dotnet-uno-testing/SKILL.md:209:    await _page.FillAsync("[data-testid='todo-input']", "Buy groceries");
+pre_edit_matches.txt:184:post_edit_matches.txt:81:.cline/skills/dotnet-uno-testing/SKILL.md:210:    await _page.ClickAsync("[data-testid='add-todo-btn']");
+pre_edit_matches.txt:185:post_edit_matches.txt:82:.cline/skills/dotnet-uno-testing/SKILL.md:212:    var items = _page.Locator("[data-testid='todo-item']");
+pre_edit_matches.txt:188:post_edit_matches.txt:85:.gemini/skills/dotnet-secrets-management/SKILL.md:90:    "DefaultDb": "Server=localhost;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>"
+pre_edit_matches.txt:191:post_edit_matches.txt:88:.gemini/skills/dotnet-secrets-management/SKILL.md:182:      - ConnectionStrings__DefaultDb=Server=db;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>
+pre_edit_matches.txt:193:post_edit_matches.txt:90:.gemini/skills/dotnet-secrets-management/SKILL.md:405:private const string ConnectionString = "Server=prod;Password=<DB_PASSWORD_PLACEHOLDER>"; // WRONG
+pre_edit_matches.txt:194:post_edit_matches.txt:91:.gemini/skills/dotnet-secrets-management/SKILL.md:418:    "DefaultDb": "Server=prod-db;Password=<DB_PASSWORD_PLACEHOLDER>"
+pre_edit_matches.txt:196:post_edit_matches.txt:93:.github/skills/dotnet-version-upgrade/SKILL.md:232:2. Update `global.json` to SDK `9.0.xxx`
+pre_edit_matches.txt:197:post_edit_matches.txt:94:.github/skills/dotnet-version-upgrade/SKILL.md:242:2. Update `global.json` to SDK `10.0.xxx`
+pre_scan_matches.txt:1:.github/workflows/repo-safety.yml:24:          # Patterns: OpenAI-like sk-, SendGrid SG., AWS AKIA, connection password, TODO/FIXME/HACK/XXX, broad catch(Exception)
+pre_scan_matches.txt:2:.github/workflows/repo-safety.yml:25:          RG='(?i)(sk-[A-Za-z0-9_-]{8,}|SG\.[A-Za-z0-9_-]{8,}|AKIA[A-Z0-9]{16}|Server=.*Password=<DB_PASSWORD_PLACEHOLDER>;|\b(TODO|FIXME|HACK|XXX)\b|catch\s*\(\s*Exception\s*\))'
+pre_scan_matches.txt:3:.rulesync/skills/dotnet-10-csharp-14/anti-patterns.md:308:    catch (Exception)
+pre_scan_matches.txt:4:.rulesync/skills/dotnet-agent-gotchas/SKILL.md:350:// TODO: Audit suppression - add justification or remove
+pre_scan_matches.txt:5:.rulesync/skills/dotnet-agent-gotchas/SKILL.md:567:catch (Exception) { } // failure is invisible
+pre_scan_matches.txt:6:.rulesync/skills/dotnet-agent-gotchas/SKILL.md:572:    // TODO: add logging
+pre_scan_matches.txt:7:.rulesync/skills/dotnet-build-analysis/SKILL.md:388:// TODO: Audit suppression - add justification or remove if not applicable
+pre_scan_matches.txt:8:.rulesync/skills/dotnet-build-analysis/SKILL.md:396:// TODO: Audit suppression - add justification or remove
+pre_scan_matches.txt:9:.rulesync/skills/dotnet-trimming/SKILL.md:169:// TODO: Audit suppression - add justification or remove
+pre_scan_matches.txt:10:.rulesync/skills/dotnet-version-detection/SKILL.md:140:- `8.0.xxx` -> net8.0
+pre_scan_matches.txt:11:.rulesync/skills/dotnet-version-detection/SKILL.md:141:- `9.0.xxx` -> net9.0
+pre_scan_matches.txt:12:.rulesync/skills/dotnet-version-detection/SKILL.md:142:- `10.0.xxx` -> net10.0
+pre_scan_matches.txt:13:.rulesync/skills/dotnet-version-detection/SKILL.md:143:- `11.0.xxx-preview.x` -> net11.0
+pre_scan_matches.txt:14:.rulesync/skills/dotnet-xml-docs/SKILL.md:87:// TODO: Audit suppression - add justification or remove
+pre_scan_matches.txt:15:.rulesync/skills/dotnet-version-upgrade/SKILL.md:243:2. Update `global.json` to SDK `9.0.xxx`
+pre_scan_matches.txt:16:.rulesync/skills/dotnet-version-upgrade/SKILL.md:253:2. Update `global.json` to SDK `10.0.xxx`
+pre_scan_matches.txt:17:post_edit_matches.txt:1:.kilocode/skills/dotnet-version-upgrade/SKILL.md:232:2. Update `global.json` to SDK `9.0.xxx`
+pre_scan_matches.txt:18:post_edit_matches.txt:2:.kilocode/skills/dotnet-version-upgrade/SKILL.md:242:2. Update `global.json` to SDK `10.0.xxx`
+pre_scan_matches.txt:19:post_edit_matches.txt:6:.roo/skills/dotnet-version-upgrade/SKILL.md:232:2. Update `global.json` to SDK `9.0.xxx`
+pre_scan_matches.txt:20:post_edit_matches.txt:7:.roo/skills/dotnet-version-upgrade/SKILL.md:242:2. Update `global.json` to SDK `10.0.xxx`
+pre_scan_matches.txt:21:post_edit_matches.txt:13:.roo/skills/dotnet-secrets-management/SKILL.md:90:    "DefaultDb": "Server=localhost;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>"
+pre_scan_matches.txt:22:post_edit_matches.txt:16:.roo/skills/dotnet-secrets-management/SKILL.md:182:      - ConnectionStrings__DefaultDb=Server=db;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>
+pre_scan_matches.txt:23:post_edit_matches.txt:18:.roo/skills/dotnet-secrets-management/SKILL.md:405:private const string ConnectionString = "Server=prod;Password=<DB_PASSWORD_PLACEHOLDER>"; // WRONG
+pre_scan_matches.txt:24:post_edit_matches.txt:19:.roo/skills/dotnet-secrets-management/SKILL.md:418:    "DefaultDb": "Server=prod-db;Password=<DB_PASSWORD_PLACEHOLDER>"
+pre_scan_matches.txt:25:post_edit_matches.txt:23:.kilocode/skills/dotnet-secrets-management/SKILL.md:90:    "DefaultDb": "Server=localhost;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>"
+pre_scan_matches.txt:26:post_edit_matches.txt:26:.kilocode/skills/dotnet-secrets-management/SKILL.md:182:      - ConnectionStrings__DefaultDb=Server=db;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>
+pre_scan_matches.txt:27:post_edit_matches.txt:28:.kilocode/skills/dotnet-secrets-management/SKILL.md:405:private const string ConnectionString = "Server=prod;Password=<DB_PASSWORD_PLACEHOLDER>"; // WRONG
+pre_scan_matches.txt:28:post_edit_matches.txt:29:.kilocode/skills/dotnet-secrets-management/SKILL.md:418:    "DefaultDb": "Server=prod-db;Password=<DB_PASSWORD_PLACEHOLDER>"
+pre_scan_matches.txt:29:post_edit_matches.txt:31:.kilocode/skills/dotnet-agent-gotchas/SKILL.md:555:catch (Exception) { } // failure is invisible
+pre_scan_matches.txt:30:post_edit_matches.txt:32:.kilocode/skills/dotnet-agent-gotchas/SKILL.md:560:    // TODO: add logging
+pre_scan_matches.txt:31:post_edit_matches.txt:34:.roo/skills/dotnet-agent-gotchas/SKILL.md:555:catch (Exception) { } // failure is invisible
+pre_scan_matches.txt:32:post_edit_matches.txt:35:.roo/skills/dotnet-agent-gotchas/SKILL.md:560:    // TODO: add logging
+pre_scan_matches.txt:33:post_edit_matches.txt:37:.kilocode/skills/dotnet-version-detection/SKILL.md:126:- `8.0.xxx` -> net8.0
+pre_scan_matches.txt:34:post_edit_matches.txt:38:.kilocode/skills/dotnet-version-detection/SKILL.md:127:- `9.0.xxx` -> net9.0
+pre_scan_matches.txt:35:post_edit_matches.txt:39:.kilocode/skills/dotnet-version-detection/SKILL.md:128:- `10.0.xxx` -> net10.0
+pre_scan_matches.txt:36:post_edit_matches.txt:40:.kilocode/skills/dotnet-version-detection/SKILL.md:129:- `11.0.xxx-preview.x` -> net11.0
+pre_scan_matches.txt:37:post_edit_matches.txt:41:.kilocode/skills/dotnet-uno-testing/SKILL.md:209:    await _page.FillAsync("[data-testid='todo-input']", "Buy groceries");
+pre_scan_matches.txt:38:post_edit_matches.txt:42:.kilocode/skills/dotnet-uno-testing/SKILL.md:210:    await _page.ClickAsync("[data-testid='add-todo-btn']");
+pre_scan_matches.txt:39:post_edit_matches.txt:43:.kilocode/skills/dotnet-uno-testing/SKILL.md:212:    var items = _page.Locator("[data-testid='todo-item']");
+pre_scan_matches.txt:40:post_edit_matches.txt:44:.gemini/skills/dotnet-version-upgrade/SKILL.md:232:2. Update `global.json` to SDK `9.0.xxx`
+pre_scan_matches.txt:41:post_edit_matches.txt:45:.gemini/skills/dotnet-version-upgrade/SKILL.md:242:2. Update `global.json` to SDK `10.0.xxx`
+pre_scan_matches.txt:42:post_edit_matches.txt:49:.roo/skills/dotnet-version-detection/SKILL.md:126:- `8.0.xxx` -> net8.0
+pre_scan_matches.txt:43:post_edit_matches.txt:50:.roo/skills/dotnet-version-detection/SKILL.md:127:- `9.0.xxx` -> net9.0
+pre_scan_matches.txt:44:post_edit_matches.txt:51:.roo/skills/dotnet-version-detection/SKILL.md:128:- `10.0.xxx` -> net10.0
+pre_scan_matches.txt:45:post_edit_matches.txt:52:.roo/skills/dotnet-version-detection/SKILL.md:129:- `11.0.xxx-preview.x` -> net11.0
+pre_scan_matches.txt:46:post_edit_matches.txt:53:pre_edit_matches.txt:1:.kilocode/skills/dotnet-version-upgrade/SKILL.md:232:2. Update `global.json` to SDK `9.0.xxx`
+pre_scan_matches.txt:47:post_edit_matches.txt:54:pre_edit_matches.txt:2:.kilocode/skills/dotnet-version-upgrade/SKILL.md:242:2. Update `global.json` to SDK `10.0.xxx`
+pre_scan_matches.txt:48:post_edit_matches.txt:60:pre_edit_matches.txt:8:.kilocode/skills/dotnet-secrets-management/SKILL.md:90:    "DefaultDb": "Server=localhost;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>"
+pre_scan_matches.txt:49:post_edit_matches.txt:63:pre_edit_matches.txt:11:.kilocode/skills/dotnet-secrets-management/SKILL.md:182:      - ConnectionStrings__DefaultDb=Server=db;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>
+pre_scan_matches.txt:50:post_edit_matches.txt:65:pre_edit_matches.txt:13:.kilocode/skills/dotnet-secrets-management/SKILL.md:405:private const string ConnectionString = "Server=prod;Password=<DB_PASSWORD_PLACEHOLDER>"; // WRONG
+pre_scan_matches.txt:51:post_edit_matches.txt:66:pre_edit_matches.txt:14:.kilocode/skills/dotnet-secrets-management/SKILL.md:418:    "DefaultDb": "Server=prod-db;Password=<DB_PASSWORD_PLACEHOLDER>"
+pre_scan_matches.txt:52:post_edit_matches.txt:68:pre_edit_matches.txt:16:.kilocode/skills/dotnet-agent-gotchas/SKILL.md:555:catch (Exception) { } // failure is invisible
+pre_scan_matches.txt:53:post_edit_matches.txt:69:pre_edit_matches.txt:17:.kilocode/skills/dotnet-agent-gotchas/SKILL.md:560:    // TODO: add logging
+pre_scan_matches.txt:54:post_edit_matches.txt:71:pre_edit_matches.txt:19:.kilocode/skills/dotnet-version-detection/SKILL.md:126:- `8.0.xxx` -> net8.0
+pre_scan_matches.txt:55:post_edit_matches.txt:72:pre_edit_matches.txt:20:.kilocode/skills/dotnet-version-detection/SKILL.md:127:- `9.0.xxx` -> net9.0
+pre_scan_matches.txt:56:post_edit_matches.txt:73:pre_edit_matches.txt:21:.kilocode/skills/dotnet-version-detection/SKILL.md:128:- `10.0.xxx` -> net10.0
+pre_scan_matches.txt:57:post_edit_matches.txt:74:pre_edit_matches.txt:22:.kilocode/skills/dotnet-version-detection/SKILL.md:129:- `11.0.xxx-preview.x` -> net11.0
+pre_scan_matches.txt:58:post_edit_matches.txt:75:pre_edit_matches.txt:23:.kilocode/skills/dotnet-uno-testing/SKILL.md:209:    await _page.FillAsync("[data-testid='todo-input']", "Buy groceries");
+pre_scan_matches.txt:59:post_edit_matches.txt:76:pre_edit_matches.txt:24:.kilocode/skills/dotnet-uno-testing/SKILL.md:210:    await _page.ClickAsync("[data-testid='add-todo-btn']");
+pre_scan_matches.txt:60:post_edit_matches.txt:77:pre_edit_matches.txt:25:.kilocode/skills/dotnet-uno-testing/SKILL.md:212:    var items = _page.Locator("[data-testid='todo-item']");
+pre_scan_matches.txt:61:post_edit_matches.txt:78:pre_edit_matches.txt:26:.gemini/skills/dotnet-version-upgrade/SKILL.md:232:2. Update `global.json` to SDK `9.0.xxx`
+pre_scan_matches.txt:62:post_edit_matches.txt:79:pre_edit_matches.txt:27:.gemini/skills/dotnet-version-upgrade/SKILL.md:242:2. Update `global.json` to SDK `10.0.xxx`
+pre_scan_matches.txt:63:post_edit_matches.txt:83:pre_edit_matches.txt:31:.agent/skills/dotnet-version-upgrade/SKILL.md:232:2. Update `global.json` to SDK `9.0.xxx`
+pre_scan_matches.txt:64:post_edit_matches.txt:84:pre_edit_matches.txt:32:.agent/skills/dotnet-version-upgrade/SKILL.md:242:2. Update `global.json` to SDK `10.0.xxx`
+pre_scan_matches.txt:65:post_edit_matches.txt:90:pre_edit_matches.txt:38:.agent/skills/dotnet-secrets-management/SKILL.md:90:    "DefaultDb": "Server=localhost;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>"
+pre_scan_matches.txt:66:post_edit_matches.txt:93:pre_edit_matches.txt:41:.agent/skills/dotnet-secrets-management/SKILL.md:182:      - ConnectionStrings__DefaultDb=Server=db;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>
+pre_scan_matches.txt:67:post_edit_matches.txt:95:pre_edit_matches.txt:43:.agent/skills/dotnet-secrets-management/SKILL.md:405:private const string ConnectionString = "Server=prod;Password=<DB_PASSWORD_PLACEHOLDER>"; // WRONG
+pre_scan_matches.txt:68:post_edit_matches.txt:96:pre_edit_matches.txt:44:.agent/skills/dotnet-secrets-management/SKILL.md:418:    "DefaultDb": "Server=prod-db;Password=<DB_PASSWORD_PLACEHOLDER>"
+pre_scan_matches.txt:69:post_edit_matches.txt:100:pre_edit_matches.txt:48:.gemini/skills/dotnet-secrets-management/SKILL.md:90:    "DefaultDb": "Server=localhost;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>"
+pre_scan_matches.txt:70:post_edit_matches.txt:103:pre_edit_matches.txt:51:.gemini/skills/dotnet-secrets-management/SKILL.md:182:      - ConnectionStrings__DefaultDb=Server=db;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>
+pre_scan_matches.txt:71:post_edit_matches.txt:105:pre_edit_matches.txt:53:.gemini/skills/dotnet-secrets-management/SKILL.md:405:private const string ConnectionString = "Server=prod;Password=<DB_PASSWORD_PLACEHOLDER>"; // WRONG
+pre_scan_matches.txt:72:post_edit_matches.txt:106:pre_edit_matches.txt:54:.gemini/skills/dotnet-secrets-management/SKILL.md:418:    "DefaultDb": "Server=prod-db;Password=<DB_PASSWORD_PLACEHOLDER>"
+pre_scan_matches.txt:73:post_edit_matches.txt:108:pre_edit_matches.txt:56:.agent/skills/dotnet-agent-gotchas/SKILL.md:555:catch (Exception) { } // failure is invisible
+pre_scan_matches.txt:74:post_edit_matches.txt:109:pre_edit_matches.txt:57:.agent/skills/dotnet-agent-gotchas/SKILL.md:560:    // TODO: add logging
+pre_scan_matches.txt:75:post_edit_matches.txt:111:pre_edit_matches.txt:59:.rulesync/skills/dotnet-xml-docs/SKILL.md:87:// TODO: Audit suppression - add justification or remove
+pre_scan_matches.txt:76:post_edit_matches.txt:112:pre_edit_matches.txt:60:.agent/skills/serena/SKILL.md:436:   serena find_symbol --name "TODO"
+pre_scan_matches.txt:77:post_edit_matches.txt:113:pre_edit_matches.txt:61:.agent/skills/serena/SKILL.md:439:   rg "TODO"
+pre_scan_matches.txt:78:post_edit_matches.txt:114:pre_edit_matches.txt:62:.gemini/skills/dotnet-agent-gotchas/SKILL.md:555:catch (Exception) { } // failure is invisible
+pre_scan_matches.txt:79:post_edit_matches.txt:115:pre_edit_matches.txt:63:.gemini/skills/dotnet-agent-gotchas/SKILL.md:560:    // TODO: add logging
+pre_scan_matches.txt:80:post_edit_matches.txt:117:pre_edit_matches.txt:65:.gemini/skills/serena/SKILL.md:436:   serena find_symbol --name "TODO"
+pre_scan_matches.txt:81:post_edit_matches.txt:118:pre_edit_matches.txt:66:.gemini/skills/serena/SKILL.md:439:   rg "TODO"
+pre_scan_matches.txt:82:post_edit_matches.txt:119:pre_edit_matches.txt:67:.agent/skills/dotnet-version-detection/SKILL.md:126:- `8.0.xxx` -> net8.0
+pre_scan_matches.txt:83:post_edit_matches.txt:120:pre_edit_matches.txt:68:.agent/skills/dotnet-version-detection/SKILL.md:127:- `9.0.xxx` -> net9.0
+pre_scan_matches.txt:84:post_edit_matches.txt:121:pre_edit_matches.txt:69:.agent/skills/dotnet-version-detection/SKILL.md:128:- `10.0.xxx` -> net10.0
+pre_scan_matches.txt:85:post_edit_matches.txt:122:pre_edit_matches.txt:70:.agent/skills/dotnet-version-detection/SKILL.md:129:- `11.0.xxx-preview.x` -> net11.0
+pre_scan_matches.txt:86:post_edit_matches.txt:123:pre_edit_matches.txt:71:.agent/skills/dotnet-uno-testing/SKILL.md:209:    await _page.FillAsync("[data-testid='todo-input']", "Buy groceries");
+pre_scan_matches.txt:87:post_edit_matches.txt:124:pre_edit_matches.txt:72:.agent/skills/dotnet-uno-testing/SKILL.md:210:    await _page.ClickAsync("[data-testid='add-todo-btn']");
+pre_scan_matches.txt:88:post_edit_matches.txt:125:pre_edit_matches.txt:73:.agent/skills/dotnet-uno-testing/SKILL.md:212:    var items = _page.Locator("[data-testid='todo-item']");
+pre_scan_matches.txt:89:post_edit_matches.txt:126:pre_edit_matches.txt:74:.gemini/skills/dotnet-version-detection/SKILL.md:126:- `8.0.xxx` -> net8.0
+pre_scan_matches.txt:90:post_edit_matches.txt:127:pre_edit_matches.txt:75:.gemini/skills/dotnet-version-detection/SKILL.md:127:- `9.0.xxx` -> net9.0
+pre_scan_matches.txt:91:post_edit_matches.txt:128:pre_edit_matches.txt:76:.gemini/skills/dotnet-version-detection/SKILL.md:128:- `10.0.xxx` -> net10.0
+pre_scan_matches.txt:92:post_edit_matches.txt:129:pre_edit_matches.txt:77:.gemini/skills/dotnet-version-detection/SKILL.md:129:- `11.0.xxx-preview.x` -> net11.0
+pre_scan_matches.txt:93:post_edit_matches.txt:130:pre_edit_matches.txt:78:.rulesync/skills/dotnet-build-analysis/SKILL.md:388:// TODO: Audit suppression - add justification or remove if not applicable
+pre_scan_matches.txt:94:post_edit_matches.txt:131:pre_edit_matches.txt:79:.rulesync/skills/dotnet-build-analysis/SKILL.md:396:// TODO: Audit suppression - add justification or remove
+pre_scan_matches.txt:95:post_edit_matches.txt:132:pre_edit_matches.txt:80:.gemini/skills/dotnet-uno-testing/SKILL.md:209:    await _page.FillAsync("[data-testid='todo-input']", "Buy groceries");
+pre_scan_matches.txt:96:post_edit_matches.txt:133:pre_edit_matches.txt:81:.gemini/skills/dotnet-uno-testing/SKILL.md:210:    await _page.ClickAsync("[data-testid='add-todo-btn']");
+pre_scan_matches.txt:97:post_edit_matches.txt:134:pre_edit_matches.txt:82:.gemini/skills/dotnet-uno-testing/SKILL.md:212:    var items = _page.Locator("[data-testid='todo-item']");
+pre_scan_matches.txt:98:post_edit_matches.txt:135:pre_edit_matches.txt:83:.rulesync/skills/dotnet-version-upgrade/SKILL.md:243:2. Update `global.json` to SDK `9.0.xxx`
+pre_scan_matches.txt:99:post_edit_matches.txt:136:pre_edit_matches.txt:84:.rulesync/skills/dotnet-version-upgrade/SKILL.md:253:2. Update `global.json` to SDK `10.0.xxx`
+pre_scan_matches.txt:100:post_edit_matches.txt:140:pre_edit_matches.txt:88:.rulesync/skills/dotnet-secrets-management/SKILL.md:75:dotnet user-secrets set "ConnectionStrings:DefaultDb" "Server=localhost;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>" // DO NOT commit real secrets; use dotnet user-secrets or env vars
+pre_scan_matches.txt:101:post_edit_matches.txt:141:pre_edit_matches.txt:89:.rulesync/skills/dotnet-secrets-management/SKILL.md:102:    "DefaultDb": "Server=localhost;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>"
+pre_scan_matches.txt:102:post_edit_matches.txt:142:pre_edit_matches.txt:90:.rulesync/skills/dotnet-secrets-management/SKILL.md:194:      - ConnectionStrings__DefaultDb=Server=db;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>
+pre_scan_matches.txt:103:post_edit_matches.txt:143:pre_edit_matches.txt:91:.rulesync/skills/dotnet-secrets-management/SKILL.md:431:    "DefaultDb": "Server=prod-db;Password=<DB_PASSWORD_PLACEHOLDER>"
+pre_scan_matches.txt:104:post_edit_matches.txt:144:pre_edit_matches.txt:92:.rulesync/skills/dotnet-agent-gotchas/SKILL.md:350:// TODO: Audit suppression - add justification or remove
+pre_scan_matches.txt:105:post_edit_matches.txt:145:pre_edit_matches.txt:93:.rulesync/skills/dotnet-agent-gotchas/SKILL.md:567:catch (Exception) { } // failure is invisible
+pre_scan_matches.txt:106:post_edit_matches.txt:146:pre_edit_matches.txt:94:.rulesync/skills/dotnet-agent-gotchas/SKILL.md:572:    // TODO: add logging
+pre_scan_matches.txt:107:post_edit_matches.txt:148:pre_edit_matches.txt:96:.rulesync/skills/dotnet-trimming/SKILL.md:169:// TODO: Audit suppression - add justification or remove
+pre_scan_matches.txt:108:post_edit_matches.txt:149:pre_edit_matches.txt:97:.rulesync/skills/serena/SKILL.md:438:   serena find_symbol --name "TODO"
+pre_scan_matches.txt:109:post_edit_matches.txt:150:pre_edit_matches.txt:98:.rulesync/skills/serena/SKILL.md:441:   rg "TODO"
+pre_scan_matches.txt:110:post_edit_matches.txt:151:pre_edit_matches.txt:99:.agent/skills/dotnet-10-csharp-14/anti-patterns.md:308:    catch (Exception)
+pre_scan_matches.txt:111:post_edit_matches.txt:152:pre_edit_matches.txt:100:.rulesync/skills/dotnet-version-detection/SKILL.md:140:- `8.0.xxx` -> net8.0
+pre_scan_matches.txt:112:post_edit_matches.txt:153:pre_edit_matches.txt:101:.rulesync/skills/dotnet-version-detection/SKILL.md:141:- `9.0.xxx` -> net9.0
+pre_scan_matches.txt:113:post_edit_matches.txt:154:pre_edit_matches.txt:102:.rulesync/skills/dotnet-version-detection/SKILL.md:142:- `10.0.xxx` -> net10.0
+pre_scan_matches.txt:114:post_edit_matches.txt:155:pre_edit_matches.txt:103:.rulesync/skills/dotnet-version-detection/SKILL.md:143:- `11.0.xxx-preview.x` -> net11.0
+pre_scan_matches.txt:115:post_edit_matches.txt:156:pre_edit_matches.txt:104:post_edit_matches.txt:1:.kilocode/skills/dotnet-version-upgrade/SKILL.md:232:2. Update `global.json` to SDK `9.0.xxx`
+pre_scan_matches.txt:116:post_edit_matches.txt:157:pre_edit_matches.txt:105:post_edit_matches.txt:2:.kilocode/skills/dotnet-version-upgrade/SKILL.md:242:2. Update `global.json` to SDK `10.0.xxx`
+pre_scan_matches.txt:117:post_edit_matches.txt:163:pre_edit_matches.txt:111:post_edit_matches.txt:8:.kilocode/skills/dotnet-secrets-management/SKILL.md:90:    "DefaultDb": "Server=localhost;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>"
+pre_scan_matches.txt:118:post_edit_matches.txt:166:pre_edit_matches.txt:114:post_edit_matches.txt:11:.kilocode/skills/dotnet-secrets-management/SKILL.md:182:      - ConnectionStrings__DefaultDb=Server=db;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>
+pre_scan_matches.txt:119:post_edit_matches.txt:168:pre_edit_matches.txt:116:post_edit_matches.txt:13:.kilocode/skills/dotnet-secrets-management/SKILL.md:405:private const string ConnectionString = "Server=prod;Password=<DB_PASSWORD_PLACEHOLDER>"; // WRONG
+pre_scan_matches.txt:120:post_edit_matches.txt:169:pre_edit_matches.txt:117:post_edit_matches.txt:14:.kilocode/skills/dotnet-secrets-management/SKILL.md:418:    "DefaultDb": "Server=prod-db;Password=<DB_PASSWORD_PLACEHOLDER>"
+pre_scan_matches.txt:121:post_edit_matches.txt:171:pre_edit_matches.txt:119:post_edit_matches.txt:16:.kilocode/skills/dotnet-agent-gotchas/SKILL.md:555:catch (Exception) { } // failure is invisible
+pre_scan_matches.txt:122:post_edit_matches.txt:172:pre_edit_matches.txt:120:post_edit_matches.txt:17:.kilocode/skills/dotnet-agent-gotchas/SKILL.md:560:    // TODO: add logging
+pre_scan_matches.txt:123:post_edit_matches.txt:174:pre_edit_matches.txt:122:post_edit_matches.txt:19:.kilocode/skills/dotnet-version-detection/SKILL.md:126:- `8.0.xxx` -> net8.0
+pre_scan_matches.txt:124:post_edit_matches.txt:175:pre_edit_matches.txt:123:post_edit_matches.txt:20:.kilocode/skills/dotnet-version-detection/SKILL.md:127:- `9.0.xxx` -> net9.0
+pre_scan_matches.txt:125:post_edit_matches.txt:176:pre_edit_matches.txt:124:post_edit_matches.txt:21:.kilocode/skills/dotnet-version-detection/SKILL.md:128:- `10.0.xxx` -> net10.0
+pre_scan_matches.txt:126:post_edit_matches.txt:177:pre_edit_matches.txt:125:post_edit_matches.txt:22:.kilocode/skills/dotnet-version-detection/SKILL.md:129:- `11.0.xxx-preview.x` -> net11.0
+pre_scan_matches.txt:127:post_edit_matches.txt:178:pre_edit_matches.txt:126:post_edit_matches.txt:23:.cline/skills/dotnet-version-upgrade/SKILL.md:232:2. Update `global.json` to SDK `9.0.xxx`
+pre_scan_matches.txt:128:post_edit_matches.txt:179:pre_edit_matches.txt:127:post_edit_matches.txt:24:.cline/skills/dotnet-version-upgrade/SKILL.md:242:2. Update `global.json` to SDK `10.0.xxx`
+pre_scan_matches.txt:129:post_edit_matches.txt:183:pre_edit_matches.txt:131:post_edit_matches.txt:28:.kilocode/skills/dotnet-uno-testing/SKILL.md:209:    await _page.FillAsync("[data-testid='todo-input']", "Buy groceries");
+pre_scan_matches.txt:130:post_edit_matches.txt:184:pre_edit_matches.txt:132:post_edit_matches.txt:29:.kilocode/skills/dotnet-uno-testing/SKILL.md:210:    await _page.ClickAsync("[data-testid='add-todo-btn']");
+pre_scan_matches.txt:131:post_edit_matches.txt:185:pre_edit_matches.txt:133:post_edit_matches.txt:30:.kilocode/skills/dotnet-uno-testing/SKILL.md:212:    var items = _page.Locator("[data-testid='todo-item']");
+pre_scan_matches.txt:132:post_edit_matches.txt:186:pre_edit_matches.txt:134:post_edit_matches.txt:31:.roo/skills/dotnet-version-upgrade/SKILL.md:232:2. Update `global.json` to SDK `9.0.xxx`
+pre_scan_matches.txt:133:post_edit_matches.txt:187:pre_edit_matches.txt:135:post_edit_matches.txt:32:.roo/skills/dotnet-version-upgrade/SKILL.md:242:2. Update `global.json` to SDK `10.0.xxx`
+pre_scan_matches.txt:134:post_edit_matches.txt:193:pre_edit_matches.txt:141:post_edit_matches.txt:38:.cline/skills/dotnet-secrets-management/SKILL.md:90:    "DefaultDb": "Server=localhost;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>"
+pre_scan_matches.txt:135:post_edit_matches.txt:196:pre_edit_matches.txt:144:post_edit_matches.txt:41:.cline/skills/dotnet-secrets-management/SKILL.md:182:      - ConnectionStrings__DefaultDb=Server=db;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>
+pre_scan_matches.txt:136:post_edit_matches.txt:198:pre_edit_matches.txt:146:post_edit_matches.txt:43:.cline/skills/dotnet-secrets-management/SKILL.md:405:private const string ConnectionString = "Server=prod;Password=<DB_PASSWORD_PLACEHOLDER>"; // WRONG
+pre_scan_matches.txt:137:post_edit_matches.txt:199:pre_edit_matches.txt:147:post_edit_matches.txt:44:.cline/skills/dotnet-secrets-management/SKILL.md:418:    "DefaultDb": "Server=prod-db;Password=<DB_PASSWORD_PLACEHOLDER>"
+pre_scan_matches.txt:138:.rulesync/skills/dotnet-secrets-management/SKILL.md:75:dotnet user-secrets set "ConnectionStrings:DefaultDb" "Server=localhost;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>" // DO NOT commit real secrets; use dotnet user-secrets or env vars
+pre_scan_matches.txt:139:.rulesync/skills/dotnet-secrets-management/SKILL.md:102:    "DefaultDb": "Server=localhost;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>"
+pre_scan_matches.txt:140:.rulesync/skills/dotnet-secrets-management/SKILL.md:194:    - ConnectionStrings__DefaultDb=Server=db;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>
+pre_scan_matches.txt:141:.rulesync/skills/dotnet-secrets-management/SKILL.md:431:    "DefaultDb": "Server=prod-db;Password=<DB_PASSWORD_PLACEHOLDER>"
+pre_scan_matches.txt:142:.rulesync/skills/dotnet-uno-testing/SKILL.md:221:    await _page.FillAsync("[data-testid='todo-input']", "Buy groceries");
+pre_scan_matches.txt:143:.rulesync/skills/dotnet-uno-testing/SKILL.md:222:    await _page.ClickAsync("[data-testid='add-todo-btn']");
+pre_scan_matches.txt:144:.rulesync/skills/dotnet-uno-testing/SKILL.md:224:    var items = _page.Locator("[data-testid='todo-item']");
+pre_scan_matches.txt:146:.rulesync/skills/serena/SKILL.md:438:   serena find_symbol --name "TODO"
+pre_scan_matches.txt:147:.rulesync/skills/serena/SKILL.md:441:   rg "TODO"
+pre_scan_matches.txt:148:pre_edit_matches.txt:1:.kilocode/skills/dotnet-version-upgrade/SKILL.md:232:2. Update `global.json` to SDK `9.0.xxx`
+pre_scan_matches.txt:149:pre_edit_matches.txt:2:.kilocode/skills/dotnet-version-upgrade/SKILL.md:242:2. Update `global.json` to SDK `10.0.xxx`
+pre_scan_matches.txt:150:pre_edit_matches.txt:8:.kilocode/skills/dotnet-secrets-management/SKILL.md:90:    "DefaultDb": "Server=localhost;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>"
+pre_scan_matches.txt:151:pre_edit_matches.txt:11:.kilocode/skills/dotnet-secrets-management/SKILL.md:182:      - ConnectionStrings__DefaultDb=Server=db;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>
+pre_scan_matches.txt:152:pre_edit_matches.txt:13:.kilocode/skills/dotnet-secrets-management/SKILL.md:405:private const string ConnectionString = "Server=prod;Password=<DB_PASSWORD_PLACEHOLDER>"; // WRONG
+pre_scan_matches.txt:153:pre_edit_matches.txt:14:.kilocode/skills/dotnet-secrets-management/SKILL.md:418:    "DefaultDb": "Server=prod-db;Password=<DB_PASSWORD_PLACEHOLDER>"
+pre_scan_matches.txt:154:pre_edit_matches.txt:16:.kilocode/skills/dotnet-agent-gotchas/SKILL.md:555:catch (Exception) { } // failure is invisible
+pre_scan_matches.txt:155:pre_edit_matches.txt:17:.kilocode/skills/dotnet-agent-gotchas/SKILL.md:560:    // TODO: add logging
+pre_scan_matches.txt:156:pre_edit_matches.txt:19:.kilocode/skills/dotnet-version-detection/SKILL.md:126:- `8.0.xxx` -> net8.0
+pre_scan_matches.txt:157:pre_edit_matches.txt:20:.kilocode/skills/dotnet-version-detection/SKILL.md:127:- `9.0.xxx` -> net9.0
+pre_scan_matches.txt:158:pre_edit_matches.txt:21:.kilocode/skills/dotnet-version-detection/SKILL.md:128:- `10.0.xxx` -> net10.0
+pre_scan_matches.txt:159:pre_edit_matches.txt:22:.kilocode/skills/dotnet-version-detection/SKILL.md:129:- `11.0.xxx-preview.x` -> net11.0
+pre_scan_matches.txt:160:pre_edit_matches.txt:23:.kilocode/skills/dotnet-uno-testing/SKILL.md:209:    await _page.FillAsync("[data-testid='todo-input']", "Buy groceries");
+pre_scan_matches.txt:161:pre_edit_matches.txt:24:.kilocode/skills/dotnet-uno-testing/SKILL.md:210:    await _page.ClickAsync("[data-testid='add-todo-btn']");
+pre_scan_matches.txt:162:pre_edit_matches.txt:25:.kilocode/skills/dotnet-uno-testing/SKILL.md:212:    var items = _page.Locator("[data-testid='todo-item']");
+pre_scan_matches.txt:163:pre_edit_matches.txt:26:.gemini/skills/dotnet-version-upgrade/SKILL.md:232:2. Update `global.json` to SDK `9.0.xxx`
+pre_scan_matches.txt:164:pre_edit_matches.txt:27:.gemini/skills/dotnet-version-upgrade/SKILL.md:242:2. Update `global.json` to SDK `10.0.xxx`
+pre_scan_matches.txt:165:pre_edit_matches.txt:31:.agent/skills/dotnet-version-upgrade/SKILL.md:232:2. Update `global.json` to SDK `9.0.xxx`
+pre_scan_matches.txt:166:pre_edit_matches.txt:32:.agent/skills/dotnet-version-upgrade/SKILL.md:242:2. Update `global.json` to SDK `10.0.xxx`
+pre_scan_matches.txt:167:pre_edit_matches.txt:38:.agent/skills/dotnet-secrets-management/SKILL.md:90:    "DefaultDb": "Server=localhost;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>"
+pre_scan_matches.txt:168:pre_edit_matches.txt:41:.agent/skills/dotnet-secrets-management/SKILL.md:182:      - ConnectionStrings__DefaultDb=Server=db;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>
+pre_scan_matches.txt:169:pre_edit_matches.txt:43:.agent/skills/dotnet-secrets-management/SKILL.md:405:private const string ConnectionString = "Server=prod;Password=<DB_PASSWORD_PLACEHOLDER>"; // WRONG
+pre_scan_matches.txt:170:pre_edit_matches.txt:44:.agent/skills/dotnet-secrets-management/SKILL.md:418:    "DefaultDb": "Server=prod-db;Password=<DB_PASSWORD_PLACEHOLDER>"
+pre_scan_matches.txt:171:pre_edit_matches.txt:48:.gemini/skills/dotnet-secrets-management/SKILL.md:90:    "DefaultDb": "Server=localhost;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>"
+pre_scan_matches.txt:172:pre_edit_matches.txt:51:.gemini/skills/dotnet-secrets-management/SKILL.md:182:      - ConnectionStrings__DefaultDb=Server=db;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>
+pre_scan_matches.txt:173:pre_edit_matches.txt:53:.gemini/skills/dotnet-secrets-management/SKILL.md:405:private const string ConnectionString = "Server=prod;Password=<DB_PASSWORD_PLACEHOLDER>"; // WRONG
+pre_scan_matches.txt:174:pre_edit_matches.txt:54:.gemini/skills/dotnet-secrets-management/SKILL.md:418:    "DefaultDb": "Server=prod-db;Password=<DB_PASSWORD_PLACEHOLDER>"
+pre_scan_matches.txt:175:pre_edit_matches.txt:56:.agent/skills/dotnet-agent-gotchas/SKILL.md:555:catch (Exception) { } // failure is invisible
+pre_scan_matches.txt:176:pre_edit_matches.txt:57:.agent/skills/dotnet-agent-gotchas/SKILL.md:560:    // TODO: add logging
+pre_scan_matches.txt:177:pre_edit_matches.txt:59:.rulesync/skills/dotnet-xml-docs/SKILL.md:87:// TODO: Audit suppression - add justification or remove
+pre_scan_matches.txt:178:pre_edit_matches.txt:60:.agent/skills/serena/SKILL.md:436:   serena find_symbol --name "TODO"
+pre_scan_matches.txt:179:pre_edit_matches.txt:61:.agent/skills/serena/SKILL.md:439:   rg "TODO"
+pre_scan_matches.txt:180:pre_edit_matches.txt:62:.gemini/skills/dotnet-agent-gotchas/SKILL.md:555:catch (Exception) { } // failure is invisible
+pre_scan_matches.txt:181:pre_edit_matches.txt:63:.gemini/skills/dotnet-agent-gotchas/SKILL.md:560:    // TODO: add logging
+pre_scan_matches.txt:182:pre_edit_matches.txt:65:.gemini/skills/serena/SKILL.md:436:   serena find_symbol --name "TODO"
+pre_scan_matches.txt:183:pre_edit_matches.txt:66:.gemini/skills/serena/SKILL.md:439:   rg "TODO"
+pre_scan_matches.txt:184:pre_edit_matches.txt:67:.agent/skills/dotnet-version-detection/SKILL.md:126:- `8.0.xxx` -> net8.0
+pre_scan_matches.txt:185:pre_edit_matches.txt:68:.agent/skills/dotnet-version-detection/SKILL.md:127:- `9.0.xxx` -> net9.0
+pre_scan_matches.txt:186:pre_edit_matches.txt:69:.agent/skills/dotnet-version-detection/SKILL.md:128:- `10.0.xxx` -> net10.0
+pre_scan_matches.txt:187:pre_edit_matches.txt:70:.agent/skills/dotnet-version-detection/SKILL.md:129:- `11.0.xxx-preview.x` -> net11.0
+pre_scan_matches.txt:188:pre_edit_matches.txt:71:.agent/skills/dotnet-uno-testing/SKILL.md:209:    await _page.FillAsync("[data-testid='todo-input']", "Buy groceries");
+pre_scan_matches.txt:189:pre_edit_matches.txt:72:.agent/skills/dotnet-uno-testing/SKILL.md:210:    await _page.ClickAsync("[data-testid='add-todo-btn']");
+pre_scan_matches.txt:190:pre_edit_matches.txt:73:.agent/skills/dotnet-uno-testing/SKILL.md:212:    var items = _page.Locator("[data-testid='todo-item']");
+pre_scan_matches.txt:191:pre_edit_matches.txt:74:.gemini/skills/dotnet-version-detection/SKILL.md:126:- `8.0.xxx` -> net8.0
+pre_scan_matches.txt:192:pre_edit_matches.txt:75:.gemini/skills/dotnet-version-detection/SKILL.md:127:- `9.0.xxx` -> net9.0
+pre_scan_matches.txt:193:pre_edit_matches.txt:76:.gemini/skills/dotnet-version-detection/SKILL.md:128:- `10.0.xxx` -> net10.0
+pre_scan_matches.txt:194:pre_edit_matches.txt:77:.gemini/skills/dotnet-version-detection/SKILL.md:129:- `11.0.xxx-preview.x` -> net11.0
+pre_scan_matches.txt:195:pre_edit_matches.txt:78:.rulesync/skills/dotnet-build-analysis/SKILL.md:388:// TODO: Audit suppression - add justification or remove if not applicable
+pre_scan_matches.txt:196:pre_edit_matches.txt:79:.rulesync/skills/dotnet-build-analysis/SKILL.md:396:// TODO: Audit suppression - add justification or remove
+pre_scan_matches.txt:197:pre_edit_matches.txt:80:.gemini/skills/dotnet-uno-testing/SKILL.md:209:    await _page.FillAsync("[data-testid='todo-input']", "Buy groceries");
+pre_scan_matches.txt:198:pre_edit_matches.txt:81:.gemini/skills/dotnet-uno-testing/SKILL.md:210:    await _page.ClickAsync("[data-testid='add-todo-btn']");
+pre_scan_matches.txt:199:pre_edit_matches.txt:82:.gemini/skills/dotnet-uno-testing/SKILL.md:212:    var items = _page.Locator("[data-testid='todo-item']");
+pre_scan_matches.txt:200:pre_edit_matches.txt:83:.rulesync/skills/dotnet-version-upgrade/SKILL.md:243:2. Update `global.json` to SDK `9.0.xxx`
+pre_scan_matches.txt:201:pre_edit_matches.txt:84:.rulesync/skills/dotnet-version-upgrade/SKILL.md:253:2. Update `global.json` to SDK `10.0.xxx`
+pre_scan_matches.txt:202:pre_edit_matches.txt:88:.rulesync/skills/dotnet-secrets-management/SKILL.md:75:dotnet user-secrets set "ConnectionStrings:DefaultDb" "Server=localhost;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>" // DO NOT commit real secrets; use dotnet user-secrets or env vars
+pre_scan_matches.txt:203:pre_edit_matches.txt:89:.rulesync/skills/dotnet-secrets-management/SKILL.md:102:    "DefaultDb": "Server=localhost;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>"
+pre_scan_matches.txt:204:pre_edit_matches.txt:90:.rulesync/skills/dotnet-secrets-management/SKILL.md:194:      - ConnectionStrings__DefaultDb=Server=db;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>
+pre_scan_matches.txt:205:pre_edit_matches.txt:91:.rulesync/skills/dotnet-secrets-management/SKILL.md:431:    "DefaultDb": "Server=prod-db;Password=<DB_PASSWORD_PLACEHOLDER>"
+pre_scan_matches.txt:206:pre_edit_matches.txt:92:.rulesync/skills/dotnet-agent-gotchas/SKILL.md:350:// TODO: Audit suppression - add justification or remove
+pre_scan_matches.txt:207:pre_edit_matches.txt:93:.rulesync/skills/dotnet-agent-gotchas/SKILL.md:567:catch (Exception) { } // failure is invisible
+pre_scan_matches.txt:208:pre_edit_matches.txt:94:.rulesync/skills/dotnet-agent-gotchas/SKILL.md:572:    // TODO: add logging
+pre_scan_matches.txt:209:pre_edit_matches.txt:96:.rulesync/skills/dotnet-trimming/SKILL.md:169:// TODO: Audit suppression - add justification or remove
+pre_scan_matches.txt:210:pre_edit_matches.txt:97:.rulesync/skills/serena/SKILL.md:438:   serena find_symbol --name "TODO"
+pre_scan_matches.txt:211:pre_edit_matches.txt:98:.rulesync/skills/serena/SKILL.md:441:   rg "TODO"
+pre_scan_matches.txt:212:pre_edit_matches.txt:99:.agent/skills/dotnet-10-csharp-14/anti-patterns.md:308:    catch (Exception)
+pre_scan_matches.txt:213:pre_edit_matches.txt:100:.rulesync/skills/dotnet-version-detection/SKILL.md:140:- `8.0.xxx` -> net8.0
+pre_scan_matches.txt:214:pre_edit_matches.txt:101:.rulesync/skills/dotnet-version-detection/SKILL.md:141:- `9.0.xxx` -> net9.0
+pre_scan_matches.txt:215:pre_edit_matches.txt:102:.rulesync/skills/dotnet-version-detection/SKILL.md:142:- `10.0.xxx` -> net10.0
+pre_scan_matches.txt:216:pre_edit_matches.txt:103:.rulesync/skills/dotnet-version-detection/SKILL.md:143:- `11.0.xxx-preview.x` -> net11.0
+pre_scan_matches.txt:217:pre_edit_matches.txt:104:post_edit_matches.txt:1:.kilocode/skills/dotnet-version-upgrade/SKILL.md:232:2. Update `global.json` to SDK `9.0.xxx`
+pre_scan_matches.txt:218:pre_edit_matches.txt:105:post_edit_matches.txt:2:.kilocode/skills/dotnet-version-upgrade/SKILL.md:242:2. Update `global.json` to SDK `10.0.xxx`
+pre_scan_matches.txt:219:pre_edit_matches.txt:111:post_edit_matches.txt:8:.kilocode/skills/dotnet-secrets-management/SKILL.md:90:    "DefaultDb": "Server=localhost;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>"
+pre_scan_matches.txt:220:pre_edit_matches.txt:114:post_edit_matches.txt:11:.kilocode/skills/dotnet-secrets-management/SKILL.md:182:      - ConnectionStrings__DefaultDb=Server=db;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>
+pre_scan_matches.txt:221:pre_edit_matches.txt:116:post_edit_matches.txt:13:.kilocode/skills/dotnet-secrets-management/SKILL.md:405:private const string ConnectionString = "Server=prod;Password=<DB_PASSWORD_PLACEHOLDER>"; // WRONG
+pre_scan_matches.txt:222:pre_edit_matches.txt:117:post_edit_matches.txt:14:.kilocode/skills/dotnet-secrets-management/SKILL.md:418:    "DefaultDb": "Server=prod-db;Password=<DB_PASSWORD_PLACEHOLDER>"
+pre_scan_matches.txt:223:pre_edit_matches.txt:119:post_edit_matches.txt:16:.kilocode/skills/dotnet-agent-gotchas/SKILL.md:555:catch (Exception) { } // failure is invisible
+pre_scan_matches.txt:224:pre_edit_matches.txt:120:post_edit_matches.txt:17:.kilocode/skills/dotnet-agent-gotchas/SKILL.md:560:    // TODO: add logging
+pre_scan_matches.txt:225:pre_edit_matches.txt:122:post_edit_matches.txt:19:.kilocode/skills/dotnet-version-detection/SKILL.md:126:- `8.0.xxx` -> net8.0
+pre_scan_matches.txt:226:pre_edit_matches.txt:123:post_edit_matches.txt:20:.kilocode/skills/dotnet-version-detection/SKILL.md:127:- `9.0.xxx` -> net9.0
+pre_scan_matches.txt:227:pre_edit_matches.txt:124:post_edit_matches.txt:21:.kilocode/skills/dotnet-version-detection/SKILL.md:128:- `10.0.xxx` -> net10.0
+pre_scan_matches.txt:228:pre_edit_matches.txt:125:post_edit_matches.txt:22:.kilocode/skills/dotnet-version-detection/SKILL.md:129:- `11.0.xxx-preview.x` -> net11.0
+pre_scan_matches.txt:229:pre_edit_matches.txt:126:post_edit_matches.txt:23:.cline/skills/dotnet-version-upgrade/SKILL.md:232:2. Update `global.json` to SDK `9.0.xxx`
+pre_scan_matches.txt:230:pre_edit_matches.txt:127:post_edit_matches.txt:24:.cline/skills/dotnet-version-upgrade/SKILL.md:242:2. Update `global.json` to SDK `10.0.xxx`
+pre_scan_matches.txt:231:pre_edit_matches.txt:131:post_edit_matches.txt:28:.kilocode/skills/dotnet-uno-testing/SKILL.md:209:    await _page.FillAsync("[data-testid='todo-input']", "Buy groceries");
+pre_scan_matches.txt:232:pre_edit_matches.txt:132:post_edit_matches.txt:29:.kilocode/skills/dotnet-uno-testing/SKILL.md:210:    await _page.ClickAsync("[data-testid='add-todo-btn']");
+pre_scan_matches.txt:233:pre_edit_matches.txt:133:post_edit_matches.txt:30:.kilocode/skills/dotnet-uno-testing/SKILL.md:212:    var items = _page.Locator("[data-testid='todo-item']");
+pre_scan_matches.txt:234:pre_edit_matches.txt:134:post_edit_matches.txt:31:.roo/skills/dotnet-version-upgrade/SKILL.md:232:2. Update `global.json` to SDK `9.0.xxx`
+pre_scan_matches.txt:235:pre_edit_matches.txt:135:post_edit_matches.txt:32:.roo/skills/dotnet-version-upgrade/SKILL.md:242:2. Update `global.json` to SDK `10.0.xxx`
+pre_scan_matches.txt:236:pre_edit_matches.txt:141:post_edit_matches.txt:38:.cline/skills/dotnet-secrets-management/SKILL.md:90:    "DefaultDb": "Server=localhost;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>"
+pre_scan_matches.txt:237:pre_edit_matches.txt:144:post_edit_matches.txt:41:.cline/skills/dotnet-secrets-management/SKILL.md:182:      - ConnectionStrings__DefaultDb=Server=db;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>
+pre_scan_matches.txt:238:pre_edit_matches.txt:146:post_edit_matches.txt:43:.cline/skills/dotnet-secrets-management/SKILL.md:405:private const string ConnectionString = "Server=prod;Password=<DB_PASSWORD_PLACEHOLDER>"; // WRONG
+pre_scan_matches.txt:239:pre_edit_matches.txt:147:post_edit_matches.txt:44:.cline/skills/dotnet-secrets-management/SKILL.md:418:    "DefaultDb": "Server=prod-db;Password=<DB_PASSWORD_PLACEHOLDER>"
+pre_scan_matches.txt:240:pre_edit_matches.txt:149:post_edit_matches.txt:46:.cline/skills/dotnet-agent-gotchas/SKILL.md:555:catch (Exception) { } // failure is invisible
+pre_scan_matches.txt:241:pre_edit_matches.txt:150:post_edit_matches.txt:47:.cline/skills/dotnet-agent-gotchas/SKILL.md:560:    // TODO: add logging
+pre_scan_matches.txt:242:pre_edit_matches.txt:154:post_edit_matches.txt:51:.roo/skills/dotnet-secrets-management/SKILL.md:90:    "DefaultDb": "Server=localhost;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>"
+pre_scan_matches.txt:243:pre_edit_matches.txt:157:post_edit_matches.txt:54:.roo/skills/dotnet-secrets-management/SKILL.md:182:      - ConnectionStrings__DefaultDb=Server=db;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>
+pre_scan_matches.txt:244:pre_edit_matches.txt:159:post_edit_matches.txt:56:.roo/skills/dotnet-secrets-management/SKILL.md:405:private const string ConnectionString = "Server=prod;Password=<DB_PASSWORD_PLACEHOLDER>"; // WRONG
+pre_scan_matches.txt:245:pre_edit_matches.txt:160:post_edit_matches.txt:57:.roo/skills/dotnet-secrets-management/SKILL.md:418:    "DefaultDb": "Server=prod-db;Password=<DB_PASSWORD_PLACEHOLDER>"
+pre_scan_matches.txt:246:pre_edit_matches.txt:162:post_edit_matches.txt:59:.github/workflows/repo-safety.yml:24:          # Patterns: OpenAI-like sk-, SendGrid SG., AWS AKIA, connection password, TODO/FIXME/HACK/XXX, broad catch(Exception)
+pre_scan_matches.txt:247:pre_edit_matches.txt:163:post_edit_matches.txt:60:.github/workflows/repo-safety.yml:25:          RG='(?i)(sk-[A-Za-z0-9_-]{8,}|SG\.[A-Za-z0-9_-]{8,}|AKIA[A-Z0-9]{16}|Server=.*Password=<DB_PASSWORD_PLACEHOLDER>;|\b(TODO|FIXME|HACK|XXX)\b|catch\s*\(\s*Exception\s*\))'
+pre_scan_matches.txt:248:pre_edit_matches.txt:164:post_edit_matches.txt:61:.roo/skills/dotnet-agent-gotchas/SKILL.md:555:catch (Exception) { } // failure is invisible
+pre_scan_matches.txt:249:pre_edit_matches.txt:165:post_edit_matches.txt:62:.roo/skills/dotnet-agent-gotchas/SKILL.md:560:    // TODO: add logging
+pre_scan_matches.txt:250:pre_edit_matches.txt:167:post_edit_matches.txt:64:.roo/skills/dotnet-version-detection/SKILL.md:126:- `8.0.xxx` -> net8.0
+pre_scan_matches.txt:251:pre_edit_matches.txt:168:post_edit_matches.txt:65:.roo/skills/dotnet-version-detection/SKILL.md:127:- `9.0.xxx` -> net9.0
+pre_scan_matches.txt:252:pre_edit_matches.txt:169:post_edit_matches.txt:66:.roo/skills/dotnet-version-detection/SKILL.md:128:- `10.0.xxx` -> net10.0
+pre_scan_matches.txt:253:pre_edit_matches.txt:170:post_edit_matches.txt:67:.roo/skills/dotnet-version-detection/SKILL.md:129:- `11.0.xxx-preview.x` -> net11.0
+pre_scan_matches.txt:254:pre_edit_matches.txt:171:post_edit_matches.txt:68:.gemini/skills/dotnet-version-upgrade/SKILL.md:232:2. Update `global.json` to SDK `9.0.xxx`
+pre_scan_matches.txt:255:pre_edit_matches.txt:172:post_edit_matches.txt:69:.gemini/skills/dotnet-version-upgrade/SKILL.md:242:2. Update `global.json` to SDK `10.0.xxx`
+pre_scan_matches.txt:256:pre_edit_matches.txt:176:post_edit_matches.txt:73:.cline/skills/dotnet-version-detection/SKILL.md:126:- `8.0.xxx` -> net8.0
+pre_scan_matches.txt:257:pre_edit_matches.txt:177:post_edit_matches.txt:74:.cline/skills/dotnet-version-detection/SKILL.md:127:- `9.0.xxx` -> net9.0
+pre_scan_matches.txt:258:pre_edit_matches.txt:178:post_edit_matches.txt:75:.cline/skills/dotnet-version-detection/SKILL.md:128:- `10.0.xxx` -> net10.0
+pre_scan_matches.txt:259:pre_edit_matches.txt:179:post_edit_matches.txt:76:.cline/skills/dotnet-version-detection/SKILL.md:129:- `11.0.xxx-preview.x` -> net11.0
+pre_scan_matches.txt:260:pre_edit_matches.txt:180:post_edit_matches.txt:77:.roo/skills/dotnet-uno-testing/SKILL.md:209:    await _page.FillAsync("[data-testid='todo-input']", "Buy groceries");
+pre_scan_matches.txt:261:pre_edit_matches.txt:181:post_edit_matches.txt:78:.roo/skills/dotnet-uno-testing/SKILL.md:210:    await _page.ClickAsync("[data-testid='add-todo-btn']");
+pre_scan_matches.txt:262:pre_edit_matches.txt:182:post_edit_matches.txt:79:.roo/skills/dotnet-uno-testing/SKILL.md:212:    var items = _page.Locator("[data-testid='todo-item']");
+pre_scan_matches.txt:263:pre_edit_matches.txt:183:post_edit_matches.txt:80:.cline/skills/dotnet-uno-testing/SKILL.md:209:    await _page.FillAsync("[data-testid='todo-input']", "Buy groceries");
+pre_scan_matches.txt:264:pre_edit_matches.txt:184:post_edit_matches.txt:81:.cline/skills/dotnet-uno-testing/SKILL.md:210:    await _page.ClickAsync("[data-testid='add-todo-btn']");
+pre_scan_matches.txt:265:pre_edit_matches.txt:185:post_edit_matches.txt:82:.cline/skills/dotnet-uno-testing/SKILL.md:212:    var items = _page.Locator("[data-testid='todo-item']");
+pre_scan_matches.txt:266:pre_edit_matches.txt:188:post_edit_matches.txt:85:.gemini/skills/dotnet-secrets-management/SKILL.md:90:    "DefaultDb": "Server=localhost;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>"
+pre_scan_matches.txt:267:pre_edit_matches.txt:191:post_edit_matches.txt:88:.gemini/skills/dotnet-secrets-management/SKILL.md:182:      - ConnectionStrings__DefaultDb=Server=db;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>
+pre_scan_matches.txt:268:pre_edit_matches.txt:193:post_edit_matches.txt:90:.gemini/skills/dotnet-secrets-management/SKILL.md:405:private const string ConnectionString = "Server=prod;Password=<DB_PASSWORD_PLACEHOLDER>"; // WRONG
+pre_scan_matches.txt:269:pre_edit_matches.txt:194:post_edit_matches.txt:91:.gemini/skills/dotnet-secrets-management/SKILL.md:418:    "DefaultDb": "Server=prod-db;Password=<DB_PASSWORD_PLACEHOLDER>"
+pre_scan_matches.txt:270:pre_edit_matches.txt:196:post_edit_matches.txt:93:.github/skills/dotnet-version-upgrade/SKILL.md:232:2. Update `global.json` to SDK `9.0.xxx`
+pre_scan_matches.txt:271:pre_edit_matches.txt:197:post_edit_matches.txt:94:.github/skills/dotnet-version-upgrade/SKILL.md:242:2. Update `global.json` to SDK `10.0.xxx`
+src/DotNetAgentHarness.Evals/bin/Debug/net10.0/Microsoft.Extensions.AI.OpenAI.dll: binary file matches (found "\0" byte around offset 3)
+.rulesync/skills/dotnet-trimming/SKILL.md:169:// TODO: Audit suppression - add justification or remove
+.rulesync/skills/dotnet-version-detection/SKILL.md:140:- `8.0.xxx` -> net8.0
+.rulesync/skills/dotnet-version-detection/SKILL.md:141:- `9.0.xxx` -> net9.0
+.rulesync/skills/dotnet-version-detection/SKILL.md:142:- `10.0.xxx` -> net10.0
+.rulesync/skills/dotnet-version-detection/SKILL.md:143:- `11.0.xxx-preview.x` -> net11.0
+src/DotNetAgentHarness.Tools/Program.cs:216:            catch (Exception)
+src/DotNetAgentHarness.Tools/Program.cs:218:                // TODO: consider handling additional specific exceptions here. Rethrow to preserve original behavior.

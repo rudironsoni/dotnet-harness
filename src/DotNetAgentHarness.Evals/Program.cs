@@ -48,9 +48,19 @@ public class Program
 
             return failed > 0 ? 1 : 0;
         }
-        catch (Exception ex)
+        catch (FileNotFoundException ex)
         {
-            Console.Error.WriteLine($"Unhandled exception in Program.cs: {ex}");
+            Console.Error.WriteLine($"File not found in Program.cs: {ex.Message}");
+            throw;
+        }
+        catch (InvalidDataException ex)
+        {
+            Console.Error.WriteLine($"Invalid data in Program.cs: {ex.Message}");
+            throw;
+        }
+        catch (IOException ex)
+        {
+            Console.Error.WriteLine($"I/O error in Program.cs: {ex.Message}");
             throw;
         }
     }

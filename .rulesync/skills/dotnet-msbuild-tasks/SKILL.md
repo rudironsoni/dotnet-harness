@@ -129,11 +129,11 @@ For detailed code examples (ToolTask, IIncrementalTask, task parameters, inline 
 ## References
 
 - [MSBuild Task Writing](https://learn.microsoft.com/en-us/visualstudio/msbuild/task-writing)
-- [MSBuild Task Reference](https://learn.microsoft.com/en-us/visualstudio/msbuild/msbuild-task-reference)
+- [MSBuild Task Reference](https://learn.microsoft.com/en-us/visualstudio/msbuild/msbuild-ta<OPENAI_API_KEY_PLACEHOLDER>)
 - [ToolTask Class](https://learn.microsoft.com/en-us/dotnet/api/microsoft.build.utilities.tooltask)
 - [MSBuild Inline Tasks](https://learn.microsoft.com/en-us/visualstudio/msbuild/msbuild-inline-tasks)
-- [UsingTask Element](https://learn.microsoft.com/en-us/visualstudio/msbuild/usingtask-element-msbuild)
-- [MSBuild Task Parameters](https://learn.microsoft.com/en-us/visualstudio/msbuild/task-writing#task-parameters)
+- [UsingTask Element](https://learn.microsoft.com/en-us/visualstudio/msbuild/usingta<OPENAI_API_KEY_PLACEHOLDER>)
+- [MSBuild Task Parameters](https://learn.microsoft.com/en-us/visualstudio/msbuild/task-writing#ta<OPENAI_API_KEY_PLACEHOLDER>)
 - [Creating a NuGet Package with MSBuild Tasks](https://learn.microsoft.com/en-us/nuget/create-packages/creating-a-package-msbuild)
 - [Debugging MSBuild Tasks](https://learn.microsoft.com/en-us/visualstudio/msbuild/how-to-debug-msbuild-custom-task)
 ````

@@ -1,0 +1,12 @@
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+/home/rrj/src/github/rudironsoni/dotnet-harness-toolkit/src/DotNetAgentHarness.Tools/Engine/ManifestBuilder.cs(68,36): warning CS8620: Argument of type 'HashSet<string?>' cannot be used for parameter 'knownSkills' of type 'HashSet<string>' in 'void ManifestBuilder.ComputeConflicts(SkillManifest manifest, HashSet<string> knownSkills)' due to differences in the nullability of reference types. [/home/rrj/src/github/rudironsoni/dotnet-harness-toolkit/src/DotNetAgentHarness.Tools/DotNetAgentHarness.Tools.csproj]
+  DotNetAgentHarness.Tools -> /home/rrj/src/github/rudironsoni/dotnet-harness-toolkit/src/DotNetAgentHarness.Tools/bin/Debug/net10.0/DotNetAgentHarness.Tools.dll
+
+Build succeeded.
+
+/home/rrj/src/github/rudironsoni/dotnet-harness-toolkit/src/DotNetAgentHarness.Tools/Engine/ManifestBuilder.cs(68,36): warning CS8620: Argument of type 'HashSet<string?>' cannot be used for parameter 'knownSkills' of type 'HashSet<string>' in 'void ManifestBuilder.ComputeConflicts(SkillManifest manifest, HashSet<string> knownSkills)' due to differences in the nullability of reference types. [/home/rrj/src/github/rudironsoni/dotnet-harness-toolkit/src/DotNetAgentHarness.Tools/DotNetAgentHarness.Tools.csproj]
+    1 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:02.08

@@ -191,7 +191,7 @@ services:
   api:
     image: myapp:latest
     environment:
-    - ConnectionStrings__DefaultDb=Server=db;Database=myapp;User=sa;Password=${DB_PASSWORD}
+    - ConnectionStrings__DefaultDb=Server=db;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>
     - Smtp__ApiKey=${SMTP_API_KEY}
     env_file:
       - .env  # NOT committed to source control
