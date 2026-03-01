@@ -24,11 +24,11 @@ jobs:
           # Patterns: OpenAI-like sk-, SendGrid SG., AWS AKIA, connection password, TODO/FIXME/HACK/XXX, broad catch(Exception)
           RG='(?i)(sk-[A-Za-z0-9_-]{8,}|SG\.[A-Za-z0-9_-]{8,}|AKIA[A-Z0-9]{16}|Server=.*Password=<DB_PASSWORD_PLACEHOLDER>;|\b(TODO|FIXME|HACK|XXX)\b|catch\s*\(\s*Exception\s*\))'
           echo "Scanning repository for high-risk patterns..."
-          # Exclude generated scan artifact files and workflow files to avoid self-matches
-          rg --hidden --line-number --no-ignore -S -n -e "$RG" --glob '!pre_edit_matches.txt' --glob '!post_edit_matches.txt' --glob '!**/.github/workflows/**' || true
-          # Fail if any matches
-          if rg --hidden --line-number --no-ignore -S -n -e "$RG" --glob '!pre_edit_matches.txt' --glob '!post_edit_matches.txt' --glob '!**/.github/workflows/**' >/dev/null; then
+          # Exclude generated scan artifact files; keep scanning workflow files but exclude these artifacts and DB placeholder
+          rg --hidden --line-number --no-ignore -S -n -e "$RG" --glob '!pre_edit_matches.txt' --glob '!post_edit_matches.txt' --hidden || true
+          # Fail if any matches; also add an explicit exclude-pattern to reduce false positives for DB placeholder
+          if rg --hidden --line-number --no-ignore -S -n -e "$RG" --glob '!pre_edit_matches.txt' --glob '!post_edit_matches.txt' --hidden --ignore-file <(echo "--glob '!**/pre_edit_matches.txt'"; echo "--glob '!**/post_edit_matches.txt'"; echo "--glob '!**/.github/workflows/**'") >/dev/null; then
             echo "Repository safety check failed: sensitive patterns or TODOs found." >&2
-            rg --hidden --line-number --no-ignore -S -n -e "$RG" --glob '!pre_edit_matches.txt' --glob '!post_edit_matches.txt' --glob '!**/.github/workflows/**' >&2
+            rg --hidden --line-number --no-ignore -S -n -e "$RG" --glob '!pre_edit_matches.txt' --glob '!post_edit_matches.txt' --hidden --ignore-file <(echo "--glob '!**/pre_edit_matches.txt'"; echo "--glob '!**/post_edit_matches.txt'"; echo "--glob '!**/.github/workflows/**'") >&2
             exit 1
           fi

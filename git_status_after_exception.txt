@@ -1,0 +1,6 @@
+# branch.oid 0a41835da5e88d4fe5bb461258e3f3e3aa0c40fc
+# branch.head fix/exception-handling
+? branch_after_exception.txt
+? git_log_commits.txt
+? git_status_after_exception.txt
+? post_scan_matches.txt

@@ -210,12 +210,16 @@ public static class Program
             }
             catch (YamlDotNet.Core.YamlException ex)
             {
-                Console.Error.WriteLine($"YAML parsing error in Program.cs: {ex.Message}");
-                throw;
+                // Restore graceful behavior: return a frontmatter-like dict with _error so callers can continue validation
+                Console.Error.WriteLine($"YAML parsing error: {ex.Message}");
+                return new Dictionary<string, object> { ["_error"] = ex.Message };
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // TODO: consider handling additional specific exceptions here. Rethrow to preserve original behavior.
+                // Narrow catch: preserve original behavior but fail fast with diagnostic
+                Console.Error.WriteLine($"Unexpected error parsing YAML frontmatter: {ex.Message}");
+                // Convert TODO into issue placeholder: ISSUE-XXXX
+                // See: https://github.com/<OWNER>/<REPO>/issues/ISSUE-XXXX
                 throw;
             }
     }

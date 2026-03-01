@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DotNetAgentHarness.Evals")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a5ef0d6ea7e2f6ff1d9ae509e71f255961e5c26b")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0a41835da5e88d4fe5bb461258e3f3e3aa0c40fc")]
 [assembly: System.Reflection.AssemblyProductAttribute("DotNetAgentHarness.Evals")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DotNetAgentHarness.Evals")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

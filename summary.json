@@ -1,0 +1,20 @@
+{
+  "artifacts": [
+    "pre_scan_matches.txt",
+    "pre_pattern_matches.txt",
+    "post_scan_matches.txt",
+    "post_pattern_matches.txt",
+    "dotnet_version.txt",
+    "build_tools_output.txt",
+    "build_tools_exit.txt",
+    "build_evals_output.txt",
+    "build_evals_exit.txt",
+    "git_status.txt",
+    "current_branch.txt",
+    "git_log_commits.txt"
+  ],
+  "pr_urls": {
+    "fix/slop-report-implementation": "https://github.com/rudironsoni/dotnet-agent-harness/pull/28",
+    "fix/exception-handling": "https://github.com/rudironsoni/dotnet-agent-harness/pull/30"
+  }
+}

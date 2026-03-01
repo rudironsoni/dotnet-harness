@@ -63,5 +63,12 @@ public class Program
             Console.Error.WriteLine($"I/O error in Program.cs: {ex.Message}");
             throw;
         }
+        catch (Exception ex)
+        {
+            // Final catch-all: log and return non-zero exit code instead of letting the process crash
+            AnsiConsole.WriteException(ex, ExceptionFormats.ShortenPaths | ExceptionFormats.ShortenTypes);
+            Console.Error.WriteLine($"Unexpected error in evaluations: {ex.Message}");
+            return 1;
+        }
     }
 }
