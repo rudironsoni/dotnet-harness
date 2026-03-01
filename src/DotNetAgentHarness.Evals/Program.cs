@@ -50,7 +50,6 @@ public class Program
         }
         catch (Exception ex)
         {
-            // Log exception details to stderr for CI visibility, then rethrow to preserve fail-fast behavior
             Console.Error.WriteLine($"Unhandled exception in Program.cs: {ex}");
             throw;
         }

@@ -53,7 +53,6 @@ public static class ManifestBuilder
             }
             catch (Exception ex)
             {
-                // Log the error context and rethrow to avoid silent swallowing in higher-level flows
                 Console.Error.WriteLine($"Unhandled exception in ManifestBuilder.cs: {ex}");
                 throw;
             }

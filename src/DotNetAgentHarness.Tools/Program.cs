@@ -210,7 +210,6 @@ public static class Program
         }
             catch (Exception ex)
             {
-                // Fail loud: log context and rethrow to avoid swallowing errors silently
                 Console.Error.WriteLine($"Unhandled exception in Program.cs: {ex}");
                 throw;
             }

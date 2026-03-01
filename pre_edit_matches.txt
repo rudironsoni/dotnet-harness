@@ -1,0 +1,200 @@
+.kilocode/skills/dotnet-version-upgrade/SKILL.md:232:2. Update `global.json` to SDK `9.0.xxx`
+.kilocode/skills/dotnet-version-upgrade/SKILL.md:242:2. Update `global.json` to SDK `10.0.xxx`
+.kilocode/skills/dotnet-msbuild-tasks/SKILL.md:121:- [MSBuild Task Reference](https://learn.microsoft.com/en-us/visualstudio/msbuild/msbuild-task-reference)
+.kilocode/skills/dotnet-msbuild-tasks/SKILL.md:124:- [UsingTask Element](https://learn.microsoft.com/en-us/visualstudio/msbuild/usingtask-element-msbuild)
+.kilocode/skills/dotnet-msbuild-tasks/SKILL.md:125:- [MSBuild Task Parameters](https://learn.microsoft.com/en-us/visualstudio/msbuild/task-writing#task-parameters)
+.kilocode/skills/dotnet-secrets-management/SKILL.md:63:dotnet user-secrets set "ConnectionStrings:DefaultDb" "Server=localhost;Database=myapp;User=sa;Password=dev123"
+.kilocode/skills/dotnet-secrets-management/SKILL.md:64:dotnet user-secrets set "Smtp:ApiKey" "SG.dev-key-here"
+.kilocode/skills/dotnet-secrets-management/SKILL.md:90:    "DefaultDb": "Server=localhost;Database=myapp;User=sa;Password=dev123"
+.kilocode/skills/dotnet-secrets-management/SKILL.md:93:    "ApiKey": "SG.dev-key-here"
+.kilocode/skills/dotnet-secrets-management/SKILL.md:155:export Smtp__ApiKey="SG.production-key"
+.kilocode/skills/dotnet-secrets-management/SKILL.md:182:      - ConnectionStrings__DefaultDb=Server=db;Database=myapp;User=sa;Password=${DB_PASSWORD}
+.kilocode/skills/dotnet-secrets-management/SKILL.md:404:private const string ApiKey = "sk-live-abc123def456";           // WRONG
+.kilocode/skills/dotnet-secrets-management/SKILL.md:405:private const string ConnectionString = "Server=prod;Password=secret"; // WRONG
+.kilocode/skills/dotnet-secrets-management/SKILL.md:418:    "DefaultDb": "Server=prod-db;Password=RealPassword123!"
+.kilocode/skills/dotnet-secrets-management/SKILL.md:444:var connection = new SqlConnection("Server=prod-db;Database=myapp;User=sa;Password=P@ssw0rd!");
+.kilocode/skills/dotnet-agent-gotchas/SKILL.md:555:catch (Exception) { } // failure is invisible
+.kilocode/skills/dotnet-agent-gotchas/SKILL.md:560:    // TODO: add logging
+.kilocode/skills/dotnet-csharp-async-patterns/SKILL.md:386:- [Task-based asynchronous pattern (TAP)](https://learn.microsoft.com/en-us/dotnet/standard/asynchronous-programming-patterns/task-based-asynchronous-pattern-tap)
+.kilocode/skills/dotnet-version-detection/SKILL.md:126:- `8.0.xxx` -> net8.0
+.kilocode/skills/dotnet-version-detection/SKILL.md:127:- `9.0.xxx` -> net9.0
+.kilocode/skills/dotnet-version-detection/SKILL.md:128:- `10.0.xxx` -> net10.0
+.kilocode/skills/dotnet-version-detection/SKILL.md:129:- `11.0.xxx-preview.x` -> net11.0
+.kilocode/skills/dotnet-uno-testing/SKILL.md:209:    await _page.FillAsync("[data-testid='todo-input']", "Buy groceries");
+.kilocode/skills/dotnet-uno-testing/SKILL.md:210:    await _page.ClickAsync("[data-testid='add-todo-btn']");
+.kilocode/skills/dotnet-uno-testing/SKILL.md:212:    var items = _page.Locator("[data-testid='todo-item']");
+.gemini/skills/dotnet-version-upgrade/SKILL.md:232:2. Update `global.json` to SDK `9.0.xxx`
+.gemini/skills/dotnet-version-upgrade/SKILL.md:242:2. Update `global.json` to SDK `10.0.xxx`
+.gemini/skills/dotnet-msbuild-tasks/SKILL.md:121:- [MSBuild Task Reference](https://learn.microsoft.com/en-us/visualstudio/msbuild/msbuild-task-reference)
+.gemini/skills/dotnet-msbuild-tasks/SKILL.md:124:- [UsingTask Element](https://learn.microsoft.com/en-us/visualstudio/msbuild/usingtask-element-msbuild)
+.gemini/skills/dotnet-msbuild-tasks/SKILL.md:125:- [MSBuild Task Parameters](https://learn.microsoft.com/en-us/visualstudio/msbuild/task-writing#task-parameters)
+.agent/skills/dotnet-version-upgrade/SKILL.md:232:2. Update `global.json` to SDK `9.0.xxx`
+.agent/skills/dotnet-version-upgrade/SKILL.md:242:2. Update `global.json` to SDK `10.0.xxx`
+.agent/skills/dotnet-msbuild-tasks/SKILL.md:121:- [MSBuild Task Reference](https://learn.microsoft.com/en-us/visualstudio/msbuild/msbuild-task-reference)
+.agent/skills/dotnet-msbuild-tasks/SKILL.md:124:- [UsingTask Element](https://learn.microsoft.com/en-us/visualstudio/msbuild/usingtask-element-msbuild)
+.agent/skills/dotnet-msbuild-tasks/SKILL.md:125:- [MSBuild Task Parameters](https://learn.microsoft.com/en-us/visualstudio/msbuild/task-writing#task-parameters)
+.agent/skills/dotnet-secrets-management/SKILL.md:63:dotnet user-secrets set "ConnectionStrings:DefaultDb" "Server=localhost;Database=myapp;User=sa;Password=dev123"
+.agent/skills/dotnet-secrets-management/SKILL.md:64:dotnet user-secrets set "Smtp:ApiKey" "SG.dev-key-here"
+.agent/skills/dotnet-secrets-management/SKILL.md:90:    "DefaultDb": "Server=localhost;Database=myapp;User=sa;Password=dev123"
+.agent/skills/dotnet-secrets-management/SKILL.md:93:    "ApiKey": "SG.dev-key-here"
+.agent/skills/dotnet-secrets-management/SKILL.md:155:export Smtp__ApiKey="SG.production-key"
+.agent/skills/dotnet-secrets-management/SKILL.md:182:      - ConnectionStrings__DefaultDb=Server=db;Database=myapp;User=sa;Password=${DB_PASSWORD}
+.agent/skills/dotnet-secrets-management/SKILL.md:404:private const string ApiKey = "sk-live-abc123def456";           // WRONG
+.agent/skills/dotnet-secrets-management/SKILL.md:405:private const string ConnectionString = "Server=prod;Password=secret"; // WRONG
+.agent/skills/dotnet-secrets-management/SKILL.md:418:    "DefaultDb": "Server=prod-db;Password=RealPassword123!"
+.agent/skills/dotnet-secrets-management/SKILL.md:444:var connection = new SqlConnection("Server=prod-db;Database=myapp;User=sa;Password=P@ssw0rd!");
+.gemini/skills/dotnet-secrets-management/SKILL.md:63:dotnet user-secrets set "ConnectionStrings:DefaultDb" "Server=localhost;Database=myapp;User=sa;Password=dev123"
+.gemini/skills/dotnet-secrets-management/SKILL.md:64:dotnet user-secrets set "Smtp:ApiKey" "SG.dev-key-here"
+.gemini/skills/dotnet-secrets-management/SKILL.md:90:    "DefaultDb": "Server=localhost;Database=myapp;User=sa;Password=dev123"
+.gemini/skills/dotnet-secrets-management/SKILL.md:93:    "ApiKey": "SG.dev-key-here"
+.gemini/skills/dotnet-secrets-management/SKILL.md:155:export Smtp__ApiKey="SG.production-key"
+.gemini/skills/dotnet-secrets-management/SKILL.md:182:      - ConnectionStrings__DefaultDb=Server=db;Database=myapp;User=sa;Password=${DB_PASSWORD}
+.gemini/skills/dotnet-secrets-management/SKILL.md:404:private const string ApiKey = "sk-live-abc123def456";           // WRONG
+.gemini/skills/dotnet-secrets-management/SKILL.md:405:private const string ConnectionString = "Server=prod;Password=secret"; // WRONG
+.gemini/skills/dotnet-secrets-management/SKILL.md:418:    "DefaultDb": "Server=prod-db;Password=RealPassword123!"
+.gemini/skills/dotnet-secrets-management/SKILL.md:444:var connection = new SqlConnection("Server=prod-db;Database=myapp;User=sa;Password=P@ssw0rd!");
+.agent/skills/dotnet-agent-gotchas/SKILL.md:555:catch (Exception) { } // failure is invisible
+.agent/skills/dotnet-agent-gotchas/SKILL.md:560:    // TODO: add logging
+.agent/skills/dotnet-csharp-async-patterns/SKILL.md:412:- [Task-based asynchronous pattern (TAP)](https://learn.microsoft.com/en-us/dotnet/standard/asynchronous-programming-patterns/task-based-asynchronous-pattern-tap)
+.rulesync/skills/dotnet-xml-docs/SKILL.md:87:// TODO: Audit suppression - add justification or remove
+.agent/skills/serena/SKILL.md:436:   serena find_symbol --name "TODO"
+.agent/skills/serena/SKILL.md:439:   rg "TODO"
+.gemini/skills/dotnet-agent-gotchas/SKILL.md:555:catch (Exception) { } // failure is invisible
+.gemini/skills/dotnet-agent-gotchas/SKILL.md:560:    // TODO: add logging
+.gemini/skills/dotnet-csharp-async-patterns/SKILL.md:412:- [Task-based asynchronous pattern (TAP)](https://learn.microsoft.com/en-us/dotnet/standard/asynchronous-programming-patterns/task-based-asynchronous-pattern-tap)
+.gemini/skills/serena/SKILL.md:436:   serena find_symbol --name "TODO"
+.gemini/skills/serena/SKILL.md:439:   rg "TODO"
+.agent/skills/dotnet-version-detection/SKILL.md:126:- `8.0.xxx` -> net8.0
+.agent/skills/dotnet-version-detection/SKILL.md:127:- `9.0.xxx` -> net9.0
+.agent/skills/dotnet-version-detection/SKILL.md:128:- `10.0.xxx` -> net10.0
+.agent/skills/dotnet-version-detection/SKILL.md:129:- `11.0.xxx-preview.x` -> net11.0
+.agent/skills/dotnet-uno-testing/SKILL.md:209:    await _page.FillAsync("[data-testid='todo-input']", "Buy groceries");
+.agent/skills/dotnet-uno-testing/SKILL.md:210:    await _page.ClickAsync("[data-testid='add-todo-btn']");
+.agent/skills/dotnet-uno-testing/SKILL.md:212:    var items = _page.Locator("[data-testid='todo-item']");
+.gemini/skills/dotnet-version-detection/SKILL.md:126:- `8.0.xxx` -> net8.0
+.gemini/skills/dotnet-version-detection/SKILL.md:127:- `9.0.xxx` -> net9.0
+.gemini/skills/dotnet-version-detection/SKILL.md:128:- `10.0.xxx` -> net10.0
+.gemini/skills/dotnet-version-detection/SKILL.md:129:- `11.0.xxx-preview.x` -> net11.0
+.rulesync/skills/dotnet-build-analysis/SKILL.md:388:// TODO: Audit suppression - add justification or remove if not applicable
+.rulesync/skills/dotnet-build-analysis/SKILL.md:396:// TODO: Audit suppression - add justification or remove
+.gemini/skills/dotnet-uno-testing/SKILL.md:209:    await _page.FillAsync("[data-testid='todo-input']", "Buy groceries");
+.gemini/skills/dotnet-uno-testing/SKILL.md:210:    await _page.ClickAsync("[data-testid='add-todo-btn']");
+.gemini/skills/dotnet-uno-testing/SKILL.md:212:    var items = _page.Locator("[data-testid='todo-item']");
+.rulesync/skills/dotnet-version-upgrade/SKILL.md:243:2. Update `global.json` to SDK `9.0.xxx`
+.rulesync/skills/dotnet-version-upgrade/SKILL.md:253:2. Update `global.json` to SDK `10.0.xxx`
+.rulesync/skills/dotnet-msbuild-tasks/SKILL.md:132:- [MSBuild Task Reference](https://learn.microsoft.com/en-us/visualstudio/msbuild/msbuild-task-reference)
+.rulesync/skills/dotnet-msbuild-tasks/SKILL.md:135:- [UsingTask Element](https://learn.microsoft.com/en-us/visualstudio/msbuild/usingtask-element-msbuild)
+.rulesync/skills/dotnet-msbuild-tasks/SKILL.md:136:- [MSBuild Task Parameters](https://learn.microsoft.com/en-us/visualstudio/msbuild/task-writing#task-parameters)
+.rulesync/skills/dotnet-secrets-management/SKILL.md:75:dotnet user-secrets set "ConnectionStrings:DefaultDb" "Server=localhost;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>" // DO NOT commit real secrets; use dotnet user-secrets or env vars
+.rulesync/skills/dotnet-secrets-management/SKILL.md:102:    "DefaultDb": "Server=localhost;Database=myapp;User=sa;Password=<DB_PASSWORD_PLACEHOLDER>"
+.rulesync/skills/dotnet-secrets-management/SKILL.md:194:      - ConnectionStrings__DefaultDb=Server=db;Database=myapp;User=sa;Password=${DB_PASSWORD}
+.rulesync/skills/dotnet-secrets-management/SKILL.md:431:    "DefaultDb": "Server=prod-db;Password=RealPassword123!"
+.rulesync/skills/dotnet-agent-gotchas/SKILL.md:350:// TODO: Audit suppression - add justification or remove
+.rulesync/skills/dotnet-agent-gotchas/SKILL.md:567:catch (Exception) { } // failure is invisible
+.rulesync/skills/dotnet-agent-gotchas/SKILL.md:572:    // TODO: add logging
+.rulesync/skills/dotnet-csharp-async-patterns/SKILL.md:423:- [Task-based asynchronous pattern (TAP)](https://learn.microsoft.com/en-us/dotnet/standard/asynchronous-programming-patterns/task-based-asynchronous-pattern-tap)
+.rulesync/skills/dotnet-trimming/SKILL.md:169:// TODO: Audit suppression - add justification or remove
+.rulesync/skills/serena/SKILL.md:438:   serena find_symbol --name "TODO"
+.rulesync/skills/serena/SKILL.md:441:   rg "TODO"
+.agent/skills/dotnet-10-csharp-14/anti-patterns.md:308:    catch (Exception)
+.rulesync/skills/dotnet-version-detection/SKILL.md:140:- `8.0.xxx` -> net8.0
+.rulesync/skills/dotnet-version-detection/SKILL.md:141:- `9.0.xxx` -> net9.0
+.rulesync/skills/dotnet-version-detection/SKILL.md:142:- `10.0.xxx` -> net10.0
+.rulesync/skills/dotnet-version-detection/SKILL.md:143:- `11.0.xxx-preview.x` -> net11.0
+post_edit_matches.txt:1:.kilocode/skills/dotnet-version-upgrade/SKILL.md:232:2. Update `global.json` to SDK `9.0.xxx`
+post_edit_matches.txt:2:.kilocode/skills/dotnet-version-upgrade/SKILL.md:242:2. Update `global.json` to SDK `10.0.xxx`
+post_edit_matches.txt:3:.kilocode/skills/dotnet-msbuild-tasks/SKILL.md:121:- [MSBuild Task Reference](https://learn.microsoft.com/en-us/visualstudio/msbuild/msbuild-task-reference)
+post_edit_matches.txt:4:.kilocode/skills/dotnet-msbuild-tasks/SKILL.md:124:- [UsingTask Element](https://learn.microsoft.com/en-us/visualstudio/msbuild/usingtask-element-msbuild)
+post_edit_matches.txt:5:.kilocode/skills/dotnet-msbuild-tasks/SKILL.md:125:- [MSBuild Task Parameters](https://learn.microsoft.com/en-us/visualstudio/msbuild/task-writing#task-parameters)
+post_edit_matches.txt:6:.kilocode/skills/dotnet-secrets-management/SKILL.md:63:dotnet user-secrets set "ConnectionStrings:DefaultDb" "Server=localhost;Database=myapp;User=sa;Password=dev123"
+post_edit_matches.txt:7:.kilocode/skills/dotnet-secrets-management/SKILL.md:64:dotnet user-secrets set "Smtp:ApiKey" "SG.dev-key-here"
+post_edit_matches.txt:8:.kilocode/skills/dotnet-secrets-management/SKILL.md:90:    "DefaultDb": "Server=localhost;Database=myapp;User=sa;Password=dev123"
+post_edit_matches.txt:9:.kilocode/skills/dotnet-secrets-management/SKILL.md:93:    "ApiKey": "SG.dev-key-here"
+post_edit_matches.txt:10:.kilocode/skills/dotnet-secrets-management/SKILL.md:155:export Smtp__ApiKey="SG.production-key"
+post_edit_matches.txt:11:.kilocode/skills/dotnet-secrets-management/SKILL.md:182:      - ConnectionStrings__DefaultDb=Server=db;Database=myapp;User=sa;Password=${DB_PASSWORD}
+post_edit_matches.txt:12:.kilocode/skills/dotnet-secrets-management/SKILL.md:404:private const string ApiKey = "sk-live-abc123def456";           // WRONG
+post_edit_matches.txt:13:.kilocode/skills/dotnet-secrets-management/SKILL.md:405:private const string ConnectionString = "Server=prod;Password=secret"; // WRONG
+post_edit_matches.txt:14:.kilocode/skills/dotnet-secrets-management/SKILL.md:418:    "DefaultDb": "Server=prod-db;Password=RealPassword123!"
+post_edit_matches.txt:15:.kilocode/skills/dotnet-secrets-management/SKILL.md:444:var connection = new SqlConnection("Server=prod-db;Database=myapp;User=sa;Password=P@ssw0rd!");
+post_edit_matches.txt:16:.kilocode/skills/dotnet-agent-gotchas/SKILL.md:555:catch (Exception) { } // failure is invisible
+post_edit_matches.txt:17:.kilocode/skills/dotnet-agent-gotchas/SKILL.md:560:    // TODO: add logging
+post_edit_matches.txt:18:.kilocode/skills/dotnet-csharp-async-patterns/SKILL.md:386:- [Task-based asynchronous pattern (TAP)](https://learn.microsoft.com/en-us/dotnet/standard/asynchronous-programming-patterns/task-based-asynchronous-pattern-tap)
+post_edit_matches.txt:19:.kilocode/skills/dotnet-version-detection/SKILL.md:126:- `8.0.xxx` -> net8.0
+post_edit_matches.txt:20:.kilocode/skills/dotnet-version-detection/SKILL.md:127:- `9.0.xxx` -> net9.0
+post_edit_matches.txt:21:.kilocode/skills/dotnet-version-detection/SKILL.md:128:- `10.0.xxx` -> net10.0
+post_edit_matches.txt:22:.kilocode/skills/dotnet-version-detection/SKILL.md:129:- `11.0.xxx-preview.x` -> net11.0
+post_edit_matches.txt:23:.cline/skills/dotnet-version-upgrade/SKILL.md:232:2. Update `global.json` to SDK `9.0.xxx`
+post_edit_matches.txt:24:.cline/skills/dotnet-version-upgrade/SKILL.md:242:2. Update `global.json` to SDK `10.0.xxx`
+post_edit_matches.txt:25:.cline/skills/dotnet-msbuild-tasks/SKILL.md:121:- [MSBuild Task Reference](https://learn.microsoft.com/en-us/visualstudio/msbuild/msbuild-task-reference)
+post_edit_matches.txt:26:.cline/skills/dotnet-msbuild-tasks/SKILL.md:124:- [UsingTask Element](https://learn.microsoft.com/en-us/visualstudio/msbuild/usingtask-element-msbuild)
+post_edit_matches.txt:27:.cline/skills/dotnet-msbuild-tasks/SKILL.md:125:- [MSBuild Task Parameters](https://learn.microsoft.com/en-us/visualstudio/msbuild/task-writing#task-parameters)
+post_edit_matches.txt:28:.kilocode/skills/dotnet-uno-testing/SKILL.md:209:    await _page.FillAsync("[data-testid='todo-input']", "Buy groceries");
+post_edit_matches.txt:29:.kilocode/skills/dotnet-uno-testing/SKILL.md:210:    await _page.ClickAsync("[data-testid='add-todo-btn']");
+post_edit_matches.txt:30:.kilocode/skills/dotnet-uno-testing/SKILL.md:212:    var items = _page.Locator("[data-testid='todo-item']");
+post_edit_matches.txt:31:.roo/skills/dotnet-version-upgrade/SKILL.md:232:2. Update `global.json` to SDK `9.0.xxx`
+post_edit_matches.txt:32:.roo/skills/dotnet-version-upgrade/SKILL.md:242:2. Update `global.json` to SDK `10.0.xxx`
+post_edit_matches.txt:33:.roo/skills/dotnet-msbuild-tasks/SKILL.md:121:- [MSBuild Task Reference](https://learn.microsoft.com/en-us/visualstudio/msbuild/msbuild-task-reference)
+post_edit_matches.txt:34:.roo/skills/dotnet-msbuild-tasks/SKILL.md:124:- [UsingTask Element](https://learn.microsoft.com/en-us/visualstudio/msbuild/usingtask-element-msbuild)
+post_edit_matches.txt:35:.roo/skills/dotnet-msbuild-tasks/SKILL.md:125:- [MSBuild Task Parameters](https://learn.microsoft.com/en-us/visualstudio/msbuild/task-writing#task-parameters)
+post_edit_matches.txt:36:.cline/skills/dotnet-secrets-management/SKILL.md:63:dotnet user-secrets set "ConnectionStrings:DefaultDb" "Server=localhost;Database=myapp;User=sa;Password=dev123"
+post_edit_matches.txt:37:.cline/skills/dotnet-secrets-management/SKILL.md:64:dotnet user-secrets set "Smtp:ApiKey" "SG.dev-key-here"
+post_edit_matches.txt:38:.cline/skills/dotnet-secrets-management/SKILL.md:90:    "DefaultDb": "Server=localhost;Database=myapp;User=sa;Password=dev123"
+post_edit_matches.txt:39:.cline/skills/dotnet-secrets-management/SKILL.md:93:    "ApiKey": "SG.dev-key-here"
+post_edit_matches.txt:40:.cline/skills/dotnet-secrets-management/SKILL.md:155:export Smtp__ApiKey="SG.production-key"
+post_edit_matches.txt:41:.cline/skills/dotnet-secrets-management/SKILL.md:182:      - ConnectionStrings__DefaultDb=Server=db;Database=myapp;User=sa;Password=${DB_PASSWORD}
+post_edit_matches.txt:42:.cline/skills/dotnet-secrets-management/SKILL.md:404:private const string ApiKey = "sk-live-abc123def456";           // WRONG
+post_edit_matches.txt:43:.cline/skills/dotnet-secrets-management/SKILL.md:405:private const string ConnectionString = "Server=prod;Password=secret"; // WRONG
+post_edit_matches.txt:44:.cline/skills/dotnet-secrets-management/SKILL.md:418:    "DefaultDb": "Server=prod-db;Password=RealPassword123!"
+post_edit_matches.txt:45:.cline/skills/dotnet-secrets-management/SKILL.md:444:var connection = new SqlConnection("Server=prod-db;Database=myapp;User=sa;Password=P@ssw0rd!");
+post_edit_matches.txt:46:.cline/skills/dotnet-agent-gotchas/SKILL.md:555:catch (Exception) { } // failure is invisible
+post_edit_matches.txt:47:.cline/skills/dotnet-agent-gotchas/SKILL.md:560:    // TODO: add logging
+post_edit_matches.txt:48:.cline/skills/dotnet-csharp-async-patterns/SKILL.md:386:- [Task-based asynchronous pattern (TAP)](https://learn.microsoft.com/en-us/dotnet/standard/asynchronous-programming-patterns/task-based-asynchronous-pattern-tap)
+post_edit_matches.txt:49:.roo/skills/dotnet-secrets-management/SKILL.md:63:dotnet user-secrets set "ConnectionStrings:DefaultDb" "Server=localhost;Database=myapp;User=sa;Password=dev123"
+post_edit_matches.txt:50:.roo/skills/dotnet-secrets-management/SKILL.md:64:dotnet user-secrets set "Smtp:ApiKey" "SG.dev-key-here"
+post_edit_matches.txt:51:.roo/skills/dotnet-secrets-management/SKILL.md:90:    "DefaultDb": "Server=localhost;Database=myapp;User=sa;Password=dev123"
+post_edit_matches.txt:52:.roo/skills/dotnet-secrets-management/SKILL.md:93:    "ApiKey": "SG.dev-key-here"
+post_edit_matches.txt:53:.roo/skills/dotnet-secrets-management/SKILL.md:155:export Smtp__ApiKey="SG.production-key"
+post_edit_matches.txt:54:.roo/skills/dotnet-secrets-management/SKILL.md:182:      - ConnectionStrings__DefaultDb=Server=db;Database=myapp;User=sa;Password=${DB_PASSWORD}
+post_edit_matches.txt:55:.roo/skills/dotnet-secrets-management/SKILL.md:404:private const string ApiKey = "sk-live-abc123def456";           // WRONG
+post_edit_matches.txt:56:.roo/skills/dotnet-secrets-management/SKILL.md:405:private const string ConnectionString = "Server=prod;Password=secret"; // WRONG
+post_edit_matches.txt:57:.roo/skills/dotnet-secrets-management/SKILL.md:418:    "DefaultDb": "Server=prod-db;Password=RealPassword123!"
+post_edit_matches.txt:58:.roo/skills/dotnet-secrets-management/SKILL.md:444:var connection = new SqlConnection("Server=prod-db;Database=myapp;User=sa;Password=P@ssw0rd!");
+post_edit_matches.txt:59:.github/workflows/repo-safety.yml:24:          # Patterns: OpenAI-like sk-, SendGrid SG., AWS AKIA, connection password, TODO/FIXME/HACK/XXX, broad catch(Exception)
+post_edit_matches.txt:60:.github/workflows/repo-safety.yml:25:          RG='(?i)(sk-[A-Za-z0-9_-]{8,}|SG\.[A-Za-z0-9_-]{8,}|AKIA[A-Z0-9]{16}|Server=.*Password=|Password=.*;|\b(TODO|FIXME|HACK|XXX)\b|catch\s*\(\s*Exception\s*\))'
+post_edit_matches.txt:61:.roo/skills/dotnet-agent-gotchas/SKILL.md:555:catch (Exception) { } // failure is invisible
+post_edit_matches.txt:62:.roo/skills/dotnet-agent-gotchas/SKILL.md:560:    // TODO: add logging
+post_edit_matches.txt:63:.roo/skills/dotnet-csharp-async-patterns/SKILL.md:386:- [Task-based asynchronous pattern (TAP)](https://learn.microsoft.com/en-us/dotnet/standard/asynchronous-programming-patterns/task-based-asynchronous-pattern-tap)
+post_edit_matches.txt:64:.roo/skills/dotnet-version-detection/SKILL.md:126:- `8.0.xxx` -> net8.0
+post_edit_matches.txt:65:.roo/skills/dotnet-version-detection/SKILL.md:127:- `9.0.xxx` -> net9.0
+post_edit_matches.txt:66:.roo/skills/dotnet-version-detection/SKILL.md:128:- `10.0.xxx` -> net10.0
+post_edit_matches.txt:67:.roo/skills/dotnet-version-detection/SKILL.md:129:- `11.0.xxx-preview.x` -> net11.0
+post_edit_matches.txt:68:.gemini/skills/dotnet-version-upgrade/SKILL.md:232:2. Update `global.json` to SDK `9.0.xxx`
+post_edit_matches.txt:69:.gemini/skills/dotnet-version-upgrade/SKILL.md:242:2. Update `global.json` to SDK `10.0.xxx`
+post_edit_matches.txt:70:.gemini/skills/dotnet-msbuild-tasks/SKILL.md:121:- [MSBuild Task Reference](https://learn.microsoft.com/en-us/visualstudio/msbuild/msbuild-task-reference)
+post_edit_matches.txt:71:.gemini/skills/dotnet-msbuild-tasks/SKILL.md:124:- [UsingTask Element](https://learn.microsoft.com/en-us/visualstudio/msbuild/usingtask-element-msbuild)
+post_edit_matches.txt:72:.gemini/skills/dotnet-msbuild-tasks/SKILL.md:125:- [MSBuild Task Parameters](https://learn.microsoft.com/en-us/visualstudio/msbuild/task-writing#task-parameters)
+post_edit_matches.txt:73:.cline/skills/dotnet-version-detection/SKILL.md:126:- `8.0.xxx` -> net8.0
+post_edit_matches.txt:74:.cline/skills/dotnet-version-detection/SKILL.md:127:- `9.0.xxx` -> net9.0
+post_edit_matches.txt:75:.cline/skills/dotnet-version-detection/SKILL.md:128:- `10.0.xxx` -> net10.0
+post_edit_matches.txt:76:.cline/skills/dotnet-version-detection/SKILL.md:129:- `11.0.xxx-preview.x` -> net11.0
+post_edit_matches.txt:77:.roo/skills/dotnet-uno-testing/SKILL.md:209:    await _page.FillAsync("[data-testid='todo-input']", "Buy groceries");
+post_edit_matches.txt:78:.roo/skills/dotnet-uno-testing/SKILL.md:210:    await _page.ClickAsync("[data-testid='add-todo-btn']");
+post_edit_matches.txt:79:.roo/skills/dotnet-uno-testing/SKILL.md:212:    var items = _page.Locator("[data-testid='todo-item']");
+post_edit_matches.txt:80:.cline/skills/dotnet-uno-testing/SKILL.md:209:    await _page.FillAsync("[data-testid='todo-input']", "Buy groceries");
+post_edit_matches.txt:81:.cline/skills/dotnet-uno-testing/SKILL.md:210:    await _page.ClickAsync("[data-testid='add-todo-btn']");
+post_edit_matches.txt:82:.cline/skills/dotnet-uno-testing/SKILL.md:212:    var items = _page.Locator("[data-testid='todo-item']");
+post_edit_matches.txt:83:.gemini/skills/dotnet-secrets-management/SKILL.md:63:dotnet user-secrets set "ConnectionStrings:DefaultDb" "Server=localhost;Database=myapp;User=sa;Password=dev123"
+post_edit_matches.txt:84:.gemini/skills/dotnet-secrets-management/SKILL.md:64:dotnet user-secrets set "Smtp:ApiKey" "SG.dev-key-here"
+post_edit_matches.txt:85:.gemini/skills/dotnet-secrets-management/SKILL.md:90:    "DefaultDb": "Server=localhost;Database=myapp;User=sa;Password=dev123"
+post_edit_matches.txt:86:.gemini/skills/dotnet-secrets-management/SKILL.md:93:    "ApiKey": "SG.dev-key-here"
+post_edit_matches.txt:87:.gemini/skills/dotnet-secrets-management/SKILL.md:155:export Smtp__ApiKey="SG.production-key"
+post_edit_matches.txt:88:.gemini/skills/dotnet-secrets-management/SKILL.md:182:      - ConnectionStrings__DefaultDb=Server=db;Database=myapp;User=sa;Password=${DB_PASSWORD}
+post_edit_matches.txt:89:.gemini/skills/dotnet-secrets-management/SKILL.md:404:private const string ApiKey = "sk-live-abc123def456";           // WRONG
+post_edit_matches.txt:90:.gemini/skills/dotnet-secrets-management/SKILL.md:405:private const string ConnectionString = "Server=prod;Password=secret"; // WRONG
+post_edit_matches.txt:91:.gemini/skills/dotnet-secrets-management/SKILL.md:418:    "DefaultDb": "Server=prod-db;Password=RealPassword123!"
+post_edit_matches.txt:92:.gemini/skills/dotnet-secrets-management/SKILL.md:444:var connection = new SqlConnection("Server=prod-db;Database=myapp;User=sa;Password=P@ssw0rd!");
+post_edit_matches.txt:93:.github/skills/dotnet-version-upgrade/SKILL.md:232:2. Update `global.json` to SDK `9.0.xxx`
+post_edit_matches.txt:94:.github/skills/dotnet-version-upgrade/SKILL.md:242:2. Update `global.json` to SDK `10.0.xxx`
+post_edit_matches.txt:95:.github/skills/dotnet-msbuild-tasks/SKILL.md:121:- [MSBuild Task Reference](https://learn.microsoft.com/en-us/visualstudio/msbuild/msbuild-task-reference)
+post_edit_matches.txt:96:.github/skills/dotnet-msbuild-tasks/SKILL.md:124:- [UsingTask Element](https://learn.microsoft.com/en-us/visualstudio/msbuild/usingtask-element-msbuild)
+post_edit_matches.txt:97:.github/skills/dotnet-msbuild-tasks/SKILL.md:125:- [MSBuild Task Parameters](https://learn.microsoft.com/en-us/visualstudio/msbuild/task-writing#task-parameters)
