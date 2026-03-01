@@ -1,33 +1,27 @@
-name: Tag On PR Merge or Push to Main
+name: Tag On Push to Main
 
 on:
-  pull_request_target:
-    types: [closed]
   push:
     branches: [main]
 
 permissions:
   contents: write
-  actions: write
 
 concurrency:
   group: tag-on-pr-merge-main
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   tag:
-    if: |
-      (github.event_name == 'pull_request_target' && github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'main') ||
-      (github.event_name == 'push' && github.ref == 'refs/heads/main')
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
-      actions: write
       contents: write
     steps:
       - name: Checkout commit
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.pull_request.merge_commit_sha || github.sha }}
+          ref: ${{ github.sha }}
           fetch-depth: 0
 
       - name: Configure git identity for tagging
@@ -38,14 +32,14 @@ jobs:
       - name: Create and push next semver tag
         id: create_tag
         env:
-          MERGE_SHA: ${{ github.event.pull_request.merge_commit_sha || github.sha }}
+          MERGE_SHA: ${{ github.sha }}
           PR_NUMBER: ${{ github.event.pull_request.number || '' }}
           PR_TITLE: ${{ github.event.pull_request.title || 'Direct push to main' }}
         run: |
           set -euo pipefail
 
           if [[ -z "${MERGE_SHA}" ]]; then
-            echo "No merge commit SHA found; skipping tag creation."
+            echo "No commit SHA found; skipping tag creation."
             exit 0
           fi
 
@@ -53,7 +47,7 @@ jobs:
 
           existing_tag="$(git tag --points-at "${MERGE_SHA}" | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | head -n1 || true)"
           if [[ -n "${existing_tag}" ]]; then
-            echo "Merge commit already has semver tag: ${existing_tag}"
+            echo "Commit already has semver tag: ${existing_tag}"
             echo "release_tag=${existing_tag}" >> "${GITHUB_OUTPUT}"
             echo "tag_created=false" >> "${GITHUB_OUTPUT}"
             exit 0
@@ -67,15 +61,15 @@ jobs:
             if [[ -z "${latest_tag}" ]]; then
               next_tag="v0.1.0"
             else
-              if [[ ! "${latest_tag}" =~ ^v([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
+              if [[ "${latest_tag}" =~ ^v([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
+                major="${BASH_REMATCH[1]}"
+                minor="${BASH_REMATCH[2]}"
+                patch="${BASH_REMATCH[3]}"
+                next_tag="v${major}.${minor}.$((patch + 1))"
+              else
                 echo "Latest tag is not strict semver: ${latest_tag}"
                 exit 1
               fi
-
-              major="${BASH_REMATCH[1]}"
-              minor="${BASH_REMATCH[2]}"
-              patch="${BASH_REMATCH[3]}"
-              next_tag="v${major}.${minor}.$((patch + 1))"
             fi
 
             if git rev-parse "${next_tag}" >/dev/null 2>&1; then
@@ -108,35 +102,16 @@ jobs:
           echo "Failed to create unique semver tag after ${max_attempts} attempts"
           exit 1
 
-      - name: Ensure GitHub CLI is available (gh)
-        if: steps.create_tag.outputs.tag_created == 'true'
-        id: ensure_gh
-        run: |
-          set -euo pipefail
-          if ! command -v gh >/dev/null 2>&1; then
-            echo "gh CLI not found; installing via package manager..."
-            sudo apt-get update -y
-            sudo apt-get install -y gh || true
-          fi
-          gh --version
-
       - name: Create GitHub Release
         if: steps.create_tag.outputs.tag_created == 'true'
-        shell: bash
+        uses: actions/create-release@v1
+        with:
+          tag_name: ${{ steps.create_tag.outputs.release_tag }}
+          release_name: ${{ steps.create_tag.outputs.release_tag }}
+          body: |
+            Auto-generated release for ${{ steps.create_tag.outputs.release_tag }}
+          draft: false
+          prerelease: false
+          generate_release_notes: true
         env:
-          TAG: ${{ steps.create_tag.outputs.release_tag }}
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          set -euo pipefail
-
-          if [[ -z "${TAG}" ]]; then
-            echo "No tag to create release for"
-            exit 0
-          fi
-
-          gh release create "${TAG}" \
-            --title "${TAG}" \
-            --generate-notes \
-            --notes-start-tag "$(git describe --tags --abbrev=0 "${TAG}^" 2>/dev/null || echo '')"
-
-          echo "Created GitHub Release for ${TAG}"
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
