@@ -2,13 +2,13 @@ name: Tag On PR Merge or Push to Main
 
 on:
   pull_request_target:
-    types:
-      - closed
+    types: [closed]
   push:
-    branches:
-      - main
+    branches: [main]
 
-permissions: {}
+permissions:
+  contents: write
+  actions: write
 
 concurrency:
   group: tag-on-pr-merge-main
@@ -108,7 +108,19 @@ jobs:
           echo "Failed to create unique semver tag after ${max_attempts} attempts"
           exit 1
 
-            - name: Create GitHub Release
+      - name: Ensure GitHub CLI is available (gh)
+        if: steps.create_tag.outputs.tag_created == 'true'
+        id: ensure_gh
+        run: |
+          set -euo pipefail
+          if ! command -v gh >/dev/null 2>&1; then
+            echo "gh CLI not found; installing via package manager..."
+            sudo apt-get update -y
+            sudo apt-get install -y gh || true
+          fi
+          gh --version
+
+      - name: Create GitHub Release
         if: steps.create_tag.outputs.tag_created == 'true'
         shell: bash
         env:
@@ -122,7 +134,6 @@ jobs:
             exit 0
           fi
 
-          # Generate release notes from commit messages since last tag
           gh release create "${TAG}" \
             --title "${TAG}" \
             --generate-notes \
