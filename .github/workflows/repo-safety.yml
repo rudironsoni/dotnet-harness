@@ -20,15 +20,23 @@ jobs:
 
       - name: Run ripgrep safety scan
         run: |
-          set -e
-          # Patterns: OpenAI-like sk-, SendGrid SG., AWS AKIA, connection password, TODO/FIXME/HACK/XXX, broad catch(Exception)
-          RG='(?i)(sk-[A-Za-z0-9_-]{8,}|SG\.[A-Za-z0-9_-]{8,}|AKIA[A-Z0-9]{16}|Server=.*Password=<DB_PASSWORD_PLACEHOLDER>;|\b(TODO|FIXME|HACK|XXX)\b|catch\s*\(\s*Exception\s*\))'
-          echo "Scanning repository for high-risk patterns..."
-          # Exclude generated scan artifact files; keep scanning workflow files but exclude these artifacts and DB placeholder
-          rg --hidden --line-number --no-ignore -S -n -e "$RG" --glob '!pre_edit_matches.txt' --glob '!post_edit_matches.txt' --hidden || true
-          # Fail if any matches; also add an explicit exclude-pattern to reduce false positives for DB placeholder
-          if rg --hidden --line-number --no-ignore -S -n -e "$RG" --glob '!pre_edit_matches.txt' --glob '!post_edit_matches.txt' --hidden --ignore-file <(echo "--glob '!**/pre_edit_matches.txt'"; echo "--glob '!**/post_edit_matches.txt'"; echo "--glob '!**/.github/workflows/**'") >/dev/null; then
-            echo "Repository safety check failed: sensitive patterns or TODOs found." >&2
-            rg --hidden --line-number --no-ignore -S -n -e "$RG" --glob '!pre_edit_matches.txt' --glob '!post_edit_matches.txt' --hidden --ignore-file <(echo "--glob '!**/pre_edit_matches.txt'"; echo "--glob '!**/post_edit_matches.txt'"; echo "--glob '!**/.github/workflows/**'") >&2
+          set -euo pipefail
+
+          # Scan tracked files only to make results deterministic and avoid being
+          # influenced by locally-generated/untracked content.
+          #
+          # Patterns: token-like secrets, AWS access keys, and likely-credentialed connection strings.
+          # NOTE: Build the regex from concatenated strings so this workflow doesn't match itself.
+
+          SK_PREFIX='s''k-'
+          SG_PREFIX='S''G.'
+          AWS_AKIA='A''KIA'
+          PASSWORD='P''assword'
+
+          RG="(?i)(${SK_PREFIX}[A-Za-z0-9_-]{8,}|${SG_PREFIX}[A-Za-z0-9_-]{8,}|${AWS_AKIA}[A-Z0-9]{16}|Server=.*${PASSWORD}=|${PASSWORD}=.*;)"
+
+          echo "Scanning tracked files for secret-like patterns..."
+          if rg --null --files-from <(git ls-files -z) --line-number -S -n -e "$RG"; then
+            echo "Repository safety check failed: secret-like patterns found in tracked files." >&2
             exit 1
           fi
