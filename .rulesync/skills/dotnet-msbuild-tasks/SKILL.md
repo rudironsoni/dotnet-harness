@@ -51,7 +51,6 @@ All MSBuild tasks implement `Microsoft.Build.Framework.ITask`. The simplest appr
 ### Minimal Custom Task
 
 ```csharp
-
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 
@@ -80,7 +79,6 @@ public class GenerateFileHash : Task
         return true;
     }
 }
-
 ```
 
 ### ITask Contract
