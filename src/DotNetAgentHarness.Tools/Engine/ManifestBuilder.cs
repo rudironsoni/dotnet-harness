@@ -51,9 +51,27 @@ public static class ManifestBuilder
                 var skill = BuildSkillEntry(folderName, skillFile, content, frontmatter, referencedSkills);
                 manifest.Skills[folderName] = skill;
             }
-            catch (Exception ex)
+            catch (YamlDotNet.Core.YamlException yex)
             {
-                manifest.Errors.Add(new ManifestError(folderName, ex.Message));
+                // Log and record as manifest error, continue building other skills
+                var msg = $"YAML parse error in {folderName}: {yex.Message}";
+                Console.Error.WriteLine(msg);
+                manifest.Errors.Add(new ManifestError(folderName, msg));
+                continue;
+            }
+            catch (InvalidDataException ex)
+            {
+                var msg = $"Invalid data while building manifest for {folderName}: {ex.Message}";
+                Console.Error.WriteLine(msg);
+                manifest.Errors.Add(new ManifestError(folderName, msg));
+                continue;
+            }
+            catch (IOException ex)
+            {
+                var msg = $"I/O error while building manifest for {folderName}: {ex.Message}";
+                Console.Error.WriteLine(msg);
+                manifest.Errors.Add(new ManifestError(folderName, msg));
+                continue;
             }
         }
 

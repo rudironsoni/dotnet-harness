@@ -208,9 +208,17 @@ public static class Program
                 .Build();
             return deserializer.Deserialize<Dictionary<string, object>>(match.Groups[1].Value);
         }
+        catch (YamlDotNet.Core.YamlException ex)
+        {
+            // Restore graceful behavior: return a frontmatter-like dict with _error so callers can continue validation
+            Console.Error.WriteLine($"YAML parsing error: {ex.Message}");
+            return new Dictionary<string, object> { ["_error"] = ex.Message };
+        }
         catch (Exception ex)
         {
-            return new Dictionary<string, object> { ["_error"] = ex.Message };
+            // Keep validation running: treat as a parsing failure and surface as an error to callers.
+            Console.Error.WriteLine($"Unexpected error parsing YAML frontmatter: {ex.Message}");
+            return new Dictionary<string, object> { ["_error"] = $"{ex.GetType().Name}: {ex.Message}" };
         }
     }
 

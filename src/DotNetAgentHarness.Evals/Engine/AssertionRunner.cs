@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using DotNetAgentHarness.Evals.Models;
-using Microsoft.Extensions.AI;
 
 namespace DotNetAgentHarness.Evals.Engine;
 
@@ -18,8 +17,8 @@ public static class AssertionRunner
     {
         return assertion.Type.ToLowerInvariant() switch
         {
-            "contains" => new AssertionResult 
-            { 
+            "contains" => new AssertionResult
+            {
                 Passed = responseContent.Contains(assertion.Value, StringComparison.OrdinalIgnoreCase),
                 Message = $"Expected response to contain '{assertion.Value}'"
             },

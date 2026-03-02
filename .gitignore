@@ -62,9 +62,41 @@ replit.md
 dist/
 packages/dotnet-agent-harness-*/bundled/
 
+# .NET build intermediates (repo-local)
+src/**/bin/
+src/**/obj/
+
 # Local editor and OS files
 .DS_Store
 Thumbs.db
 
 # Serena local cache
 .serena/
+
+# Repo-root scan/build artifacts (do not commit)
+/pre_*_matches.txt
+/post_*_matches.txt
+/pre_*_matches.txt.ed
+/post_*_matches.txt.ed
+/pre_*scan*.txt
+/post_*scan*.txt
+/scan_diff.txt
+/build_*_output.txt
+/build_*_exit.txt
+/dotnet_version.txt
+/git_status*.txt
+/current_branch.txt
+/current_sha.txt
+/recent_commits.txt
+/summary.json
+/$FILES_CHANGED_TMP
+
+# Additional repo-root helper artifacts
+/branch_after_exception.txt
+/changed_files_after_edits.txt
+/git_log_commits.txt
+/pre_files.txt
+/pre_pattern_matches.txt
+
+# RuleSync edit artifacts
+*.ed
