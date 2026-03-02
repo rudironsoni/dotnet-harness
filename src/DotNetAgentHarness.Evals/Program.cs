@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Spectre.Console;
 using DotNetAgentHarness.Evals.Engine;
-using Microsoft.Extensions.AI;
+
 
 namespace DotNetAgentHarness.Evals;
 
@@ -28,9 +28,9 @@ public class Program
             foreach (var eval in evalCases)
             {
                 AnsiConsole.MarkupLine($"\n[bold yellow]Running Case:[/] {eval.Id} ({eval.Description})");
-                
+
                 var dummyResponse = "I recommend using .NET Aspire and Minimal APIs for high throughput microservices.";
-                
+
                 foreach (var assertion in eval.Assertions)
                 {
                     var result = AssertionRunner.Evaluate(dummyResponse, assertion);

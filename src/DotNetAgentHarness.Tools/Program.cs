@@ -201,27 +201,27 @@ public static class Program
         var match = Regex.Match(content, @"^---\n([\s\S]*?)\n---", RegexOptions.Multiline);
         if (!match.Success) return null;
 
-            try
-            {
-                var deserializer = new DeserializerBuilder()
-                    .WithNamingConvention(CamelCaseNamingConvention.Instance)
-                    .Build();
-                return deserializer.Deserialize<Dictionary<string, object>>(match.Groups[1].Value);
-            }
-            catch (YamlDotNet.Core.YamlException ex)
-            {
-                // Restore graceful behavior: return a frontmatter-like dict with _error so callers can continue validation
-                Console.Error.WriteLine($"YAML parsing error: {ex.Message}");
-                return new Dictionary<string, object> { ["_error"] = ex.Message };
-            }
-            catch (Exception ex)
-            {
-                // Narrow catch: preserve original behavior but fail fast with diagnostic
-                Console.Error.WriteLine($"Unexpected error parsing YAML frontmatter: {ex.Message}");
-                // Convert TODO into issue placeholder: ISSUE-XXXX
-                // See: https://github.com/<OWNER>/<REPO>/issues/ISSUE-XXXX
-                throw;
-            }
+        try
+        {
+            var deserializer = new DeserializerBuilder()
+                .WithNamingConvention(CamelCaseNamingConvention.Instance)
+                .Build();
+            return deserializer.Deserialize<Dictionary<string, object>>(match.Groups[1].Value);
+        }
+        catch (YamlDotNet.Core.YamlException ex)
+        {
+            // Restore graceful behavior: return a frontmatter-like dict with _error so callers can continue validation
+            Console.Error.WriteLine($"YAML parsing error: {ex.Message}");
+            return new Dictionary<string, object> { ["_error"] = ex.Message };
+        }
+        catch (Exception ex)
+        {
+            // Narrow catch: preserve original behavior but fail fast with diagnostic
+            Console.Error.WriteLine($"Unexpected error parsing YAML frontmatter: {ex.Message}");
+            // Convert TODO into issue placeholder: ISSUE-XXXX
+            // See: https://github.com/<OWNER>/<REPO>/issues/ISSUE-XXXX
+            throw;
+        }
     }
 
     private static void ValidateFieldOrder(Dictionary<string, object> frontmatter, string fileType, string filePath, List<string> warnings)
