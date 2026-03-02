@@ -154,7 +154,7 @@ Quickly find corresponding advanced sub-skills based on testing scenarios (API t
 
 Complete mapping of 7 common tasks, including scenario descriptions, recommended skills, implementation steps, prompt examples, and expected code structures.
 
-> 📖 For details, please refer to the task mapping table in `references/task-mapping-table.md`.
+> 📖 For details, please refer to the task mapping table in `references/task_mapping_table.md`.
 
 ---
 
