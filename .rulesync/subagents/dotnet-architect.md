@@ -16,7 +16,7 @@ claudecode:
     - Glob
     - Bash
 opencode:
-  mode: 'primary'
+  mode: primary
   hidden: false
   tools:
     bash: true
