@@ -11,12 +11,7 @@ metadata:
   related_skills: 'advanced-testcontainers-nosql, advanced-aspnet-integration-testing, advanced-aspire-testing'
 ---
 
-<!--
-Attribution:
-
-- Source repo: https://github.com/kevintsengtw/dotnet-testing-agent-skills (MIT)
-- Ported/adapted into dotnet-agent-harness.
--->
+Source: kevintsengtw/dotnet-testing-agent-skills (MIT). Ported into dotnet-agent-harness.
 
 # Testcontainers Database Integration Testing Guide
 
@@ -25,13 +20,10 @@ Attribution:
 Use this skill when asked to perform the following tasks:
 
 - Need to test real database behavior (transactions, concurrency, stored procedures, etc.)
-
 - EF Core InMemory database cannot meet testing requirements
 - Create containerized testing environment for PostgreSQL or MSSQL
-
 - Use Collection Fixture pattern to share container instances
 - Test data access layer for both EF Core and Dapper
-
 - Need SQL script externalization strategy
 
 ## EF Core InMemory Limitations
@@ -41,14 +33,12 @@ Before choosing a testing strategy, must understand the significant limitations 
 ### 1. Transaction Behavior and Database Locking
 
 - **Does not support database transactions**: `SaveChanges()` immediately saves data, cannot Rollback
-
 - **No database locking mechanism**: Cannot simulate behavior under concurrency scenarios
 
 ### 2. LINQ Query Differences
 
 - **Query translation differences**: Some LINQ queries (complex GroupBy, JOIN, custom functions) work in InMemory but
   may fail when translated to SQL
-
 - **Case Sensitivity**: InMemory defaults to case-insensitive, but real databases depend on collation rules
 - **Performance simulation insufficient**: Cannot simulate real database performance bottlenecks or index issues
 
@@ -57,10 +47,8 @@ Before choosing a testing strategy, must understand the significant limitations 
 InMemory mode cannot test:
 
 - Stored Procedures and Triggers
-
 - Views
 - Foreign Key Constraints, Check Constraints
-
 - Data type precision (decimal, datetime, etc.)
 - Concurrency Tokens (RowVersion, Timestamp)
 
@@ -77,11 +65,9 @@ integration testing.
 ### Core Advantages
 
 1. **Real Environment Testing**: Use real databases, test actual SQL syntax and database constraints
-
-1. **Environment Consistency**: Ensure test environment uses same service versions as production
-1. **Clean Test Environment**: Each test has independent clean environment, containers auto-cleanup
-
-1. **Simplified Development Environment**: Developers only need Docker, no need to install various services
+2. **Environment Consistency**: Ensure test environment uses same service versions as production
+3. **Clean Test Environment**: Each test has independent clean environment, containers auto-cleanup
+4. **Simplified Development Environment**: Developers only need Docker, no need to install various services
 
 ## Required Packages
 
@@ -109,8 +95,8 @@ integration testing.
   <PackageReference Include="Dapper" Version="2.1.35" />
   <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.2" />
 </ItemGroup>
-
 ```text
+
 > **Important**: Use `Microsoft.Data.SqlClient` instead of the old `System.Data.SqlClient` for better performance and security.
 
 ## Environment Requirements
@@ -118,19 +104,15 @@ integration testing.
 ### Docker Desktop Configuration
 
 - Windows 10 version 2004 or later
-
 - WSL 2 feature enabled
 - 8GB RAM (16GB+ recommended)
-
 - 64GB available disk space
 
 ### Recommended Docker Desktop Resources Settings
 
 - Memory: 6GB (50-75% of system memory)
-
 - CPUs: 4 cores
 - Swap: 2GB
-
 - Disk image size: 64GB
 
 ## Basic Container Operation Patterns
@@ -172,7 +154,6 @@ public class PostgreSqlTests : IAsyncLifetime
         await _postgres.DisposeAsync();
     }
 }
-
 ```text
 
 ### SQL Server Container
@@ -210,7 +191,6 @@ public class SqlServerTests : IAsyncLifetime
         await _container.DisposeAsync();
     }
 }
-
 ```text
 
 ## Collection Fixture Pattern: Container Sharing
@@ -220,10 +200,9 @@ public class SqlServerTests : IAsyncLifetime
 In large projects, creating new containers for each test class encounters serious performance bottlenecks:
 
 - **Traditional approach**: Each test class starts a container. If there are 3 test classes, total time is approximately `3 × 10 seconds = 30 seconds`
-
 - **Collection Fixture**: All test classes share the same container. Total time is only approximately `1 × 10 seconds = 10 seconds`
 
-#### Test execution time reduced by approximately 67%
+### Test execution time reduced by approximately 67%
 
 ### Collection Fixture Implementation
 
@@ -269,7 +248,6 @@ public class SqlServerCollectionFixture : ICollectionFixture<SqlServerContainerF
 {
     // This class is just for defining Collection, no implementation needed
 }
-
 ```text
 
 ### Test Class Integration
@@ -304,7 +282,6 @@ public class EfCoreTests : IDisposable
         _dbContext.Dispose();
     }
 }
-
 ```text
 
 ## SQL Script Externalization Strategy
@@ -312,10 +289,8 @@ public class EfCoreTests : IDisposable
 ### Why Externalize SQL Scripts?
 
 - **Separation of Concerns**: C# code focuses on test logic, SQL scripts focus on database structure
-
 - **Maintainability**: When modifying database structure, only edit `.sql` files
 - **Readability**: C# code becomes cleaner
-
 - **Tool Support**: SQL files get editor syntax highlighting and formatting support
 - **Version Control Friendly**: SQL changes can be clearly tracked in version control
 
@@ -331,7 +306,6 @@ tests/DatabaseTesting.Tests/
 │   │   └── CreateOrderItemsTable.sql
 │   └── StoredProcedures/
 │       └── GetProductSalesReport.sql
-
 ```text
 
 ### .csproj Configuration
@@ -342,7 +316,6 @@ tests/DatabaseTesting.Tests/
     <CopyToOutputDirectory>Always</CopyToOutputDirectory>
   </Content>
 </ItemGroup>
-
 ```text
 
 ### Script Loading Implementation
@@ -372,7 +345,6 @@ private void EnsureTablesExist()
         }
     }
 }
-
 ```text
 
 ## Wait Strategy Best Practices
@@ -392,7 +364,6 @@ var sqlServer = new MsSqlBuilder()
         .UntilPortIsAvailable(1433)
         .UntilMessageIsLogged("SQL Server is now ready for client connections"))
     .Build();
-
 ```text
 
 ## EF Core Advanced Feature Testing
@@ -444,38 +415,30 @@ public interface IProductByDapperRepository
     Task<IEnumerable<Product>> SearchProductsAsync(int? categoryId, decimal? minPrice, bool? isActive);
     Task<IEnumerable<ProductSalesReport>> GetProductSalesReportAsync(decimal minPrice);
 }
-
 ```text
 
 ### Design Advantages
 
 1. **Single Responsibility Principle (SRP)**: Each interface focuses on specific responsibilities
-
-1. **Interface Segregation Principle (ISP)**: Consumers only depend on interfaces they need
-1. **Dependency Inversion Principle (DIP)**: High-level modules depend on abstractions not concrete implementations
-
-1. **Test Isolation**: Can perform precise testing for specific features
+2. **Interface Segregation Principle (ISP)**: Consumers only depend on interfaces they need
+3. **Dependency Inversion Principle (DIP)**: High-level modules depend on abstractions not concrete implementations
+4. **Test Isolation**: Can perform precise testing for specific features
 
 ## Common Issues Handling
 
 ### Docker Container Startup Failure
 
 ```bash
-
 # Check if port is occupied
-
 netstat -an | findstr :5432
 
 # Clean up unused images
-
 docker system prune -a
-
 ```text
 
 ### Out of Memory Issues
 
 - Adjust Docker Desktop memory configuration
-
 - Limit number of simultaneously running containers
 - Use Collection Fixture to share containers
 
@@ -491,7 +454,6 @@ public void Dispose()
     _dbContext.Database.ExecuteSqlRaw("DELETE FROM Categories");
     _dbContext.Dispose();
 }
-
 ```text
 
 ## Reference Resources
@@ -511,7 +473,6 @@ This skill content is distilled from the "Old School Software Engineer's Testing
 ### Official Documentation
 
 - [Testcontainers Official Website](https://testcontainers.com/)
-
 - [Testcontainers for .NET](https://dotnet.testcontainers.org/)
 - [Testcontainers for .NET / Modules](https://dotnet.testcontainers.org/modules/)
 ````

@@ -11,12 +11,7 @@ metadata:
   related_skills: 'autofixture-nsubstitute-integration, unit-test-fundamentals, private-internal-testing'
 ---
 
-<!--
-Attribution:
-
-- Source repo: https://github.com/kevintsengtw/dotnet-testing-agent-skills (MIT)
-- Ported/adapted into dotnet-agent-harness.
--->
+Source: kevintsengtw/dotnet-testing-agent-skills (MIT). Ported into dotnet-agent-harness.
 
 # NSubstitute Test Double Guide
 
@@ -30,12 +25,10 @@ dependency isolation strategies, behavior setup and validation best practices.
 Real-world code usually depends on external resources, which make tests:
 
 1. **Slow** - Need actual database operations, file systems, networks
-
-1. **Unstable** - External service failures cause test failures
-1. **Difficult to Repeat** - Time, random numbers cause inconsistent results
-
-1. **Environment Dependent** - Need specific external environment setup
-1. **Development Blocking** - Must wait for external systems to be ready
+2. **Unstable** - External service failures cause test failures
+3. **Difficult to Repeat** - Time, random numbers cause inconsistent results
+4. **Environment Dependent** - Need specific external environment setup
+5. **Development Blocking** - Must wait for external systems to be ready
 
 Test doubles allow us to isolate these dependencies and focus on testing business logic.
 
@@ -48,7 +41,6 @@ Test doubles allow us to isolate these dependencies and focus on testing busines
 <PackageReference Include="xunit" Version="2.9.3" />
 <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.0" />
 <PackageReference Include="AwesomeAssertions" Version="9.1.0" />
-
 ```text
 
 ### Basic using Directives
@@ -59,7 +51,6 @@ using NSubstitute.ExceptionExtensions;
 using Xunit;
 using AwesomeAssertions;
 using Microsoft.Extensions.Logging;
-
 ```text
 
 ## Test Double Five Types
@@ -89,7 +80,6 @@ var classSubstitute = Substitute.For<BaseService>();
 
 // Create multiple interface substitute
 var multiSubstitute = Substitute.For<IService, IDisposable>();
-
 ```text
 
 ### Return Value Setup
@@ -105,7 +95,6 @@ _service.Process(Arg.Any<string>()).Returns("processed");
 
 // Return sequence values
 _generator.GetNext().Returns(1, 2, 3, 4, 5);
-
 ```text
 
 #### Conditional Return Values
@@ -118,7 +107,6 @@ _calculator.Add(Arg.Any<int>(), Arg.Any<int>())
 // Condition matching
 _service.Process(Arg.Is<string>(x => x.StartsWith("test")))
         .Returns("test-result");
-
 ```text
 
 #### Throw Exceptions
@@ -131,7 +119,6 @@ _service.RiskyOperation()
 // Async method throws exception
 _service.RiskyOperationAsync()
         .Throws(new InvalidOperationException("Async operation failed"));
-
 ```text
 
 ### Argument Matchers
@@ -155,7 +142,6 @@ _service.Process(Arg.Is<string>(x =>
     x.Should().StartWith("prefix");
     return true;
 })).Returns("result");
-
 ```text
 
 ### Call Verification
@@ -180,7 +166,6 @@ Received.InOrder(() =>
     _service.Process();
     _service.Stop();
 });
-
 ```text
 
 ## Practical Patterns
@@ -216,7 +201,6 @@ public void CreateOrder_CreateOrder_ShouldStoreCorrectOrderData()
         o.Quantity == 5 &&
         o.Price == 100));
 }
-
 ```text
 
 ### Argument Capture and Validation
@@ -238,7 +222,6 @@ public void RegisterUser_RegisterUser_ShouldGenerateCorrectHashPassword()
     capturedUser.PasswordHash.Should().NotBe("password123"); // Should be hashed
     capturedUser.PasswordHash.Length.Should().BeGreaterThan(20);
 }
-
 ```text
 
 ## Common Pitfalls and Best Practices
@@ -253,9 +236,9 @@ public void RegisterUser_RegisterUser_ShouldGenerateCorrectHashPassword()
 
     // Wrong: target concrete class (unless has virtual members)
     var repository = Substitute.For<UserRepository>();
-    ```
+```text
 
-1. **Use meaningful test data**
+2. **Use meaningful test data**
 
     ```csharp
     // Correct: clearly express intent
@@ -263,9 +246,9 @@ public void RegisterUser_RegisterUser_ShouldGenerateCorrectHashPassword()
 
     // Wrong: meaningless data
     var user = new User { Id = 1, Name = "test", Email = "a@b.c" };
-    ```
+```text
 
-1. **Avoid over-verification**
+3. **Avoid over-verification**
 
     ```csharp
     // Correct: only verify important behaviors
@@ -275,9 +258,9 @@ public void RegisterUser_RegisterUser_ShouldGenerateCorrectHashPassword()
     _repository.Received(1).GetById(123);
     _repository.Received(1).Update(Arg.Any<User>());
     _validator.Received(1).Validate(Arg.Any<User>());
-    ```
+```text
 
-1. **Clear distinction between Mock and Stub**
+4. **Clear distinction between Mock and Stub**
 
     ```csharp
     // Correct: Stub for setting scenarios, Mock for validating behaviors
@@ -287,7 +270,7 @@ public void RegisterUser_RegisterUser_ShouldGenerateCorrectHashPassword()
     stubRepository.GetById(123).Returns(user);
     service.ProcessUser(123);
     mockLogger.Received(1).LogInformation(Arg.Any<string>());
-    ```
+```text
 
 ### Practices to Avoid
 
@@ -300,9 +283,9 @@ public void RegisterUser_RegisterUser_ShouldGenerateCorrectHashPassword()
     // Correct: abstract time provider
     var dateTimeProvider = Substitute.For<IDateTimeProvider>();
     dateTimeProvider.Now.Returns(new DateTime(2024, 1, 1));
-    ```
+```text
 
-1. **Avoid tight coupling between tests and implementations**
+2. **Avoid tight coupling between tests and implementations**
 
     ```csharp
     // Wrong: test implementation details
@@ -312,9 +295,9 @@ public void RegisterUser_RegisterUser_ShouldGenerateCorrectHashPassword()
     // Correct: test behavior results
     var users = service.GetActiveUsers();
     users.Should().HaveCount(2);
-    ```
+```text
 
-1. **Avoid overly complex setups**
+3. **Avoid overly complex setups**
 
     ```csharp
     // Wrong: too many Substitutes (may violate SRP)
@@ -325,32 +308,26 @@ public void RegisterUser_RegisterUser_ShouldGenerateCorrectHashPassword()
 
     // Correct: reconsider class responsibilities
     // Consider whether violating single responsibility principle, needs refactoring
-    ```
+```text
 
 ## Identifying Dependencies to Substitute
 
 ### Should Substitute
 
 - External API calls (IHttpClient, IApiClient)
-
 - Database operations (IRepository, IDbContext)
 - File system operations (IFileSystem)
-
 - Network communication (IEmailService, IMessageQueue)
 - Time dependencies (IDateTimeProvider, TimeProvider)
-
 - Random number generation (IRandom)
 - Expensive calculations (IComplexCalculator)
-
 - Logging services (ILogger<T>)
 
 ### Should Not Substitute
 
 - Value objects (DateTime, string, int)
-
 - Simple data transfer objects (DTO)
 - Pure function tools (like AutoMapper's IMapper, consider using real instance)
-
 - Framework core classes (unless explicitly needed)
 
 ## Troubleshooting
@@ -367,7 +344,6 @@ public class BaseService
 
 var substitute = Substitute.For<BaseService>();
 substitute.GetData().Returns("test data");
-
 ```text
 
 ### Q2: How to verify method call order?
@@ -381,7 +357,6 @@ Received.InOrder(() =>
     _service.Process();
     _service.Stop();
 });
-
 ```text
 
 ### Q3: How to handle out parameters?
@@ -395,7 +370,6 @@ _service.TryGetValue("key", out Arg.Any<string>())
             x[1] = "value";
             return true;
         });
-
 ```text
 
 ### Q4: NSubstitute vs Moq which to choose?
@@ -403,16 +377,13 @@ _service.TryGetValue("key", out Arg.Any<string>())
 **A:** NSubstitute advantages:
 
 - More concise and intuitive syntax
-
 - Gentle learning curve
 - No privacy controversies
-
 - Sufficient for most testing scenarios
 
 Choose NSubstitute, unless:
 
 - Project already uses Moq
-
 - Need Moq-specific advanced features
 - Team already familiar with Moq syntax
 
@@ -421,13 +392,10 @@ Choose NSubstitute, unless:
 This skill can be combined with the following skills:
 
 - **unit-test-fundamentals**: Unit test fundamentals and 3A pattern
-
 - **dependency-injection-testing**: Dependency injection testing strategies
 - **test-naming-conventions**: Test naming conventions
-
 - **test-output-logging**: ITestOutputHelper and ILogger integration
 - **datetime-testing-timeprovider**: TimeProvider abstraction for time dependencies
-
 - **filesystem-testing-abstractions**: File system dependency abstraction
 
 ## Template Files Reference
@@ -435,10 +403,8 @@ This skill can be combined with the following skills:
 This skill provides the following template files:
 
 - `templates/mock-patterns.cs`: Complete Mock/Stub/Spy pattern examples
-
 - `templates/verification-examples.cs`: Behavior verification and argument matching examples
 - `references/practical-patterns.md`: Five practical patterns with complete code
-
 - `references/test-double-types.md`: Test Double five types detailed examples
 
 ## Reference Resources
@@ -454,13 +420,11 @@ This skill content is extracted from "Old School Software Engineer's Testing Pra
 ### NSubstitute Official
 
 - [NSubstitute Official Website](https://nsubstitute.github.io/)
-
 - [NSubstitute GitHub](https://github.com/nsubstitute/NSubstitute)
 - [NSubstitute NuGet](https://www.nuget.org/packages/NSubstitute/)
 
 ### Test Double Theory
 
 - [XUnit Test Patterns](http://xunitpatterns.com/Test%20Double.html)
-
 - [Martin Fowler - Test Double](https://martinfowler.com/bliki/TestDouble.html)
 ````

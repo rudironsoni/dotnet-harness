@@ -11,12 +11,7 @@ metadata:
   related_skills: 'advanced-webapi-integration-testing, advanced-testcontainers-database, advanced-aspire-testing'
 ---
 
-<!--
-Attribution:
-
-- Source repo: https://github.com/kevintsengtw/dotnet-testing-agent-skills (MIT)
-- Ported/adapted into dotnet-agent-harness.
--->
+Source: kevintsengtw/dotnet-testing-agent-skills (MIT). Ported into dotnet-agent-harness.
 
 # ASP.NET Core Integration Testing Guide
 
@@ -28,13 +23,10 @@ This skill guides how to create effective integration tests in ASP.NET Core, usi
 ### Applicable Scenarios
 
 - **Web API Endpoint Testing**: Validate RESTful API CRUD operations
-
 - **HTTP Request/Response Validation**: Test complete request processing pipeline
 - **Middleware Testing**: Validate Authentication, Authorization, Logging, etc.
-
 - **Dependency Injection Validation**: Ensure DI container configuration is correct
 - **Route Configuration Validation**: Ensure URL routes correctly map to controller actions
-
 - **Model Binding Testing**: Validate request content correctly binds to models
 
 ### Required Packages
@@ -46,8 +38,8 @@ This skill guides how to create effective integration tests in ASP.NET Core, usi
 <PackageReference Include="AwesomeAssertions" Version="9.1.0" />
 <PackageReference Include="AwesomeAssertions.Web" Version="1.9.6" />
 <PackageReference Include="System.Net.Http.Json" Version="9.0.8" />
-
 ```text
+
 > ⚠️ **Important Reminder**: When using `AwesomeAssertions`, must install `AwesomeAssertions.Web`, not `FluentAssertions.Web`.
 
 ---
@@ -56,21 +48,19 @@ This skill guides how to create effective integration tests in ASP.NET Core, usi
 
 ### Two Definitions of Integration Testing
 
-#### Definition One: Multi-Object Collaboration Testing
+### Definition One: Multi-Object Collaboration Testing
 
 > Integrate two or more classes and test whether they work correctly together. Test cases must span multiple class objects.
 
-#### Definition Two: External Resource Integration Testing
+### Definition Two: External Resource Integration Testing
 
 > Uses external resources such as databases, external services, files, requires special handling of test environment, etc.
 
 ### Why Integration Testing?
 
 - **Ensure multiple modules work correctly after integration**
-
 - **Integration points not covered by unit tests**: Routing, Middleware, Request/Response Pipeline
 - **WebApplication does too much integration and configuration, unit tests cannot cover everything**
-
 - **Confirm proper exception handling to reduce more problems**
 
 ### Testing Pyramid Position
@@ -110,7 +100,6 @@ public class BasicIntegrationTest : IClassFixture<WebApplicationFactory<Program>
         response.EnsureSuccessStatusCode();
     }
 }
-
 ```text
 
 ### Custom WebApplicationFactory
@@ -140,8 +129,9 @@ public class CustomWebApplicationFactory<TProgram> : WebApplicationFactory<TProg
         builder.UseEnvironment("Testing");
     }
 }
+```text
 
-## ```text
+---
 
 ## Principle Two: Use AwesomeAssertions.Web to Validate HTTP Responses
 
@@ -154,7 +144,6 @@ response.Should().Be204NoContent();   // HTTP 204
 response.Should().Be400BadRequest();  // HTTP 400
 response.Should().Be404NotFound();    // HTTP 404
 response.Should().Be500InternalServerError();  // HTTP 500
-
 ```text
 
 ### Satisfy<T> Strongly-Typed Validation
@@ -182,7 +171,6 @@ public async Task GetShipper_WhenShipperExists_ShouldReturnSuccessResult()
                 result.Data.Phone.Should().Be("02-2345-6789");
             });
 }
-
 ```text
 
 ### Comparison with Traditional Approach
@@ -204,8 +192,9 @@ response.Should().Be200Ok()
             result.Status.Should().Be("Success");
             result.Data!.CompanyName.Should().Be("Test Company");
         });
+```text
 
-## ```text (continued)
+---
 
 ## Principle Three: Use System.Net.Http.Json to Simplify JSON Operations
 
@@ -221,7 +210,6 @@ var response = await client.PostAsync("/api/shippers", content);
 // ✅ Modern approach
 var createParameter = new ShipperCreateParameter { CompanyName = "Test Company", Phone = "02-1234-5678" };
 var response = await client.PostAsJsonAsync("/api/shippers", createParameter);
-
 ```text
 
 ### ReadFromJsonAsync Simplifies Response Reading
@@ -234,8 +222,9 @@ var result = JsonSerializer.Deserialize<SuccessResultOutputModel<ShipperOutputMo
 
 // ✅ Modern approach
 var result = await response.Content.ReadFromJsonAsync<SuccessResultOutputModel<ShipperOutputModel>>();
+```text
 
-## ```text (continued)
+---
 
 ## Three Levels of Integration Testing Strategy
 
@@ -244,17 +233,14 @@ var result = await response.Content.ReadFromJsonAsync<SuccessResultOutputModel<S
 **Characteristics**:
 
 - No database, Service, or Repository dependencies
-
 - Simplest, basic WebApi website project
 - Directly use `WebApplicationFactory<Program>` for testing
 
 **Testing Focus**:
 
 - Input/output validation for each API
-
 - HTTP verbs and routing correctness
 - Model binding and serialization
-
 - Status code and response format validation
 
 ```csharp
@@ -277,7 +263,6 @@ public class BasicApiControllerTests : IClassFixture<WebApplicationFactory<Progr
         response.Should().Be200Ok();
     }
 }
-
 ```text
 
 ### Level 2: WebApi Project with Service Dependencies
@@ -285,7 +270,6 @@ public class BasicApiControllerTests : IClassFixture<WebApplicationFactory<Progr
 **Characteristics**:
 
 - No database, but has Service dependencies
-
 - Use NSubstitute to create Service stubs
 - Configure dependency injection in tests
 
@@ -328,7 +312,6 @@ public class ServiceDependentControllerTests
         response.Should().Be200Ok();
     }
 }
-
 ```text
 
 ### Level 3: Full WebApi Project
@@ -336,7 +319,6 @@ public class ServiceDependentControllerTests
 **Characteristics**:
 
 - Complete Solution architecture
-
 - Contains real database operations
 - Use InMemory or real test database
 
@@ -370,8 +352,9 @@ public class FullDatabaseWebApplicationFactory : WebApplicationFactory<Program>
         });
     }
 }
+```text
 
-## ```text (continued)
+---
 
 ## Test Base Class Pattern
 
@@ -422,8 +405,9 @@ public abstract class IntegrationTestBase : IDisposable
         Factory?.Dispose();
     }
 }
+```text
 
-## ```text (continued)
+---
 
 ## CRUD Operation Testing Examples
 
@@ -444,8 +428,9 @@ tests/
 │   ├── IntegrationTestBase.cs                 # Test base class
 │   └── GlobalUsings.cs
 └── Sample.WebApplication.E2ETests/            # End-to-end tests
+```text
 
-## ```text (continued)
+---
 
 ## Package Compatibility Troubleshooting
 
@@ -453,7 +438,6 @@ tests/
 
 ```text
 error CS1061: 'ObjectAssertions' does not contain a definition for 'Be200Ok'
-
 ```text
 
 ### Solutions
@@ -468,40 +452,35 @@ error CS1061: 'ObjectAssertions' does not contain a definition for 'Be200Ok'
 <!-- Correct: using AwesomeAssertions should install AwesomeAssertions.Web -->
 <PackageReference Include="AwesomeAssertions" Version="9.1.0" />
 <PackageReference Include="AwesomeAssertions.Web" Version="1.9.6" />
+```text
 
-## ```text (continued)
+---
 
 ## Best Practices
 
 ### Should Do ✅
 
 1. **Separate Test Projects**: Integration test projects should be separate from unit tests
-
-1. **Test Data Isolation**: Each test case has independent data preparation and cleanup
-1. **Use Base Classes**: Shared configuration and helper methods in base classes
-
-1. **Explicit Naming**: Use three-part naming (Method_Scenario_Expected)
-1. **Appropriate Test Scope**: Focus on integration points, don't over-test
+2. **Test Data Isolation**: Each test case has independent data preparation and cleanup
+3. **Use Base Classes**: Shared configuration and helper methods in base classes
+4. **Explicit Naming**: Use three-part naming (Method_Scenario_Expected)
+5. **Appropriate Test Scope**: Focus on integration points, don't over-test
 
 ### Should Avoid ❌
 
 1. **Mixed Test Types**: Don't put unit tests and integration tests in the same project
-
-1. **Test Dependencies**: Each test should be independent, not dependent on other tests' execution order
-1. **Over-mocking**: Integration tests should use real components as much as possible
-
-1. **Ignoring Cleanup**: Clean up test data after tests complete
-1. **Hard-coded Data**: Use factory methods or Builder pattern to create test data
+2. **Test Dependencies**: Each test should be independent, not dependent on other tests' execution order
+3. **Over-mocking**: Integration tests should use real components as much as possible
+4. **Ignoring Cleanup**: Clean up test data after tests complete
+5. **Hard-coded Data**: Use factory methods or Builder pattern to create test data
 
 ---
 
 ## Related Skills
 
 - `unit-test-fundamentals` - Unit testing fundamentals
-
 - `nsubstitute-mocking` - Mocking with NSubstitute
 - `awesome-assertions-guide` - AwesomeAssertions fluent assertions
-
 - `testcontainers-database` - Containerized database testing with Testcontainers
 
 ---
@@ -519,9 +498,7 @@ This skill content is distilled from the "Old School Software Engineer's Testing
 ### Official Documentation
 
 - [ASP.NET Core Integration Testing Documentation](https://docs.microsoft.com/aspnet/core/test/integration-tests)
-
 - [WebApplicationFactory Usage Guide](https://docs.microsoft.com/aspnet/core/test/integration-tests#basic-tests-with-the-default-webapplicationfactory)
 - [AwesomeAssertions.Web GitHub](https://github.com/AwesomeAssertions/AwesomeAssertions.Web)
-
 - [AwesomeAssertions.Web NuGet](https://www.nuget.org/packages/AwesomeAssertions.Web)
 ````

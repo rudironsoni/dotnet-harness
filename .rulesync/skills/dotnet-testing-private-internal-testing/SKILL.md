@@ -11,12 +11,7 @@ metadata:
   related_skills: 'nsubstitute-mocking, unit-test-fundamentals, test-naming-conventions'
 ---
 
-<!--
-Attribution:
-
-- Source repo: https://github.com/kevintsengtw/dotnet-testing-agent-skills (MIT)
-- Ported/adapted into dotnet-agent-harness.
--->
+Source: kevintsengtw/dotnet-testing-agent-skills (MIT). Ported into dotnet-agent-harness.
 
 # Private and Internal Member Testing Strategy Guide
 
@@ -28,10 +23,8 @@ testing thinking.
 Use this skill when asked to perform the following tasks:
 
 - Test private or internal methods and properties
-
 - Configure InternalsVisibleTo to access internal members
 - Evaluate whether to test private methods or refactor design
-
 - Use Reflection to access private members
 - Improve code testability design
 
@@ -39,17 +32,15 @@ Use this skill when asked to perform the following tasks:
 
 ### Golden Rule
 
-#### Good design naturally has good testability. If you find yourself frequently needing to test private methods, the design is likely problematic
+### Good design naturally has good testability. If you find yourself frequently needing to test private methods, the design is likely problematic
 
 ### Signs of Design Problems
 
 When you want to test private methods, first check for these signs:
 
 - ❌ Private methods over 10 lines with complex logic
-
 - ❌ Private methods contain important business rules
 - ❌ Private methods difficult to test indirectly through public methods
-
 - ❌ Class has multiple responsibilities
 
 ### Solution: Refactor Rather Than Test
@@ -100,26 +91,22 @@ public class DiscountCalculator : IDiscountCalculator
         // Complex logic is now public method, easy to test
     }
 }
-
 ```text
 
 ## Internal Member Testing Strategy
 
 ### When to Test Internal Members
 
-#### Appropriate Scenarios
+### Appropriate Scenarios
 
 - ✅ Framework or class library development
-
 - ✅ Complex internal algorithm validation
 - ✅ Performance-critical internal components
-
 - ✅ Security-related internal logic
 
-#### Inappropriate Scenarios
+### Inappropriate Scenarios
 
 - ❌ Application layer business logic (should be public)
-
 - ❌ Simple helper methods
 - ❌ Logic that can be tested indirectly through public API
 
@@ -133,19 +120,16 @@ using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("YourProject.Tests")]
 [assembly: InternalsVisibleTo("YourProject.IntegrationTests")]
-
 ```text
 
-#### Pros
+### Pros
 
 - Simple and direct
-
 - No additional packages needed
 
-#### Cons
+### Cons
 
 - Requires hardcoded assembly names
-
 - For signed assemblies, need to include public key
 
 ### Method 2: Configuring in csproj
@@ -165,13 +149,11 @@ Configure via MSBuild properties:
     </AssemblyAttribute>
   </ItemGroup>
 </Project>
-
 ```text
 
-#### Pros (continued)
+### Pros: (continued)
 
 - Can use MSBuild variables
-
 - Centralized management
 
 ### Method 3: Using Meziantou.MSBuild.InternalsVisibleTo (Recommended)
@@ -192,20 +174,17 @@ For complex projects, recommend using this NuGet package:
   <InternalsVisibleTo Include="$(AssemblyName).IntegrationTests" />
   <InternalsVisibleTo Include="DynamicProxyGenAssembly2" Key="0024000004800000940000000602000000240000525341310004000001000100c547cac37abd99c8db225ef2f6c8a3602f3b3606cc9891605d02baa56104f4cfc0734aa39b93bf7852f7d9266654753cc297e7d2edfe0bac1cdcf9f717241550e0a7b191195b7667bb4f64bcb8e2121380fd1d9d46ad2d92d2d15605093924cceaf74c4861eff62abf69b9291ed0a340e113be11e6a7d3113e92484cf7045cc7" />
 </ItemGroup>
-
 ```text
 
-#### Pros (continued)
+### Pros: (continued)
 
 - Automatically handles public keys for signed assemblies
-
 - Supports DynamicProxyGenAssembly2 (NSubstitute/Moq)
 - High readability
 
-#### Reference Resources
+### Reference Resources
 
 - [Declaring InternalsVisibleTo in the csproj - Meziantou's blog](https://www.meziantou.net/declaring-internalsvisibleto-in-the-csproj.htm)
-
 - [GitHub - meziantou/Meziantou.MSBuild.InternalsVisibleTo](https://github.com/meziantou/Meziantou.MSBuild.InternalsVisibleTo)
 
 ### Internal Testing Risk Assessment
@@ -252,7 +231,6 @@ public class PricingService
         // 15 lines complex tax calculation
     }
 }
-
 ```text
 
 #### After Refactoring: Using Strategy Pattern
@@ -313,16 +291,13 @@ public class PricingService
         return basePrice - discount + tax;
     }
 }
-
 ```text
 
-#### Pros (continued)
+### Pros: (continued)
 
 - Each strategy can be tested independently
-
 - Follows Open/Closed Principle
 - Easy to extend new strategies
-
 - Reduces dependency on reflection
 
 ### Partial Mock
@@ -380,7 +355,6 @@ public void Process_Using_Partial_Mock_Should_Process_Successfully()
     // Assert
     result.Success.Should().BeTrue();
 }
-
 ```text
 
 ## Practical Decision Framework
@@ -389,49 +363,43 @@ public void Process_Using_Partial_Mock_Should_Process_Successfully()
 
 #### Level 1: Design Quality Assessment
 
-#### Question: Is this a design problem or a testing problem?
+### Question: Is this a design problem or a testing problem?
 
 - Are private methods too complex? (> 10 lines)
-
 - Does the class have multiple responsibilities?
 - Can it be extracted as an independent class?
 
-#### Recommended Action
+### Recommended Action
 
 - Prioritize refactoring (extract class, strategy pattern)
-
 - Improve testability through improved design
 
 #### Level 2: Maintenance Cost Assessment
 
-#### Question: Will testing become a hindrance to refactoring?
+### Question: Will testing become a hindrance to refactoring?
 
 - Does the test depend on implementation details?
-
 - Will the test need significant modification when refactoring?
 - Is it difficult to locate problems when tests fail?
 
-#### Recommended Action (continued)
+### Recommended Action: (continued)
 
 - If maintenance cost is high, reconsider testing strategy
-
 - Consider integration testing through public API
 
 #### Level 3: Value Output Assessment
 
-#### Question: Does the test value exceed the cost?
+### Question: Does the test value exceed the cost?
 
 Assess test value:
 
 - ✅ Can catch real business logic errors
-
 - ✅ Provides clear failure messages
 - ✅ Runs stably long-term at reasonable cost
 
-#### Recommended Action (continued)
+### Recommended Action: (continued)
 
 - If value is insufficient, look for alternative testing strategies
-
 - Consider performance testing, integration testing, or other approaches
 
 ### Decision Matrix
@@ -453,17 +421,17 @@ Assess test value:
    - ✅ Apply strategy pattern to separate complex logic
    - ✅ Maintain single responsibility principle
 
-1. **Test Public Behavior**
+2. **Test Public Behavior**
    - ✅ Focus on testing public API behavior
    - ✅ Test private logic indirectly through public methods
    - ✅ Use integration testing to cover complex flows
 
-1. **Use InternalsVisibleTo Wisely**
+3. **Use InternalsVisibleTo Wisely**
    - ✅ Only for framework or class library development
    - ✅ Use Meziantou.MSBuild.InternalsVisibleTo to simplify configuration
    - ✅ Document why internal visibility is needed
 
-1. **Use Reflection Cautiously**
+4. **Use Reflection Cautiously**
    - ✅ Create helper methods to encapsulate reflection logic
    - ✅ Mark in test names that reflection is used
    - ✅ Regularly review whether refactoring is possible
@@ -475,17 +443,17 @@ Assess test value:
    - ❌ Don't test simple getters/setters
    - ❌ Avoid testing pure delegation calls
 
-1. **Don't Ignore Design Problems**
+2. **Don't Ignore Design Problems**
    - ❌ Don't use testing as an alternative to design problems
    - ❌ Don't break encapsulation for testing
    - ❌ Don't let tests hinder refactoring
 
-1. **Don't Depend on Implementation Details**
+3. **Don't Depend on Implementation Details**
    - ❌ Avoid testing call order of private methods
    - ❌ Don't validate values of private fields
    - ❌ Avoid testing frequently changing implementation details
 
-1. **Don't Abuse InternalsVisibleTo**
+4. **Don't Abuse InternalsVisibleTo**
    - ❌ Don't open internal for application layer code
    - ❌ Avoid excessive test project visibility
    - ❌ Don't use it to replace proper public API
@@ -495,7 +463,6 @@ Assess test value:
 See `templates/` directory for complete examples:
 
 - `internals-visible-to-examples.cs` - InternalsVisibleTo configuration examples
-
 - `reflection-testing-examples.cs` - Reflection testing technique examples
 - `strategy-pattern-refactoring.cs` - Strategy pattern refactoring examples
 
@@ -516,7 +483,6 @@ This skill content is distilled from the "Old School Software Engineer's Testing
 ### Related Skills
 
 - `unit-test-fundamentals` - Unit testing basics
-
 - `nsubstitute-mocking` - Test doubles and mocking
 
 ## Testing Checklist
@@ -524,18 +490,13 @@ This skill content is distilled from the "Old School Software Engineer's Testing
 When handling private and internal member testing, confirm the following checklist items:
 
 - [ ] Evaluated whether to refactor rather than test private methods
-
 - [ ] Internal members really need to be open to test projects
 - [ ] Using appropriate InternalsVisibleTo configuration method
-
 - [ ] Reflection tests use helper methods for encapsulation
 - [ ] Test names clearly indicate test type (e.g., using reflection)
-
 - [ ] Strategy pattern and other design patterns considered for complex logic
 - [ ] Tests won't become a hindrance to refactoring
-
 - [ ] Test value exceeds maintenance cost
 - [ ] Not overly dependent on implementation details
-
 - [ ] Regularly review appropriateness of testing strategy
 ````

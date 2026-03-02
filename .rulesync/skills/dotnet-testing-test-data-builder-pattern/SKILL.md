@@ -11,12 +11,7 @@ metadata:
   related_skills: 'autofixture-basics, bogus-fake-data, autofixture-bogus-integration'
 ---
 
-<!--
-Attribution:
-
-- Source repo: https://github.com/kevintsengtw/dotnet-testing-agent-skills (MIT)
-- Ported/adapted into dotnet-agent-harness.
--->
+Source: kevintsengtw/dotnet-testing-agent-skills (MIT). Ported into dotnet-agent-harness.
 
 # Test Data Builder Pattern
 
@@ -34,18 +29,17 @@ Test Data Builder Pattern is an improved version of Object Mother Pattern, mainl
 
 1. **Fixed test data problem**: Object Mother provides fixed test objects, difficult to adjust for specific test
    scenarios
-
-1. **Unclear test intent**: When creating objects directly, test focus is easily obscured by large amounts of attribute
+2. **Unclear test intent**: When creating objects directly, test focus is easily obscured by large amounts of attribute
    settings
-1. **Repeated code**: Similar object creation logic repeated in multiple tests
+3. **Repeated code**: Similar object creation logic repeated in multiple tests
 
 ### Why Need Builder Pattern?
 
-#### Traditional test data creation problems
+### Traditional test data creation problems
 
 Too many parameter settings, unclear test intent.
 
-#### Using Builder Pattern improvement
+### Using Builder Pattern improvement
 
 Intent is explicit, only set properties test cares about.
 
@@ -56,11 +50,9 @@ Intent is explicit, only set properties test cares about.
 A standard Test Data Builder should contain:
 
 1. **Default values**: Provide reasonable defaults for all necessary properties
-
-1. **Fluent interface**: Use `With*` method chain to set properties
-1. **Semantic methods**: Provide meaningful default creators (like `AnAdminUser()`, `ARegularUser()`)
-
-1. **Build method**: Finally create and return target object
+2. **Fluent interface**: Use `With*` method chain to set properties
+3. **Semantic methods**: Provide meaningful default creators (like `AnAdminUser()`, `ARegularUser()`)
+4. **Build method**: Finally create and return target object
 
 ### Complete Builder Example
 
@@ -141,7 +133,6 @@ public class UserBuilder
         };
     }
 }
-
 ```text
 
 ## Using Builder in Tests
@@ -170,7 +161,6 @@ public void CreateUser_ValidAdminUser_ShouldCreateSuccessfully()
     Assert.Equal("John Admin", result.Name);
     Assert.Contains("Admin", result.Roles);
 }
-
 ```text
 
 ### Using with Theory
@@ -210,7 +200,6 @@ public class UserValidationTests
         };
     }
 }
-
 ```text
 
 ## Best Practices
@@ -272,7 +261,6 @@ This skill content is extracted from "Old School Software Engineer's Testing Pra
 ### Related Skills
 
 - `autofixture-basics` - Using AutoFixture to auto-generate test data
-
 - `xunit-project-setup` - xUnit test project basic setup
 - `test-naming-conventions` - Test naming conventions
 
@@ -281,7 +269,6 @@ This skill content is extracted from "Old School Software Engineer's Testing Pra
 Test Data Builder Pattern is an important technique for writing maintainable tests:
 
 - **When to use**: Test objects have multiple attributes, need to reuse test data, want to express clear intent
-
 - **Core advantages**: Improve readability, reduce maintenance costs, enhance expressiveness
 - **Notes**: Keep Builder simple, provide reasonable defaults, use semantic method names
 ````

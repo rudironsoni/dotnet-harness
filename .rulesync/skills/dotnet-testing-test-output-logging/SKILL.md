@@ -11,12 +11,7 @@ metadata:
   related_skills: 'unit-test-fundamentals, nsubstitute-mocking, xunit-project-setup'
 ---
 
-<!--
-Attribution:
-
-- Source repo: https://github.com/kevintsengtw/dotnet-testing-agent-skills (MIT)
-- Ported/adapted into dotnet-agent-harness.
--->
+Source: kevintsengtw/dotnet-testing-agent-skills (MIT). Ported into dotnet-agent-harness.
 
 # Test Output and Logging Expert Guide
 
@@ -27,10 +22,8 @@ This skill helps you implement high-quality test output and logging mechanisms i
 Use this skill when asked to perform the following tasks:
 
 - Use ITestOutputHelper in xUnit tests to output diagnostic information
-
 - Implement ILogger test alternatives (XUnitLogger)
 - Create AbstractLogger or CompositeLogger patterns
-
 - Design structured test output for debugging
 - Implement performance test diagnostic tools
 
@@ -38,10 +31,9 @@ Use this skill when asked to perform the following tasks:
 
 ### 1. ITestOutputHelper Usage Principles
 
-#### Correct Injection Method
+### Correct Injection Method
 
 - Inject `ITestOutputHelper` via constructor
-
 - Each test class instance bound to test method
 - Cannot be shared between static methods or across test methods
 
@@ -55,19 +47,17 @@ public class MyTests
         _output = testOutputHelper;
     }
 }
-
 ```text
 
-#### Common Mistakes
+### Common Mistakes
 
 - ❌ Static access: `private static ITestOutputHelper _output`
-
 - ❌ Using without awaiting in async tests
 - ❌ Attempting to use in Dispose method
 
 ### 2. Structured Output Format Design
 
-#### Recommended Output Structure
+### Recommended Output Structure
 
 ```csharp
 private void LogSection(string title)
@@ -84,21 +74,18 @@ private void LogTimestamp(DateTime time)
 {
     _output.WriteLine($"Execution Time: {time:yyyy-MM-dd HH:mm:ss.fff}");
 }
-
 ```text
 
-#### Output Timing
+### Output Timing
 
 - At test start: Log test setup and input data
-
 - During execution: Log important state changes
 - Before assertion: Log expected and actual values
-
 - At test end: Log execution time and result summary
 
 ### 3. ILogger Testing Strategy
 
-#### Challenge: Extension Methods Cannot Be Directly Mocked
+### Challenge: Extension Methods Cannot Be Directly Mocked
 
 `ILogger.LogError()` is an extension method, NSubstitute cannot directly intercept. Need to intercept underlying `Log<TState>` method:
 
@@ -114,10 +101,9 @@ logger.Received().Log(
     Arg.Any<Exception>(),
     Arg.Any<Func<object, Exception, string>>()
 );
-
 ```text
 
-#### Solution: Use Abstraction Layer
+### Solution: Use Abstraction Layer
 
 Create `AbstractLogger<T>` to simplify testing:
 
@@ -142,21 +128,19 @@ public abstract class AbstractLogger<T> : ILogger<T>
 
     public abstract void Log(LogLevel logLevel, Exception ex, string information);
 }
-
 ```text
 
-#### Using in Tests
+### Using in Tests
 
 ```csharp
 var logger = Substitute.For<AbstractLogger<MyService>>();
 // Now can simply verify
 logger.Received().Log(LogLevel.Error, Arg.Any<Exception>(), Arg.Is<string>(s => s.Contains("error message")));
-
 ```text
 
 ### 4. Diagnostic Tool Integration
 
-#### XUnitLogger: Direct Logs to Test Output
+### XUnitLogger: Direct Logs to Test Output
 
 ```csharp
 public class XUnitLogger<T> : ILogger<T>
@@ -181,10 +165,9 @@ public class XUnitLogger<T> : ILogger<T>
 
     // Other necessary interface implementations...
 }
-
 ```text
 
-#### CompositeLogger: Support Both Verification and Output
+### CompositeLogger: Support Both Verification and Output
 
 ```csharp
 public class CompositeLogger<T> : ILogger<T>
@@ -207,10 +190,9 @@ public class CompositeLogger<T> : ILogger<T>
 
     // Other interface implementations delegate to all internal loggers...
 }
-
 ```text
 
-#### Usage
+### Usage
 
 ```csharp
 // Perform both behavior verification and test output
@@ -219,7 +201,6 @@ var xunitLogger = new XUnitLogger<MyService>(_output);
 var compositeLogger = new CompositeLogger<MyService>(mockLogger, xunitLogger);
 
 var service = new MyService(compositeLogger);
-
 ```text
 
 ## Implementation Guide
@@ -254,7 +235,6 @@ public async Task ProcessLargeDataSet_Performance_Test()
         _output.WriteLine($"{stage}: {elapsed.TotalMilliseconds:F2} ms");
     }
 }
-
 ```text
 
 ### Diagnostic Test Base Class
@@ -288,7 +268,6 @@ public abstract class DiagnosticTestBase
         Output.WriteLine($"Actual: {actual}");
     }
 }
-
 ```text
 
 ## DO - Recommended Practices
@@ -299,13 +278,13 @@ public abstract class DiagnosticTestBase
    - ✅ Provide diagnostic information when tests fail
    - ✅ Record timing points in performance tests
 
-1. **Logger Testing Strategy**
+2. **Logger Testing Strategy**
    - ✅ Use abstraction layer (AbstractLogger) to simplify testing
    - ✅ Verify log level rather than full message
    - ✅ Use CompositeLogger to combine Mock with actual output
    - ✅ Ensure sensitive data is not logged
 
-1. **Structured Output**
+3. **Structured Output**
    - ✅ Use section headings to separate different phases
    - ✅ Include timestamps for easy tracking
    - ✅ Provide sufficient context information
@@ -317,12 +296,12 @@ public abstract class DiagnosticTestBase
    - ❌ Don't log sensitive information (passwords, keys)
    - ❌ Avoid affecting test execution performance
 
-1. **Don't Hardcode Log Verification**
+2. **Don't Hardcode Log Verification**
    - ❌ Avoid verifying complete log messages (fragile)
    - ❌ Don't verify exact number of log calls (overspecified)
    - ❌ Avoid testing internal implementation details
 
-1. **Don't Ignore Lifecycle**
+3. **Don't Ignore Lifecycle**
    - ❌ Don't use ITestOutputHelper in static methods
    - ❌ Don't attempt to share instances across test methods
    - ❌ Avoid missing awaits in async tests
@@ -332,7 +311,6 @@ public abstract class DiagnosticTestBase
 See `templates/` directory for complete examples:
 
 - `itestoutputhelper-example.cs` - ITestOutputHelper usage example
-
 - `ilogger-testing-example.cs` - ILogger testing strategy example
 - `diagnostic-tools.cs` - XUnitLogger and CompositeLogger implementation
 
@@ -353,7 +331,6 @@ This skill content is distilled from the "Old School Software Engineer's Testing
 ### Related Skills
 
 - `unit-test-fundamentals` - Unit testing basics
-
 - `xunit-project-setup` - xUnit project setup
 - `nsubstitute-mocking` - Test doubles and mocking
 
@@ -362,16 +339,12 @@ This skill content is distilled from the "Old School Software Engineer's Testing
 When implementing test output and logging, confirm the following checklist items:
 
 - [ ] ITestOutputHelper correctly injected via constructor
-
 - [ ] Using structured output format (sections, timestamps)
 - [ ] Logger tests use abstraction layer or CompositeLogger
-
 - [ ] Verifying log level rather than full message
 - [ ] Performance tests include timing point recording
-
 - [ ] No sensitive information leaked in output
 - [ ] Async tests properly await log completion
-
 - [ ] Sufficient diagnostic information when tests fail
 
 ## Reference Resources (continued)
@@ -379,7 +352,6 @@ When implementing test output and logging, confirm the following checklist items
 See example files in same directory:
 
 - [templates/itestoutputhelper-example.cs](templates/itestoutputhelper-example.cs) - ITestOutputHelper usage example
-
 - [templates/ilogger-testing-example.cs](templates/ilogger-testing-example.cs) - ILogger testing example
 - [templates/diagnostic-tools.cs](templates/diagnostic-tools.cs) - Diagnostic tool implementation
 ````

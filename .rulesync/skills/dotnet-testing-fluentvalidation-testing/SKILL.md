@@ -11,12 +11,7 @@ metadata:
   related_skills: 'awesome-assertions-guide, nsubstitute-mocking, unit-test-fundamentals'
 ---
 
-<!--
-Attribution:
-
-- Source repo: https://github.com/kevintsengtw/dotnet-testing-agent-skills (MIT)
-- Ported/adapted into dotnet-agent-harness.
--->
+Source: kevintsengtw/dotnet-testing-agent-skills (MIT). Ported into dotnet-agent-harness.
 
 # FluentValidation Validator Testing Guide
 
@@ -30,12 +25,10 @@ complex business rules, async validation, and testing best practices.
 Validators are the first line of defense for applications, testing validators can:
 
 1. **Ensure Data Integrity** - Prevent invalid data from entering the system
-
-1. **Document Business Rules** - Tests serve as living documentation, clearly showing business rules
-1. **Security Protection** - Prevent malicious or inappropriate data input
-
-1. **Refactoring Safety Net** - Provide protection when business rules change
-1. **Cross-Field Logic Validation** - Ensure complex logic works correctly
+2. **Document Business Rules** - Tests serve as living documentation, clearly showing business rules
+3. **Security Protection** - Prevent malicious or inappropriate data input
+4. **Refactoring Safety Net** - Provide protection when business rules change
+5. **Cross-Field Logic Validation** - Ensure complex logic works correctly
 
 ## Prerequisites
 
@@ -48,7 +41,6 @@ Validators are the first line of defense for applications, testing validators ca
 <PackageReference Include="Microsoft.Extensions.Time.Testing" Version="9.0.0" />
 <PackageReference Include="NSubstitute" Version="5.3.0" />
 <PackageReference Include="AwesomeAssertions" Version="9.1.0" />
-
 ```text
 
 ### Basic using Directives
@@ -60,7 +52,6 @@ using Microsoft.Extensions.Time.Testing;
 using NSubstitute;
 using Xunit;
 using AwesomeAssertions;
-
 ```text
 
 ## Core Testing Patterns
@@ -70,13 +61,10 @@ This section covers 7 core testing patterns, each including validator definition
 > For complete code examples, see [references/core-test-patterns.md](references/core-test-patterns.md)
 
 - **Pattern 1: Basic Field Validation** — Using `TestValidate` + `ShouldHaveValidationErrorFor` / `ShouldNotHaveValidationErrorFor` to test single field rules
-
 - **Pattern 2: Parameterized Tests** — Using `[Theory]` + `[InlineData]` to test multiple invalid/valid input combinations
 - **Pattern 3: Cross-Field Validation** — Password confirmation, custom `Must()` rules, and other multi-field related validations
-
 - **Pattern 4: Time-Dependent Validation** — Injecting `TimeProvider`, using `FakeTimeProvider` to control time for testing
 - **Pattern 5: Conditional Validation** — Using `.When()` for optional field validation, testing conditional trigger and skip scenarios
-
 - **Pattern 6: Async Validation** — `MustAsync` + `TestValidateAsync`, using NSubstitute Mock for external services
 - **Pattern 7: Collection Validation** — Validating collections non-empty and element validity
 
@@ -97,7 +85,6 @@ public class UserValidatorTests
               .WithErrorMessage("Username cannot be null or blank");
     }
 }
-
 ```text
 
 ## FluentValidation.TestHelper Core API
@@ -129,25 +116,20 @@ public class UserValidatorTests
 ### ✅ Recommended Practices
 
 1. **Use Parameterized Tests** - Use Theory to test multiple input combinations
-
-1. **Test Boundary Values** - Pay special attention to boundary conditions
-1. **Control Time** - Use FakeTimeProvider for time-dependent scenarios
-
-1. **Mock External Dependencies** - Use NSubstitute to isolate external services
-1. **Create Helper Methods** - Uniformly manage test data
-
-1. **Clear Test Naming** - Use `Method_Scenario_ExpectedResult` format
-1. **Test Error Messages** - Ensure users see correct error messages
+2. **Test Boundary Values** - Pay special attention to boundary conditions
+3. **Control Time** - Use FakeTimeProvider for time-dependent scenarios
+4. **Mock External Dependencies** - Use NSubstitute to isolate external services
+5. **Create Helper Methods** - Uniformly manage test data
+6. **Clear Test Naming** - Use `Method_Scenario_ExpectedResult` format
+7. **Test Error Messages** - Ensure users see correct error messages
 
 ### ❌ Practices to Avoid
 
 1. **Avoid Using DateTime.Now** - Causes unstable tests
-
-1. **Avoid Overly Coupled Tests** - Each test should only validate one rule
-1. **Avoid Hardcoded Test Data** - Use helper methods to create
-
-1. **Avoid Ignoring Boundary Conditions** - Boundary values are where errors most easily occur
-1. **Avoid Skipping Error Message Validation** - Error messages are part of user experience
+2. **Avoid Overly Coupled Tests** - Each test should only validate one rule
+3. **Avoid Hardcoded Test Data** - Use helper methods to create
+4. **Avoid Ignoring Boundary Conditions** - Boundary values are where errors most easily occur
+5. **Avoid Skipping Error Message Validation** - Error messages are part of user experience
 
 ## Common Testing Scenarios
 
@@ -164,7 +146,6 @@ public void Validate_Invalid_Email_Should_Validation_Fail(string email, string e
     var result = _validator.TestValidate(request);
     result.ShouldHaveValidationErrorFor(x => x.Email).WithErrorMessage(expectedError);
 }
-
 ```text
 
 ### Scenario 2: Age Range Validation
@@ -179,7 +160,6 @@ public void Validate_Invalid_Age_Should_Validation_Fail(int age, string expected
     var result = _validator.TestValidate(request);
     result.ShouldHaveValidationErrorFor(x => x.Age).WithErrorMessage(expectedError);
 }
-
 ```text
 
 ### Scenario 3: Required Field Validation
@@ -193,7 +173,6 @@ public void Validate_Not_Agree_To_Terms_Should_Validation_Fail()
     result.ShouldHaveValidationErrorFor(x => x.AgreeToTerms)
           .WithErrorMessage("Must agree to terms of use");
 }
-
 ```text
 
 ## Testing Helper Tools
@@ -209,8 +188,8 @@ public static class TestDataBuilder
         {
             Username = "testuser123",
             Email = "test@example.com",
-            Password=<DB_PASSWORD_PLACEHOLDER>
-            ConfirmPassword = "TestPass123",
+            Password = <DB_PASSWORD_PLACEHOLDER>
+            ConfirmPassword = <DB_PASSWORD_PLACEHOLDER>
             BirthDate = new DateTime(1990, 1, 1),
             Age = 34,
             PhoneNumber = "0912345678",
@@ -236,7 +215,6 @@ public static class TestDataBuilder
 var request = TestDataBuilder.CreateValidRequest()
                             .WithUsername("newuser")
                             .WithEmail("new@example.com");
-
 ```text
 
 ## Integration with Other Skills
@@ -244,10 +222,8 @@ var request = TestDataBuilder.CreateValidRequest()
 This skill can be combined with:
 
 - **unit-test-fundamentals**: Unit testing basics and 3A pattern
-
 - **test-naming-conventions**: Test naming conventions
 - **nsubstitute-mocking**: Mocking external service dependencies
-
 - **test-data-builder-pattern**: Building complex test data
 - **datetime-testing-timeprovider**: Time-dependent testing
 
@@ -260,7 +236,6 @@ This skill can be combined with:
 ```csharp
 _mockUserService.IsUsernameAvailableAsync("username")
                 .Returns(Task.FromResult(false));
-
 ```text
 
 ### Q2: How to Handle Time-Related Validation?
@@ -269,7 +244,6 @@ _mockUserService.IsUsernameAvailableAsync("username")
 
 ```csharp
 _fakeTimeProvider.SetUtcNow(new DateTime(2024, 1, 1));
-
 ```text
 
 ### Q3: How to Test Complex Cross-Field Validation?
@@ -280,7 +254,6 @@ _fakeTimeProvider.SetUtcNow(new DateTime(2024, 1, 1));
 // Test birthday passed scenario
 // Test birthday not yet arrived scenario
 // Test boundary date
-
 ```text
 
 ### Q4: How Much Should Be Tested?
@@ -288,10 +261,8 @@ _fakeTimeProvider.SetUtcNow(new DateTime(2024, 1, 1));
 **A:** Focus on testing:
 
 - At least one test for each validation rule
-
 - Boundary values and special cases
 - Error message correctness
-
 - All combinations of cross-field logic
 
 ## Template Files Reference
@@ -299,7 +270,6 @@ _fakeTimeProvider.SetUtcNow(new DateTime(2024, 1, 1));
 This skill provides the following template files:
 
 - `templates/validator-test-template.cs`: Complete validator test example
-
 - `templates/async-validator-examples.cs`: Async validation examples
 
 ## Reference Resources
@@ -315,13 +285,11 @@ This skill content is distilled from the "Old School Software Engineer's Testing
 ### Official Documentation
 
 - [FluentValidation Documentation](https://docs.fluentvalidation.net/)
-
 - [FluentValidation.TestHelper](https://docs.fluentvalidation.net/en/latest/testing.html)
 - [FluentValidation GitHub](https://github.com/FluentValidation/FluentValidation)
 
 ### Related Skills
 
 - `unit-test-fundamentals` - Unit testing basics
-
 - `nsubstitute-mocking` - Test doubles and mocking
 ````

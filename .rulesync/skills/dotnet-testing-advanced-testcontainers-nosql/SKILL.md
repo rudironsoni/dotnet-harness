@@ -11,12 +11,7 @@ metadata:
   related_skills: 'advanced-testcontainers-database, advanced-aspire-testing, advanced-webapi-integration-testing'
 ---
 
-<!--
-Attribution:
-
-- Source repo: https://github.com/kevintsengtw/dotnet-testing-agent-skills (MIT)
-- Ported/adapted into dotnet-agent-harness.
--->
+Source: kevintsengtw/dotnet-testing-agent-skills (MIT). Ported into dotnet-agent-harness.
 
 # Testcontainers NoSQL Integration Testing Guide
 
@@ -25,16 +20,12 @@ Attribution:
 Use this skill when asked to perform the following tasks:
 
 - Use Testcontainers to test MongoDB document operations
-
 - Use Testcontainers to test Redis cache services
 - Create MongoDB Collection Fixture for sharing containers
-
 - Create Redis Collection Fixture for sharing containers
 - Test MongoDB BSON serialization and complex document structures
-
 - Test MongoDB index performance and uniqueness constraints
 - Test Redis five data structures (String, Hash, List, Set, Sorted Set)
-
 - Implement data isolation strategy for NoSQL databases
 
 ## Core Concepts
@@ -44,19 +35,15 @@ Use this skill when asked to perform the following tasks:
 NoSQL database testing has significant differences from relational database testing:
 
 1. **Document Model Complexity**: MongoDB supports nested objects, arrays, dictionaries, and other complex structures
-
-1. **No Fixed Schema**: Need to validate data structure consistency through testing
-1. **Diverse Data Structures**: Redis has five main data structures, each with different use cases
-
-1. **Serialization Handling**: BSON (MongoDB) and JSON (Redis) serialization behavior needs validation
+2. **No Fixed Schema**: Need to validate data structure consistency through testing
+3. **Diverse Data Structures**: Redis has five main data structures, each with different use cases
+4. **Serialization Handling**: BSON (MongoDB) and JSON (Redis) serialization behavior needs validation
 
 ### Testcontainers Advantages
 
 - **Real Environment Simulation**: Uses actual MongoDB 7.0 and Redis 7.2 containers
-
 - **Consistent Testing**: Test results directly reflect production environment behavior
 - **Isolation Guarantee**: Each test environment is completely independent
-
 - **Performance Validation**: Can perform real index performance testing
 
 ## Environment Requirements
@@ -97,7 +84,6 @@ NoSQL database testing has significant differences from relational database test
     <PackageReference Include="Microsoft.Extensions.TimeProvider.Testing" Version="9.0.0" />
   </ItemGroup>
 </Project>
-
 ```text
 
 ### Package Version Notes
@@ -148,7 +134,6 @@ public class MyMongoTests
         // Use shared container
     }
 }
-
 ```text
 
 ### 2. Data Isolation Strategy
@@ -166,7 +151,6 @@ var user = new UserDocument
 // Redis: use unique Key prefix
 var testId = Guid.NewGuid().ToString("N")[..8];
 var key = $"test:{testId}:mykey";
-
 ```text
 
 ### 3. Cleanup Strategy
@@ -181,7 +165,6 @@ if (keys.Any())
 {
     await database.KeyDeleteAsync(keys.ToArray());
 }
-
 ```text
 
 ### 4. Performance Considerations
@@ -211,7 +194,6 @@ if (keys.Any())
 {
     await database.KeyDeleteAsync(keys.ToArray());
 }
-
 ```text
 
 ### MongoDB Unique Index Duplicate Insert
@@ -219,7 +201,6 @@ if (keys.Any())
 ```csharp
 // Use unique Email during testing to avoid conflicts
 var uniqueEmail = $"test_{Guid.NewGuid():N}@example.com";
-
 ```text
 
 ### Container Startup Timeout
@@ -231,13 +212,13 @@ _container = new MongoDbBuilder()
     .WithWaitStrategy(Wait.ForUnixContainer()
         .UntilPortIsAvailable(27017))
     .Build();
+```text
 
-## ```text
+---
 
 ## Related Skills
 
 - [testcontainers-database](../testcontainers-database/SKILL.md) - PostgreSQL/MSSQL containerized testing
-
 - [aspnet-integration-testing](../aspnet-integration-testing/SKILL.md) - ASP.NET Core integration testing
 - [nsubstitute-mocking](../../dotnet-testing/nsubstitute-mocking/SKILL.md) - Test doubles and Mock
 
@@ -256,10 +237,8 @@ This skill content is distilled from the "Old School Software Engineer's Testing
 ### Official Documentation
 
 - [Testcontainers Official Website](https://testcontainers.com/)
-
 - [.NET Testcontainers Documentation](https://dotnet.testcontainers.org/)
 - [MongoDB.Driver Official Documentation](https://www.mongodb.com/docs/drivers/csharp/)
-
 - [StackExchange.Redis Official Documentation](https://stackexchange.github.io/StackExchange.Redis/)
 - [xUnit Collection Fixtures](https://xunit.net/docs/shared-context#collection-fixture)
 ````

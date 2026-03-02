@@ -11,12 +11,7 @@ metadata:
   related_skills: 'unit-test-fundamentals, test-output-logging, xunit-project-setup'
 ---
 
-<!--
-Attribution:
-
-- Source repo: https://github.com/kevintsengtw/dotnet-testing-agent-skills (MIT)
-- Ported/adapted into dotnet-agent-harness.
--->
+Source: kevintsengtw/dotnet-testing-agent-skills (MIT). Ported into dotnet-agent-harness.
 
 # .NET Test Naming Conventions Guide
 
@@ -25,10 +20,8 @@ Attribution:
 Use this skill when asked to perform the following tasks:
 
 - Name test methods or test classes
-
 - Review and improve existing test naming
 - Ensure test report readability
-
 - Establish team-consistent test naming standards
 
 ## Test Method Naming Conventions
@@ -39,7 +32,6 @@ Use underscore-separated three-part naming:
 
 ````text
 [MethodUnderTest]_[TestScenario/InputConditions]_[ExpectedBehavior/Result]
-
 ```text
 
 ### Section Explanations
@@ -77,7 +69,6 @@ public void Add_WithInput0And0_ShouldReturn0()
 // Negative number test
 [Fact]
 public void Add_WithNegativeAndPositiveNumbers_ShouldReturnCorrectResult()
-
 ```text
 
 ### Validation Logic Tests
@@ -98,7 +89,6 @@ public void IsValidEmail_WithEmptyString_ShouldReturnFalse()
 // Invalid input - wrong format
 [Fact]
 public void IsValidEmail_WithInvalidEmailFormat_ShouldReturnFalse()
-
 ```text
 
 ### Business Logic Tests
@@ -115,7 +105,6 @@ public void ProcessOrder_WithNullInput_ShouldThrowArgumentNullException()
 // Formatting test
 [Fact]
 public void GetOrderNumber_WithValidOrder_ShouldReturnFormattedOrderNumber()
-
 ```text
 
 ### Calculation Logic Tests
@@ -136,7 +125,6 @@ public void Calculate_WithInput0Price_ShouldHandleNormally()
 // Tax calculation
 [Fact]
 public void CalculateWithTax_WithInput100And5PercentTax_ShouldReturn105()
-
 ```text
 
 ### State Change Tests
@@ -153,7 +141,6 @@ public void Increment_StartingFrom0Twice_ShouldReturn2()
 // Reset test
 [Fact]
 public void Reset_FromAnyValue_ShouldReturn0()
-
 ```text
 
 ## Test Class Naming Conventions
@@ -162,7 +149,6 @@ public void Reset_FromAnyValue_ShouldReturn0()
 
 ```text
 [ClassUnderTest]Tests
-
 ```text
 
 ### Examples
@@ -209,7 +195,6 @@ public class CalculatorTests
         // ...
     }
 }
-
 ```text
 
 ## Parameterized Test Naming
@@ -235,7 +220,6 @@ public void IsValidEmail_WithValidEmailFormats_ShouldReturnTrue(string validEmai
 [InlineData("invalid-email")]
 [InlineData("@example.com")]
 public void IsValidEmail_WithInvalidEmailFormats_ShouldReturnFalse(string invalidEmail)
-
 ```text
 
 ## Common Scenario Vocabulary
@@ -264,13 +248,10 @@ public void IsValidEmail_WithInvalidEmailFormats_ShouldReturnFalse(string invali
 When naming test methods, please confirm:
 
 - [ ] Use three-part naming `Method_Scenario_Expected`
-
 - [ ] Scenario description is clear and explicit
 - [ ] Expected result is specific and verifiable
-
 - [ ] Use Chinese to increase readability
 - [ ] Avoid vague vocabulary like `Test1`, `TestMethod`
-
 - [ ] Parameterized tests use vocabulary like "Various", "Valid", "Invalid"
 
 ## Test Report Readability
@@ -286,7 +267,6 @@ CalculatorTests
 EmailHelperTests
    IsValidEmail_WithValidEmail_ShouldReturnTrue
    IsValidEmail_WithNullValue_ShouldReturnFalse
-
 ```text
 
 ## Reference Resources

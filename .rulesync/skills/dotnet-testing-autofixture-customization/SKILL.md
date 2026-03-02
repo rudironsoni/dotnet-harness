@@ -11,34 +11,23 @@ metadata:
   related_skills: 'autofixture-basics, autodata-xunit-integration, autofixture-bogus-integration'
 ---
 
-<!--
-Attribution:
-
-- Source repo: https://github.com/kevintsengtw/dotnet-testing-agent-skills (MIT)
-- Ported/adapted into dotnet-agent-harness.
--->
+Source: kevintsengtw/dotnet-testing-agent-skills (MIT). Ported into dotnet-agent-harness.
 
 # AutoFixture Advanced: Custom Test Data Generation Strategies
 
 ## Applicable Scenarios
 
 - autofixture customization
-
 - autofixture customize
 - ISpecimenBuilder
-
 - specimen builder
 - DataAnnotations autofixture
-
 - property range control
 - fixture.Customizations
-
 - Insert(0)
 - RandomDateTimeSequenceGenerator
-
 - NumericRangeBuilder
 - custom builder
-
 - custom builder autofixture
 
 ## Overview
@@ -51,19 +40,16 @@ implementation, mastering these techniques enables test data to better match act
 
 1. **DataAnnotations Integration**: AutoFixture automatically recognizes validation attributes like `[StringLength]`,
    `[Range]`, etc.
-
-1. **Property Range Control**: Using `.With()` with `Random.Shared` to dynamically generate random values
-1. **Custom ISpecimenBuilder**: Implementing precise control over specific property builders
-
-1. **Priority Management**: Understanding the difference between `Insert(0)` vs `Add()`
-1. **Generic Design**: Creating reusable builders supporting multiple numeric types
+2. **Property Range Control**: Using `.With()` with `Random.Shared` to dynamically generate random values
+3. **Custom ISpecimenBuilder**: Implementing precise control over specific property builders
+4. **Priority Management**: Understanding the difference between `Insert(0)` vs `Add()`
+5. **Generic Design**: Creating reusable builders supporting multiple numeric types
 
 ## Package Installation
 
 ````xml
 <PackageReference Include="AutoFixture" Version="4.18.1" />
 <PackageReference Include="AutoFixture.Xunit2" Version="4.18.1" />
-
 ```text
 
 ## DataAnnotations Automatic Integration
@@ -110,7 +96,6 @@ public void AutoFixture_Batch_Generation_All_Meet_Constraints()
         person.Age.Should().BeInRange(10, 80);
     });
 }
-
 ```text
 
 ## Using .With() to Control Property Ranges
@@ -123,7 +108,6 @@ public void AutoFixture_Batch_Generation_All_Meet_Constraints()
 
 // ✅ Dynamic value: Each object recalculates
 .With(x => x.Age, () => Random.Shared.Next(30, 50))
-
 ```text
 
 ### Complete Example
@@ -152,7 +136,6 @@ public void With_Method_Fixed_Value_vs_Dynamic_Value_Difference()
     // Dynamic value: Usually has multiple ages
     dynamicAgeMembers.Select(m => m.Age).Distinct().Count().Should().BeGreaterThan(1);
 }
-
 ```text
 
 ### Advantages of Random.Shared
@@ -204,7 +187,6 @@ public class RandomRangedDateTimeBuilder : ISpecimenBuilder
         return new NoSpecimen();
     }
 }
-
 ```text
 
 ### Usage Example
@@ -229,7 +211,6 @@ public void Control_Only_Specific_DateTime_Property()
 
     // CreateTime not affected
 }
-
 ```text
 
 ### Importance of NoSpecimen
@@ -252,7 +233,6 @@ public object Create(object request, ISpecimenContext context)
     // Is our target → generate value
     return GenerateRandomDateTime();
 }
-
 ```text
 
 ## Priority Management: Insert(0) vs Add()
@@ -267,7 +247,6 @@ fixture.Customizations.Add(new MyNumericBuilder(30, 50, "Age"));
 
 // ✅ Correct: Ensure highest priority
 fixture.Customizations.Insert(0, new MyNumericBuilder(30, 50, "Age"));
-
 ```text
 
 ### Improved Numeric Range Builder
@@ -301,7 +280,6 @@ public class ImprovedRandomRangedNumericSequenceBuilder : ISpecimenBuilder
         return new NoSpecimen();
     }
 }
-
 ```text
 
 ### Using Insert(0) to Ensure Priority
@@ -322,7 +300,6 @@ public void Using_Insert0_To_Ensure_Priority()
 
     members.Should().AllSatisfy(m => m.Age.Should().BeInRange(30, 49));
 }
-
 ```text
 
 ## Generic Numeric Range Builder
@@ -379,7 +356,6 @@ public class NumericRangeBuilder<TValue> : ISpecimenBuilder
         };
     }
 }
-
 ```text
 
 ### Fluent Interface Extension Methods
@@ -399,7 +375,6 @@ public static class FixtureRangedNumericExtensions
         return fixture;
     }
 }
-
 ```text
 
 ### Complete Usage Example
@@ -443,7 +418,6 @@ public void Multiple_Numeric_Type_Range_Control()
         product.Discount.Should().BeInRange(0.0f, 0.5f);
     });
 }
-
 ```text
 
 ## int vs DateTime Handling Differences
@@ -463,15 +437,15 @@ public void Multiple_Numeric_Type_Range_Control()
    - Fully utilize existing model validation rules
    - AutoFixture automatically generates data meeting constraints
 
-1. **Use Random.Shared**
+2. **Use Random.Shared**
    - Avoid duplicate value issues
    - Thread-safe, better performance
 
-1. **Insert(0) to Ensure Priority**
+3. **Insert(0) to Ensure Priority**
    - Custom numeric builders must use `Insert(0)`
    - Avoid being overridden by built-in builders
 
-1. **Generic Design**
+4. **Generic Design**
    - Create reusable generic builders
    - Use extension methods to provide fluent interface
 
@@ -481,11 +455,11 @@ public void Multiple_Numeric_Type_Range_Control()
    - Don't assume `Add()` will always work
    - Test and verify builders work correctly
 
-1. **Overly Complex Logic**
+2. **Overly Complex Logic**
    - Builders should maintain single responsibility
    - Complex business logic belongs in tests or service layer
 
-1. **Using new Random()**
+3. **Using new Random()**
    - May produce duplicate values
    - Not thread-safe
 
@@ -494,14 +468,12 @@ public void Multiple_Numeric_Type_Range_Control()
 See example files in the [templates](./templates) folder:
 
 - [dataannotations-integration.cs](./templates/dataannotations-integration.cs) - DataAnnotations automatic integration
-
 - [custom-specimen-builders.cs](./templates/custom-specimen-builders.cs) - Custom ISpecimenBuilder implementations
 - [numeric-range-extensions.cs](./templates/numeric-range-extensions.cs) - Generic numeric range builder and extension methods
 
 ## Relationship with Other Skills
 
 - **autofixture-basics**: Prerequisite knowledge for this skill, need to master basic usage first
-
 - **autodata-xunit-integration**: Next learning goal, integrate customization with xUnit
 - **autofixture-nsubstitute-integration**: Advanced integration, combining Mock with custom data generation
 
@@ -518,7 +490,6 @@ This skill content is distilled from the "Old School Software Engineer's Testing
 ### Official Documentation
 
 - [AutoFixture GitHub](https://github.com/AutoFixture/AutoFixture)
-
 - [AutoFixture Official Documentation](https://autofixture.github.io/)
 - [ISpecimenBuilder Interface](https://autofixture.github.io/docs/fixture-customization/)
 ````

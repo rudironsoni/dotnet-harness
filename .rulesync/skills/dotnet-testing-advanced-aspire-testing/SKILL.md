@@ -11,12 +11,7 @@ metadata:
   related_skills: 'advanced-testcontainers-database, advanced-webapi-integration-testing, advanced-testcontainers-nosql'
 ---
 
-<!--
-Attribution:
-
-- Source repo: https://github.com/kevintsengtw/dotnet-testing-agent-skills (MIT)
-- Ported/adapted into dotnet-agent-harness.
--->
+Source: kevintsengtw/dotnet-testing-agent-skills (MIT). Ported into dotnet-agent-harness.
 
 # .NET Aspire Testing Integration Testing Framework
 
@@ -25,19 +20,15 @@ Attribution:
 Use this skill when asked to perform the following tasks:
 
 - Create integration tests for .NET Aspire distributed applications
-
 - Migrate from Testcontainers to .NET Aspire Testing
 - Configure AppHost projects for testing
-
 - Use DistributedApplicationTestingBuilder to establish testing environment
 - Test interactions between multiple services (database, cache, API, etc.)
-
 - Create integration testing architecture for cloud-native .NET applications
 
 ## Prerequisites
 
 - .NET 8 SDK or higher
-
 - Docker Desktop (WSL 2 or Hyper-V)
 - AppHost project (.NET Aspire application orchestration)
 
@@ -48,7 +39,6 @@ Use this skill when asked to perform the following tasks:
 **.NET Aspire Testing is a closed integration testing framework** designed specifically for distributed applications:
 
 - Reproduce the same service architecture in tests as in production
-
 - Use real containers instead of mock services
 - Automatic container lifecycle management
 
@@ -57,7 +47,6 @@ Use this skill when asked to perform the following tasks:
 Using .NET Aspire Testing requires creating an AppHost project:
 
 - Define complete application architecture and container orchestration
-
 - Tests reuse AppHost configuration to establish environment
 - Without AppHost, cannot use Aspire Testing
 
@@ -93,7 +82,6 @@ MyApp/
         │   └── DatabaseManager.cs
         └── Controllers/
             └── MyControllerTests.cs
-
 ```text
 
 ## Required Packages
@@ -120,7 +108,6 @@ MyApp/
     <ProjectReference Include="..\src\MyApp.Api\MyApp.Api.csproj" />
   </ItemGroup>
 </Project>
-
 ```text
 
 ### Test Project
@@ -146,7 +133,6 @@ MyApp/
     <ProjectReference Include="..\..\MyApp.AppHost\MyApp.AppHost.csproj" />
   </ItemGroup>
 </Project>
-
 ```text
 
 ## Container Lifecycle Management
@@ -159,10 +145,9 @@ var postgres = builder.AddPostgres("postgres")
 
 var redis = builder.AddRedis("redis")
                   .WithLifetime(ContainerLifetime.Session);
-
 ```text
-- **Session**: Automatically cleaned up after test session ends (recommended)
 
+- **Session**: Automatically cleaned up after test session ends (recommended)
 - **Persistent**: Containers continue running, require manual cleanup
 
 ## Waiting for Services Ready
@@ -191,7 +176,6 @@ private async Task WaitForPostgreSqlReadyAsync()
     }
     throw new InvalidOperationException("PostgreSQL service failed to become ready");
 }
-
 ```text
 
 ## Database Initialization
@@ -217,7 +201,6 @@ private async Task EnsureDatabaseExistsAsync(string connectionString)
             .ExecuteNonQueryAsync();
     }
 }
-
 ```text
 
 ## Respawn Configuration
@@ -231,7 +214,6 @@ _respawner = await Respawner.CreateAsync(connection, new RespawnerOptions
     SchemasToInclude = new[] { "public" },
     DbAdapter = DbAdapter.Postgres  // Critical!
 });
-
 ```text
 
 ## Collection Fixture Best Practices
@@ -249,7 +231,6 @@ public class MyControllerTests : IntegrationTestBase
 {
     public MyControllerTests(AspireAppFixture fixture) : base(fixture) { }
 }
-
 ```text
 
 ## Time Testability
@@ -281,7 +262,6 @@ public class ProductService
 
 // DI registration
 builder.Services.AddSingleton<TimeProvider>(TimeProvider.System);
-
 ```text
 
 ## Selection Recommendations
@@ -289,19 +269,15 @@ builder.Services.AddSingleton<TimeProvider>(TimeProvider.System);
 ### Choose .NET Aspire Testing
 
 - Project already uses .NET Aspire
-
 - Need to test multi-service interactions
 - Emphasize unified development and testing experience
-
 - Cloud-native application architecture
 
 ### Choose Testcontainers
 
 - Traditional .NET project
-
 - Need fine-grained container control
 - Integration with non-.NET services
-
 - Team unfamiliar with Aspire
 
 ## Common Issues
@@ -319,7 +295,6 @@ builder.AddProject<Projects.MyApp_Api>("my-api")
 builder.AddProject<Projects.MyApp_Api>("my-api")
        .WithReference(postgresDb)
        .WithReference(redis);
-
 ```text
 
 ### Dapper Field Mapping
@@ -336,7 +311,6 @@ const string sql = @"
            created_at AS CreatedAt,
            updated_at AS UpdatedAt
     FROM products";
-
 ```text
 
 ## Reference Resources
@@ -356,7 +330,6 @@ This skill content is distilled from the "Old School Software Engineer's Testing
 ### Official Documentation
 
 - [.NET Aspire Official Documentation](https://learn.microsoft.com/dotnet/aspire/)
-
 - [Aspire Testing Documentation](https://learn.microsoft.com/dotnet/aspire/testing)
 
 ## Reference Resources (continued)
@@ -364,15 +337,11 @@ This skill content is distilled from the "Old School Software Engineer's Testing
 Please refer to example files in the same directory:
 
 - `templates/apphost-program.cs` - AppHost orchestration definition
-
 - `templates/aspire-app-fixture.cs` - Testing infrastructure
 - `templates/integration-test-collection.cs` - Collection Fixture configuration
-
 - `templates/integration-test-base.cs` - Test base class
 - `templates/database-manager.cs` - Database manager
-
 - `templates/controller-tests.cs` - Controller test examples
 - `templates/test-project.csproj` - Test project configuration
-
 - `templates/apphost-project.csproj` - AppHost project configuration
 ````

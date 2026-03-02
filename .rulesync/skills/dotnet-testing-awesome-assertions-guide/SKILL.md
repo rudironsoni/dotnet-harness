@@ -11,12 +11,7 @@ metadata:
   related_skills: 'complex-object-comparison, fluentvalidation-testing, unit-test-fundamentals'
 ---
 
-<!--
-Attribution:
-
-- Source repo: https://github.com/kevintsengtw/dotnet-testing-agent-skills (MIT)
-- Ported/adapted into dotnet-agent-harness.
--->
+Source: kevintsengtw/dotnet-testing-agent-skills (MIT). Ported into dotnet-agent-harness.
 
 # AwesomeAssertions Fluent Assertion Guide
 
@@ -28,10 +23,8 @@ syntax, advanced techniques, and best practices.
 Use this skill when asked to perform the following tasks:
 
 - Write clear, highly readable test assertions
-
 - Compare complex objects or collection contents
 - Verify exception throwing and messages
-
 - Use fluent syntax (Should/Be/Contain) for test validation
 - Replace native Assert with AwesomeAssertions
 
@@ -43,13 +36,10 @@ with no commercial usage restrictions.
 ### Core Features
 
 - Fully Free: Apache 2.0 license, suitable for commercial projects
-
 - Fluent Syntax: Supports natural language style method chaining
 - Rich Assertions: Covers objects, collections, strings, numbers, exceptions, and various other types
-
 - Excellent Error Messages: Provides detailed and easy-to-understand failure information
 - High Performance: Optimized implementation ensures test execution efficiency
-
 - Extensible: Supports custom Assertion methods
 
 ### Relationship with FluentAssertions
@@ -70,15 +60,11 @@ AwesomeAssertions is a community fork of FluentAssertions, main differences:
 ### NuGet Package Installation
 
 ````bash
-
 # .NET CLI
-
 dotnet add package AwesomeAssertions
 
 # Package Manager Console
-
 Install-Package AwesomeAssertions
-
 ```text
 
 ### csproj Setup (Recommended)
@@ -87,7 +73,6 @@ Install-Package AwesomeAssertions
 <ItemGroup>
   <PackageReference Include="AwesomeAssertions" Version="9.1.0" PrivateAssets="all" />
 </ItemGroup>
-
 ```text
 
 ### Namespace Import
@@ -95,8 +80,9 @@ Install-Package AwesomeAssertions
 ```csharp
 using AwesomeAssertions;
 using Xunit;
+```text
 
-## ```text
+---
 
 ## Core Assertions Syntax
 
@@ -120,7 +106,6 @@ All Assertions start with `.Should()`, combined with fluent method chaining.
 Use `BeEquivalentTo()` with `options` for deep object comparison:
 
 - **Exclude properties**: `options.Excluding(u => u.Id)` — exclude auto-generated fields
-
 - **Dynamic exclusion**: `options.Excluding(ctx => ctx.Path.EndsWith("At"))` — exclude by pattern
 - **Circular references**: `options.IgnoringCyclicReferences().WithMaxRecursionDepth(10)`
 
@@ -139,7 +124,6 @@ Refer to [templates/custom-assertions-template.cs](templates/custom-assertions-t
 ## Performance Optimization Strategies
 
 - **Large data**: First use `HaveCount()` for quick count check, then sample validation (avoid full `BeEquivalentTo`)
-
 - **Selective comparison**: Use anonymous objects + `ExcludingMissingMembers()` to only validate key properties
 
 ```csharp
@@ -150,8 +134,9 @@ order.Should().BeEquivalentTo(new
     TotalAmount = 999.99m,
     Status = "Pending"
 }, options => options.ExcludingMissingMembers());
+```text
 
-## ```text (continued)
+---
 
 ## Best Practices and Team Standards
 
@@ -165,7 +150,6 @@ Add `because` string in assertions to provide clear failure context:
 
 ```csharp
 result.IsSuccess.Should().BeFalse("because negative payment amounts are not allowed");
-
 ```text
 
 ### AssertionScope Usage
@@ -179,8 +163,9 @@ using (new AssertionScope())
     user.Id.Should().BeGreaterThan(0, "User should have valid ID");
     user.Email.Should().NotBeNullOrEmpty("Email is required");
 }
+```text
 
-## ```text (continued)
+---
 
 ## Common Scenarios and Solutions
 
@@ -209,7 +194,6 @@ actual.Should().BeEquivalentTo(expected, options => options
     .Excluding(x => x.CreatedAt)
     .Excluding(x => x.UpdatedAt)
 );
-
 ```text
 
 ### Problem 2: Collection order different causes failure
@@ -224,7 +208,6 @@ actual.Should().BeEquivalentTo(expected); // Does not check order
 
 // Or explicitly specify need to check order
 actual.Should().Equal(expected); // Checks order
-
 ```text
 
 ### Problem 3: Floating point comparison fails
@@ -236,8 +219,9 @@ actual.Should().Equal(expected); // Checks order
 ```csharp
 // Use precision tolerance
 actualValue.Should().BeApproximately(expectedValue, 0.001);
+```text
 
-## ```text (continued)
+---
 
 ## When to Use This Skill
 
@@ -276,7 +260,6 @@ public void Calculator_Add_TwoPositiveNumbers_ShouldReturnSum()
     // Assert - use AwesomeAssertions
     result.Should().Be(5);
 }
-
 ```text
 
 ### Integration with test-naming-conventions
@@ -293,7 +276,6 @@ public void CreateUser_WithValidData_ShouldReturnEnabledUser()
         .And.BeOfType<User>();
     user.IsActive.Should().BeTrue();
 }
-
 ```text
 
 ### Integration with xunit-project-setup
@@ -319,7 +301,6 @@ This skill content is extracted from "Old School Software Engineer's Testing Pra
 ### Official Resources
 
 - **AwesomeAssertions GitHub**: https://github.com/AwesomeAssertions/AwesomeAssertions
-
 - **AwesomeAssertions Official Documentation**: https://awesomeassertions.org/
 
 ### Related Articles
@@ -333,12 +314,10 @@ This skill content is extracted from "Old School Software Engineer's Testing Pra
 AwesomeAssertions provides powerful and readable assertion syntax, an important tool for writing high-quality tests. Through:
 
 1. **Fluent Syntax**: Makes test code more readable
-
-1. **Rich Assertions**: Covers various data types
-1. **Custom Extensions**: Establish domain-specific assertions
-
-1. **Performance Optimization**: Handle large data scenarios
-1. **Completely Free**: Apache 2.0 license with no commercial restrictions
+2. **Rich Assertions**: Covers various data types
+3. **Custom Extensions**: Establish domain-specific assertions
+4. **Performance Optimization**: Handle large data scenarios
+5. **Completely Free**: Apache 2.0 license with no commercial restrictions
 
 Remember: Good assertions not only validate results but clearly express expected behavior and provide useful diagnostic information when failing.
 

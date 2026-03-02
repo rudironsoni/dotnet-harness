@@ -11,12 +11,7 @@ metadata:
   related_skills: 'nsubstitute-mocking, unit-test-fundamentals, datetime-testing-timeprovider'
 ---
 
-<!--
-Attribution:
-
-- Source repo: https://github.com/kevintsengtw/dotnet-testing-agent-skills (MIT)
-- Ported/adapted into dotnet-agent-harness.
--->
+Source: kevintsengtw/dotnet-testing-agent-skills (MIT). Ported into dotnet-agent-harness.
 
 # File System Testing: Using System.IO.Abstractions to Simulate File Operations
 
@@ -25,10 +20,8 @@ Attribution:
 Use this skill when asked to perform the following tasks:
 
 - Refactor code directly using `System.IO.File`, `System.IO.Directory` and other static classes
-
 - Write unit tests for code involving file read/write, directory operations
 - Use MockFileSystem to simulate various file system states
-
 - Test exception scenarios like insufficient file permissions, file not found
 - Design testable file processing service architecture
 
@@ -39,10 +32,8 @@ Use this skill when asked to perform the following tasks:
 Traditional code directly using `System.IO` static classes is difficult to test, reasons include:
 
 - **Speed Issues**: Actual disk IO is 10-100x slower than memory operations
-
 - **Environment Dependency**: Test results affected by file system state, permissions, paths
 - **Side Effects**: Tests leave traces on disk, affecting other tests
-
 - **Concurrency Issues**: Multiple tests operating on same file create race conditions
 - **Error Simulation Difficulty**: Difficult to simulate insufficient permissions, insufficient disk space, etc.
 
@@ -62,8 +53,8 @@ public interface IFileSystem
     IPath Path { get; }
     IDriveInfo DriveInfo { get; }
 }
-
 ```text
+
 **Required NuGet Packages**:
 
 ```xml
@@ -72,7 +63,6 @@ public interface IFileSystem
 
 <!-- Test project -->
 <PackageReference Include="System.IO.Abstractions.TestingHelpers" Version="21.*" />
-
 ```text
 
 ### 3. Refactoring Steps
@@ -104,16 +94,16 @@ public class ConfigService
         return _fileSystem.File.ReadAllText(path);
     }
 }
-
 ```text
+
 **Step 2**: Register real implementation in DI container
 
 ```csharp
 // Program.cs
 services.AddSingleton<IFileSystem, FileSystem>();
 services.AddScoped<ConfigService>();
-
 ```text
+
 **Step 3**: Use MockFileSystem in tests
 
 ```csharp
@@ -122,7 +112,6 @@ var mockFs = new MockFileSystem(new Dictionary<string, MockFileData>
     ["config.json"] = new MockFileData("{ \"key\": \"value\" }")
 });
 var service = new ConfigService(mockFs);
-
 ```text
 
 ## MockFileSystem Testing Patterns
@@ -149,7 +138,6 @@ public async Task LoadConfig_File_Exists_Should_Return_Content()
     // Assert
     result.Should().Contain("key");
 }
-
 ```text
 
 ### Pattern 2: Verify Write Results
@@ -170,7 +158,6 @@ public async Task SaveConfig_Specified_Content_Should_Write_Correctly()
     var content = await mockFileSystem.File.ReadAllTextAsync("output.json");
     content.Should().Contain("saved");
 }
-
 ```text
 
 ### Pattern 3: Test Directory Operations
@@ -193,7 +180,6 @@ public void CopyFile_Target_Directory_Not_Exists_Should_Auto_Create()
     mockFileSystem.Directory.Exists(@"C:\target\subfolder").Should().BeTrue();
     mockFileSystem.File.Exists(@"C:\target\subfolder\file.txt").Should().BeTrue();
 }
-
 ```text
 
 ### Pattern 4: Use NSubstitute to Simulate Errors
@@ -222,7 +208,6 @@ public void TryReadFile_Insufficient_Permissions_Should_Return_False()
     result.Should().BeFalse();
     content.Should().BeNull();
 }
-
 ```text
 
 ## Advanced Testing Techniques
@@ -248,7 +233,6 @@ public async Task CountLines_Multi_Line_File_Should_Return_Correct_Count()
     // Assert
     result.Should().Be(4);
 }
-
 ```text
 
 ### File Information Testing
@@ -274,7 +258,6 @@ public void GetFileInfo_File_Exists_Should_Return_Correct_Info()
     info!.Name.Should().Be("test.txt");
     info.Size.Should().Be(content.Length);
 }
-
 ```text
 
 ### Backup File Testing
@@ -299,7 +282,6 @@ public void BackupFile_File_Exists_Should_Create_Timestamp_Backup()
     backupPath.Should().EndWith(".txt");
     mockFileSystem.File.Exists(backupPath).Should().BeTrue();
 }
-
 ```text
 
 ## Best Practices
@@ -310,18 +292,18 @@ public void BackupFile_File_Exists_Should_Create_Timestamp_Backup()
 
    ```csharp
    var path = _fileSystem.Path.Combine("configs", "app.json");
-````
+```text
 
-1. **Defensively check file existence**:
+2. **Defensively check file existence**:
 
    ```csharp
    if (!_fileSystem.File.Exists(filePath))
    {
        return defaultValue;
    }
-   ```
+```text
 
-1. **Auto-create necessary directories**:
+3. **Auto-create necessary directories**:
 
    ```csharp
    var dir = _fileSystem.Path.GetDirectoryName(filePath);
@@ -329,9 +311,9 @@ public void BackupFile_File_Exists_Should_Create_Timestamp_Backup()
    {
        _fileSystem.Directory.CreateDirectory(dir);
    }
-   ```
+```text
 
-1. **Properly handle various IO exceptions**:
+4. **Properly handle various IO exceptions**:
 
    ```csharp
    try
@@ -341,9 +323,9 @@ public void BackupFile_File_Exists_Should_Create_Timestamp_Backup()
    catch (UnauthorizedAccessException) { /* insufficient permissions */ }
    catch (IOException) { /* file locked */ }
    catch (DirectoryNotFoundException) { /* directory not found */ }
-   ```
+```text
 
-1. **Use independent MockFileSystem for each test**:
+5. **Use independent MockFileSystem for each test**:
 
    ```csharp
    public class ServiceTests
@@ -360,7 +342,7 @@ public void BackupFile_File_Exists_Should_Create_Timestamp_Backup()
            var mockFs = new MockFileSystem(); // Independent instance
        }
    }
-   ```
+```text
 
 ### ❌ Should Avoid
 
@@ -373,9 +355,9 @@ public void BackupFile_File_Exists_Should_Create_Timestamp_Backup()
 
    // ✅ Should do this
    var path = _fileSystem.Path.Combine("configs", "app.json");
-   ```
+```text
 
-1. **Use real file system in unit tests**:
+2. **Use real file system in unit tests**:
 
    ```csharp
    // ❌ This is not a unit test
@@ -383,9 +365,9 @@ public void BackupFile_File_Exists_Should_Create_Timestamp_Backup()
 
    // ✅ Unit tests should use MockFileSystem
    var mockFs = new MockFileSystem();
-   ```
+```text
 
-1. **Ignore exception handling**:
+3. **Ignore exception handling**:
 
    ```csharp
    // ❌ Don't assume file always exists
@@ -397,32 +379,28 @@ public void BackupFile_File_Exists_Should_Create_Timestamp_Backup()
        try { return _fileSystem.File.ReadAllText(path); }
        catch (IOException) { return defaultValue; }
    }
-   ```
+```text
 
 ## Performance Considerations
 
 ### MockFileSystem Advantages
 
 - **Speed**: 10-100x faster than real file operations
-
 - **Reliability**: Not affected by disk state
 - **Isolation**: Complete isolation between tests
-
 - **Error Simulation**: Can precisely simulate various exception scenarios
 
 ### Memory Usage Recommendations
 
 - Only create files necessary for testing
-
 - Avoid simulating oversized files in tests
 - For large file processing logic, use moderately sized test data:
 
-````csharp
+```csharp
 // ✅ Moderately sized test data
 var testContent = string.Join("\n",
     Enumerable.Range(1, 1000).Select(i => $"Line {i}"));
 mockFileSystem.AddFile("test.txt", new MockFileData(testContent));
-
 ```text
 
 ## Practical Integration Examples
@@ -432,10 +410,8 @@ mockFileSystem.AddFile("test.txt", new MockFileData(testContent));
 See `templates/configmanager-service.cs` for complete implementation, including:
 
 - Configuration file load and save
-
 - JSON serialization and deserialization
 - Auto-create directories
-
 - Configuration file backup functionality
 
 ### File Management Service
@@ -443,10 +419,8 @@ See `templates/configmanager-service.cs` for complete implementation, including:
 See `templates/filemanager-service.cs` for implementation, including:
 
 - File copy and backup
-
 - Directory operations
 - File information query
-
 - Error handling patterns
 
 ## Reference Resources
@@ -462,13 +436,11 @@ This skill content is distilled from the "Old School Software Engineer's Testing
 ### Official Documentation
 
 - [System.IO.Abstractions GitHub](https://github.com/TestableIO/System.IO.Abstractions)
-
 - [System.IO.Abstractions NuGet](https://www.nuget.org/packages/System.IO.Abstractions/)
 - [TestingHelpers NuGet](https://www.nuget.org/packages/System.IO.Abstractions.TestingHelpers/)
 
 ### Related Skills
 
 - `nsubstitute-mocking` - Test doubles and mocking
-
 - `unit-test-fundamentals` - Unit testing basics
 ````

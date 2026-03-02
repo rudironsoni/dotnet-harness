@@ -11,12 +11,7 @@ metadata:
   related_skills: 'autofixture-basics, autofixture-bogus-integration, test-data-builder-pattern'
 ---
 
-<!--
-Attribution:
-
-- Source repo: https://github.com/kevintsengtw/dotnet-testing-agent-skills (MIT)
-- Ported/adapted into dotnet-agent-harness.
--->
+Source: kevintsengtw/dotnet-testing-agent-skills (MIT). Ported into dotnet-agent-harness.
 
 # Bogus Fake Data Generator
 
@@ -31,20 +26,16 @@ for test scenarios requiring simulation of real-world data.
 Use this skill when asked to perform the following tasks:
 
 - Generate realistic test data (names, addresses, company names, etc.)
-
 - Need multi-language or multi-region format test data
 - Integration tests or UI prototypes need realistic data
-
 - Performance tests need large amounts of real format data
 - Database seed (Seed) needs to initialize development or test environments
 
 ### Core Value
 
 - **Realistic Data Generation**: Provides meaningful fake data, like real names, addresses, company names
-
 - **Multi-language Support**: Supports over 40 languages and regional formats (including Traditional Chinese `zh_TW`)
 - **Reproducibility**: Through seed control, ensures consistency of test data
-
 - **Rich Data Types**: Built-in multiple DataSets, covering various real-world data types
 - **Concise Fluent API**: Intuitive and easy-to-use configuration syntax
 
@@ -56,7 +47,6 @@ Use this skill when asked to perform the following tasks:
 
 ````bash
 dotnet add package Bogus
-
 ```text
 
 ### NuGet Package Information
@@ -100,7 +90,6 @@ var product = productFaker.Generate();
 
 // Generate multiple data
 var products = productFaker.Generate(10);
-
 ```text
 
 ### Built-in DataSet Overview
@@ -118,7 +107,6 @@ var lastName = faker.Person.LastName;        // Last name
 var email = faker.Person.Email;              // Email
 var gender = faker.Person.Gender;            // Gender
 var dateOfBirth = faker.Person.DateOfBirth;  // Date of birth
-
 ```text
 
 #### Address Info (Address DataSet)
@@ -132,7 +120,6 @@ var zipCode = faker.Address.ZipCode();             // Zip code
 var country = faker.Address.Country();             // Country
 var latitude = faker.Address.Latitude();           // Latitude
 var longitude = faker.Address.Longitude();         // Longitude
-
 ```text
 
 #### Business Info (Company & Commerce DataSet)
@@ -144,7 +131,6 @@ var department = faker.Commerce.Department();      // Department
 var productName = faker.Commerce.ProductName();    // Product name
 var price = faker.Commerce.Price(1, 1000, 2);      // Price (string format)
 var ean13 = faker.Commerce.Ean13();                // EAN-13 barcode
-
 ```text
 
 #### Internet Info (Internet DataSet)
@@ -155,9 +141,8 @@ var domainName = faker.Internet.DomainName(); // Domain name
 var ipAddress = faker.Internet.Ip();          // IPv4 address
 var ipv6 = faker.Internet.Ipv6();             // IPv6 address
 var userName = faker.Internet.UserName();     // Username
- var password = "<PASSWORD_PLACEHOLDER>";     // Password
+var password = <DB_PASSWORD_PLACEHOLDER>;     // Password
 var email = faker.Internet.Email();           // Email
-
 ```text
 
 #### Finance Info (Finance DataSet)
@@ -170,7 +155,6 @@ var amount = faker.Finance.Amount(100, 10000, 2);          // Amount
 var currency = faker.Finance.Currency();                   // Currency
 var iban = faker.Finance.Iban();                          // IBAN
 var bic = faker.Finance.Bic();                            // BIC/SWIFT
-
 ```text
 
 #### Time Info (Date DataSet)
@@ -182,7 +166,6 @@ var recentDate = faker.Date.Recent();                    // Recent date
 var soonDate = faker.Date.Soon();                        // Soon date
 var between = faker.Date.Between(start, end);            // Date within range
 var weekday = faker.Date.Weekday();                      // Day of week
-
 ```text
 
 #### Random Data (Random DataSet)
@@ -195,7 +178,6 @@ var randomGuid = faker.Random.Guid();                      // GUID
 var randomEnum = faker.Random.Enum<DayOfWeek>();           // Random enum
 var randomElement = faker.Random.ArrayElement(array);      // Array random element
 var shuffled = faker.Random.Shuffle(collection);           // Shuffle
-
 ```text
 
 #### Text Content (Lorem DataSet)
@@ -206,8 +188,9 @@ var words = faker.Lorem.Words(5);          // Multiple words
 var sentence = faker.Lorem.Sentence();     // Sentence
 var paragraph = faker.Lorem.Paragraph();   // Paragraph
 var text = faker.Lorem.Text();             // Text block
+```text
 
-## ```text
+---
 
 ## Multi-language Support
 
@@ -228,7 +211,6 @@ var japaneseFaker = new Faker<Person>("ja")
 var frenchFaker = new Faker<Person>("fr")
     .RuleFor(p => p.Name, f => f.Person.FullName)
     .RuleFor(p => p.Company, f => f.Company.CompanyName());
-
 ```text
 
 ### Supported Language Codes
@@ -285,8 +267,9 @@ var userFaker = new Faker<User>()
     .RuleFor(u => u.Name, f => f.Person.FullName)    // Real name format
     .RuleFor(u => u.Email, f => f.Internet.Email()); // Real email format
 var user = userFaker.Generate();
+```text
 
-## ```text (continued)
+---
 
 ## Performance Optimization
 
@@ -304,7 +287,6 @@ public class OptimizedDataGenerator
     public static List<User> GenerateUsers(int count)
         => _userFaker.Generate(count);
 }
-
 ```text
 
 ### Batch Generation
@@ -327,7 +309,6 @@ public static IEnumerable<User> GenerateUsersBatch(int totalCount, int batchSize
         generated += currentBatchSize;
     }
 }
-
 ```text
 
 ### Lazy Initialization
@@ -340,8 +321,9 @@ private static readonly Lazy<Faker<ComplexEntity>> _complexFaker =
         .RuleFor(e => e.Data, f => GenerateComplexData(f)));
 
 public static ComplexEntity Generate() => _complexFaker.Value.Generate();
+```text
 
-## ```text (continued)
+---
 
 ## Test Implementation Examples
 
@@ -366,7 +348,6 @@ public void EmailService_SendWelcomeEmail_ShouldFormatCorrectly()
     emailContent.Should().Contain(user.Name);
     emailContent.Should().Contain(user.Email);
 }
-
 ```text
 
 ### Database Seed
@@ -390,17 +371,17 @@ public static class DatabaseSeeder
         context.SaveChanges();
     }
 }
+```text
 
-## ```text (continued)
+---
 
 ## Best Practices
 
 ### Naming and Organization
 
 1. **Faker Naming Convention**: Use `{EntityName}Faker` format naming
-
-1. **Centralized Management**: Put Faker definitions in `TestDataGenerators` or `Fakers` folder
-1. **Reuse Static Instances**: Avoid repeatedly creating Faker instances
+2. **Centralized Management**: Put Faker definitions in `TestDataGenerators` or `Fakers` folder
+3. **Reuse Static Instances**: Avoid repeatedly creating Faker instances
 
 ### Code Organization
 
@@ -413,15 +394,13 @@ MyProject.Tests/
 ├── Services/
 │   └── CustomerServiceTests.cs
 └── ...
-
 ```text
 
 ### Common Pitfalls
 
 1. **Avoid over-configuration**: Only set properties needed for testing
-
-1. **Watch for randomness**: Use seed to ensure test reproducibility
-1. **Performance considerations**: Use batch generation for large data
+2. **Watch for randomness**: Use seed to ensure test reproducibility
+3. **Performance considerations**: Use batch generation for large data
 
 ---
 
@@ -448,11 +427,11 @@ This skill content is extracted from "Old School Software Engineer's Testing Pra
 ### Official Documentation
 
 - [Bogus NuGet Package](https://www.nuget.org/packages/Bogus/)
-
 - [Bogus GitHub Repository](https://github.com/bchavez/Bogus)
 - [Bogus Official Documentation](https://github.com/bchavez/Bogus#readme)
 
 ### Extended Reading
 
 - [Bogus and AutoFixture Applications in Testing | mrkt's Programming Learning Notes](https://www.dotblogs.com.tw/mrkt/2024/09/29/191300)
+
 ````

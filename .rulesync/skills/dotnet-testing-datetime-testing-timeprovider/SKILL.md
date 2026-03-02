@@ -11,12 +11,7 @@ metadata:
   related_skills: 'unit-test-fundamentals, nsubstitute-mocking, filesystem-testing-abstractions'
 ---
 
-<!--
-Attribution:
-
-- Source repo: https://github.com/kevintsengtw/dotnet-testing-agent-skills (MIT)
-- Ported/adapted into dotnet-agent-harness.
--->
+Source: kevintsengtw/dotnet-testing-agent-skills (MIT). Ported into dotnet-agent-harness.
 
 # DateTime and Time-Dependent Testing Guide
 
@@ -28,10 +23,8 @@ abstraction, make "current time" controllable, predictable, and reproducible.
 ### Applicable Scenarios
 
 - **Business Hours Validation**: System determines whether to allow operations based on current time
-
 - **Promotion Control**: Logic that activates during specific dates or time periods
 - **Cache Expiration Mechanism**: Determines whether data is valid based on time
-
 - **Scheduled Task Triggers**: Background jobs that run at scheduled times
 - **Token Expiration**: Security mechanisms that are time-sensitive
 
@@ -43,8 +36,9 @@ abstraction, make "current time" controllable, predictable, and reproducible.
 
 <!-- Test project -->
 <PackageReference Include="Microsoft.Extensions.TimeProvider.Testing" Version="9.0.0" />
+```text
 
-## ```text
+---
 
 ## Core Principles
 
@@ -62,8 +56,8 @@ public class OrderService
         return now.Hour >= 9 && now.Hour < 17;
     }
 }
-
 ```text
+
 **Testable Refactoring**:
 
 ```csharp
@@ -83,15 +77,14 @@ public class OrderService
         return now.Hour >= 9 && now.Hour < 17;
     }
 }
-
 ```text
+
 **Dependency Injection Configuration**:
 
 ```csharp
 // Program.cs - production environment uses system time
 services.AddSingleton(TimeProvider.System);
 services.AddScoped<OrderService>();
-
 ```text
 
 ### Principle Two: FakeTimeProvider Controls Test Time
@@ -121,7 +114,6 @@ public static class FakeTimeProviderExtensions
         fakeTimeProvider.SetUtcNow(utcTime);
     }
 }
-
 ```text
 
 ### Principle Three: Each Test Uses Independent Time Environment
@@ -151,8 +143,9 @@ public class BadTestClass
 {
     private static readonly FakeTimeProvider SharedProvider = new(); // will interfere with each other
 }
+```text
 
-## ```text (continued)
+---
 
 ## Advanced Time Control Techniques
 
@@ -176,7 +169,6 @@ public void ProcessBatch_AtFixedTimePoint_ShouldGenerateSameTimestamp()
     // Time is frozen, both operations have same timestamp
     result1.Timestamp.Should().Be(result2.Timestamp);
 }
-
 ```text
 
 ### Time Fast-Forward (Advance)
@@ -201,8 +193,8 @@ public void Cache_AfterExpirationTime_ShouldClearItems()
     fakeTimeProvider.Advance(TimeSpan.FromMinutes(3));
     cache.Get("key").Should().BeNull();
 }
-
 ```text
+
 > **Important**: `Advance()` is non-blocking, instantly jumps time without actually waiting.
 
 ### Time Rewind
@@ -222,8 +214,9 @@ public void HistoricalDataProcessor_GoingBackInTime_ShouldProcessCorrectly()
 
     result.ProcessedAt.Should().Be(historicalTime);
 }
+```text
 
-## ```text (continued)
+---
 
 ## Practical Testing Patterns
 
@@ -246,7 +239,6 @@ public void CanPlaceOrder_AtDifferentTimes_ShouldReturnCorrectResult(int hour, b
 
     sut.CanPlaceOrder().Should().Be(expected);
 }
-
 ```text
 
 ### Pattern Two: Trading Hours Window Testing
@@ -267,7 +259,6 @@ public void IsInTradingHours_AtDifferentTimes_ShouldReturnCorrectResult(string t
 
     sut.IsInTradingHours().Should().Be(expected);
 }
-
 ```text
 
 ### Pattern Three: Schedule Trigger Logic Testing
@@ -287,8 +278,9 @@ public void ShouldExecuteJob_BasedOnTime_ShouldReturnCorrectResult(
 
     sut.ShouldExecuteJob(schedule).Should().Be(expected);
 }
+```text
 
-## ```text (continued)
+---
 
 ## AutoFixture Integration
 
@@ -302,7 +294,6 @@ public class FakeTimeProviderCustomization : ICustomization
         fixture.Register(() => new FakeTimeProvider());
     }
 }
-
 ```text
 
 ### AutoDataWithCustomization Attribute
@@ -321,7 +312,6 @@ public class AutoDataWithCustomizationAttribute : AutoDataAttribute
             .Customize(new FakeTimeProviderCustomization());
     }
 }
-
 ```text
 
 ### Using Matching.DirectBaseType
@@ -341,8 +331,8 @@ public void GetTimeBasedDiscount_OnFriday_ShouldReturnTenPercentDiscount(
 
     sut.GetTimeBasedDiscount().Should().Be("Happy Friday: 10% Discount");
 }
-
 ```text
+
 > **Key**: Must use `[Frozen(Matching.DirectBaseType)]`, otherwise AutoFixture cannot correctly inject FakeTimeProvider into constructors requiring TimeProvider.
 
 ---
@@ -352,25 +342,20 @@ public void GetTimeBasedDiscount_OnFriday_ShouldReturnTenPercentDiscount(
 ### ✅ Code Design
 
 - [ ] All time-dependent classes receive `TimeProvider` through constructor
-
 - [ ] Use `_timeProvider.GetLocalNow()` instead of `DateTime.Now`
 - [ ] Use `_timeProvider.GetUtcNow()` instead of `DateTime.UtcNow`
-
 - [ ] DI container registers `TimeProvider.System` as production implementation
 
 ### ✅ Test Design
 
 - [ ] Each test method uses independent `FakeTimeProvider` instance
-
 - [ ] Use `SetLocalNow()` extension method to simplify time setup
 - [ ] Use `Advance()` to test time-sensitive logic (cache, expiration, delay)
-
 - [ ] Tests cover boundary conditions (start time, end time, critical points)
 
 ### ✅ Advanced Considerations
 
 - [ ] FakeTimeProvider is thread-safe, can be used for parallel tests
-
 - [ ] Use `IDisposable` pattern to properly dispose FakeTimeProvider
 - [ ] Use `SetLocalTimeZone()` to explicitly set timezone for timezone tests
 
@@ -389,14 +374,12 @@ This skill content is distilled from the "Old School Software Engineer's Testing
 ### Official Documentation
 
 - [TimeProvider API](https://learn.microsoft.com/dotnet/api/system.timeprovider)
-
 - [Microsoft.Bcl.TimeProvider NuGet](https://www.nuget.org/packages/Microsoft.Bcl.TimeProvider/)
 - [Microsoft.Extensions.TimeProvider.Testing NuGet](https://www.nuget.org/packages/Microsoft.Extensions.TimeProvider.Testing/)
 
 ### Related Skills
 
 - `autofixture-basics` - AutoFixture automatic test data generation
-
 - `nsubstitute-mocking` - Test doubles and mocking
 - `autodata-xunit-integration` - xUnit and AutoFixture AutoData integration
 ````

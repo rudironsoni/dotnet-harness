@@ -11,12 +11,7 @@ metadata:
   related_skills: 'advanced-aspnet-integration-testing, advanced-testcontainers-database, advanced-aspire-testing'
 ---
 
-<!--
-Attribution:
-
-- Source repo: https://github.com/kevintsengtw/dotnet-testing-agent-skills (MIT)
-- Ported/adapted into dotnet-agent-harness.
--->
+Source: kevintsengtw/dotnet-testing-agent-skills (MIT). Ported into dotnet-agent-harness.
 
 # Web API Integration Testing
 
@@ -31,14 +26,11 @@ Attribution:
 After completing this skill, you will be able to:
 
 1. Establish complete Web API integration testing architecture
-
-1. Implement modern exception handling using `IExceptionHandler`
-1. Validate standard `ProblemDetails` and `ValidationProblemDetails` format
-
-1. Use Flurl to simplify URL construction for HTTP testing
-1. Use AwesomeAssertions for precise HTTP response validation
-
-1. Establish multi-container (PostgreSQL + Redis) testing environment
+2. Implement modern exception handling using `IExceptionHandler`
+3. Validate standard `ProblemDetails` and `ValidationProblemDetails` format
+4. Use Flurl to simplify URL construction for HTTP testing
+5. Use AwesomeAssertions for precise HTTP response validation
+6. Establish multi-container (PostgreSQL + Redis) testing environment
 
 ## Core Concepts
 
@@ -104,7 +96,6 @@ public class GlobalExceptionHandler : IExceptionHandler
         };
     }
 }
-
 ```text
 
 ### ProblemDetails Standard Format
@@ -132,7 +123,6 @@ RFC 7807 defined unified error response format:
     "Price": ["Product price must be greater than 0"]
   }
 }
-
 ```text
 
 ### FluentValidation Exception Handler
@@ -212,7 +202,6 @@ public class TestWebApplicationFactory : WebApplicationFactory<Program>, IAsyncL
         await base.DisposeAsync();
     }
 }
-
 ```text
 
 ### Collection Fixture Pattern
@@ -223,7 +212,6 @@ public class IntegrationTestCollection : ICollectionFixture<TestWebApplicationFa
 {
     public const string Name = "Integration Tests";
 }
-
 ```text
 
 ### Test Base Class
@@ -266,7 +254,6 @@ public abstract class IntegrationTestBase : IAsyncLifetime
         Factory.TimeProvider.Advance(timeSpan);
     }
 }
-
 ```text
 
 ## Flurl Simplifies URL Construction
@@ -282,7 +269,6 @@ var url = "/products"
     .SetQueryParam("pageSize", 5)
     .SetQueryParam("page", 2)
     .SetQueryParam("keyword", "special");
-
 ```text
 
 ## Testing Examples
@@ -308,7 +294,6 @@ public async Task CreateProduct_WithValidData_ShouldCreateProductSuccessfully()
             product.Price.Should().Be(299.99m);
         });
 }
-
 ```text
 
 ### Validation Error Test
@@ -333,7 +318,6 @@ public async Task CreateProduct_WhenProductNameIsEmpty_ShouldReturn400BadRequest
             problem.Errors["Name"].Should().Contain("Product name cannot be empty");
         });
 }
-
 ```text
 
 ### Resource Not Found Test
@@ -357,7 +341,6 @@ public async Task GetById_WhenProductDoesNotExist_ShouldReturn404WithProblemDeta
             problem.Status.Should().Be(404);
         });
 }
-
 ```text
 
 ### Pagination Query Test
@@ -386,7 +369,6 @@ public async Task GetProducts_WithPaginationParameters_ShouldReturnCorrectPagedR
             result.Items.Should().HaveCount(5);
         });
 }
-
 ```text
 
 ## Data Management Strategy
@@ -410,7 +392,6 @@ public static class TestHelpers
         await Task.WhenAll(tasks);
     }
 }
-
 ```text
 
 ### SQL Script Externalization
@@ -420,7 +401,6 @@ tests/Integration/
 └── SqlScripts/
     └── Tables/
         └── CreateProductsTable.sql
-
 ```text
 
 ## Best Practices
@@ -428,21 +408,18 @@ tests/Integration/
 ### 1. Test Structure Design
 
 - **Single Responsibility**: Each test focuses on one specific scenario
-
 - **3A Pattern**: Clear separation of Arrange, Act, Assert
 - **Clear Naming**: Method name expresses test intent
 
 ### 2. Error Handling Validation
 
 - **ValidationProblemDetails**: Validate error response format
-
 - **ProblemDetails**: Validate business exception response
 - **HTTP Status Code**: Confirm correct status code
 
 ### 3. Performance Considerations
 
 - **Container Sharing**: Use Collection Fixture
-
 - **Data Cleanup**: Clean data after tests, don't recreate containers
 - **Parallel Execution**: Ensure test independence
 
@@ -456,7 +433,6 @@ tests/Integration/
 <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="9.0.0" />
 <PackageReference Include="Flurl" Version="4.0.0" />
 <PackageReference Include="Respawn" Version="6.2.1" />
-
 ```text
 
 ## Project Structure
@@ -483,7 +459,6 @@ tests/
     │   └── Tables/
     └── Controllers/
         └── ProductsControllerTests.cs
-
 ```text
 
 ## Reference Resources
@@ -499,13 +474,10 @@ This skill content is distilled from the "Old School Software Engineer's Testing
 ### Official Documentation
 
 - [ASP.NET Core Integration Testing](https://docs.microsoft.com/aspnet/core/test/integration-tests)
-
 - [IExceptionHandler Documentation](https://learn.microsoft.com/aspnet/core/fundamentals/error-handling)
 - [ProblemDetails RFC 7807](https://tools.ietf.org/html/rfc7807)
-
 - [Testcontainers for .NET](https://dotnet.testcontainers.org/)
 - [AwesomeAssertions](https://awesomeassertions.org/)
-
 - [Flurl HTTP Client](https://flurl.dev/)
 - [Respawn](https://github.com/jbogard/Respawn)
 ````

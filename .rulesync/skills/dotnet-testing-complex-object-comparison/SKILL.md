@@ -11,12 +11,7 @@ metadata:
   related_skills: 'awesome-assertions-guide, autofixture-basics, test-data-builder-pattern'
 ---
 
-<!--
-Attribution:
-
-- Source repo: https://github.com/kevintsengtw/dotnet-testing-agent-skills (MIT)
-- Ported/adapted into dotnet-agent-harness.
--->
+Source: kevintsengtw/dotnet-testing-agent-skills (MIT). Ported into dotnet-agent-harness.
 
 # Complex Object Comparison Guide
 
@@ -60,7 +55,6 @@ public void ComplexObject_Deep_Structure_Comparison_Should_Match()
     // Deep object comparison
     actual.Should().BeEquivalentTo(expected);
 }
-
 ```text
 
 ### 2. Circular Reference Handling (Circular Reference Handling)
@@ -85,7 +79,6 @@ public void TreeStructure_Circular_Reference_Should_Handle_Correctly()
                .WithMaxRecursionDepth(10)
     );
 }
-
 ```text
 
 ### 3-6. Advanced Comparison Patterns
@@ -123,7 +116,6 @@ public void EFEntity_Database_Entity_Should_Exclude_Navigation_Properties()
                .Excluding(p => p.UpdatedAt)
     );
 }
-
 ```text
 
 ### Pattern 2: API Response Comparison
@@ -145,7 +137,6 @@ public void ApiResponse_JSON_Deserialization_Should_Ignore_Extra_Fields()
         options.ExcludingMissingMembers()  // Ignore API extra fields
     );
 }
-
 ```text
 
 ### Pattern 3: Test Data Builder Comparison
@@ -167,7 +158,6 @@ public void Builder_Test_Data_Should_Match_Expected_Structure()
                .Excluding(o => o.CreatedAt)
     );
 }
-
 ```text
 
 ## Error Message Optimization
@@ -187,7 +177,6 @@ public void Comparison_Error_Message_Should_Clearly_Explain_Differences()
                .Because("ID is system-generated and should not be included in comparison")
     );
 }
-
 ```text
 
 ### Using AssertionScope for Batch Validation
@@ -209,7 +198,6 @@ public void MultipleComparisons_Batch_Validation_Should_Show_All_Failures()
     }
     // All failures reported together, rather than stopping at first failure
 }
-
 ```text
 
 ## Integration with Other Skills
@@ -217,10 +205,8 @@ public void MultipleComparisons_Batch_Validation_Should_Show_All_Failures()
 This skill can be combined with the following:
 
 - **awesome-assertions-guide**: Basic assertion syntax and common APIs
-
 - **autofixture-data-generation**: Automatically generate test data
 - **test-data-builder-pattern**: Build complex test objects
-
 - **unit-test-fundamentals**: Unit testing basics and 3A pattern
 
 ## Best Practice Recommendations
@@ -228,21 +214,17 @@ This skill can be combined with the following:
 ### ✅ Recommended Practices
 
 1. **Prefer Property Exclusion over Inclusion**: Unless only validating a few properties, using `Excluding` is clearer
-
-1. **Create Reusable Exclusion Extension Methods**: Avoid repeating exclusion logic in each test
-1. **Set Reasonable Strategies for Large Data Comparison**: Balance performance and validation completeness
-
-1. **Use AssertionScope for Batch Validation**: See all failure reasons at once
-1. **Provide Meaningful because Descriptions**: Help future maintainers understand test intent
+2. **Create Reusable Exclusion Extension Methods**: Avoid repeating exclusion logic in each test
+3. **Set Reasonable Strategies for Large Data Comparison**: Balance performance and validation completeness
+4. **Use AssertionScope for Batch Validation**: See all failure reasons at once
+5. **Provide Meaningful because Descriptions**: Help future maintainers understand test intent
 
 ### ❌ Practices to Avoid
 
 1. **Avoid Over-reliance on Complete Object Comparison**: Consider only validating key properties
-
-1. **Avoid Ignoring Circular Reference Issues**: Use `IgnoringCyclicReferences()` to explicitly handle
-1. **Avoid Repeating Exclusion Logic in Each Test**: Extract as extension methods
-
-1. **Avoid Full Deep Comparison for Large Data**: Use sampling or key property validation
+2. **Avoid Ignoring Circular Reference Issues**: Use `IgnoringCyclicReferences()` to explicitly handle
+3. **Avoid Repeating Exclusion Logic in Each Test**: Extract as extension methods
+4. **Avoid Full Deep Comparison for Large Data**: Use sampling or key property validation
 
 ## Troubleshooting
 
@@ -251,10 +233,8 @@ This skill can be combined with the following:
 **A:** Use the following strategies to optimize:
 
 - Use `Including` to only compare key properties
-
 - Use sampling validation for large data
 - Use `WithMaxRecursionDepth` to limit recursion depth
-
 - Consider using `AssertKeyPropertiesOnly` for quick comparison of key fields
 
 ### Q2: How to Handle StackOverflowException?
@@ -264,7 +244,6 @@ This skill can be combined with the following:
 ```csharp
 options.IgnoringCyclicReferences()
        .WithMaxRecursionDepth(10)
-
 ```text
 
 ### Q3: How to Exclude All Time-Related Fields?
@@ -275,7 +254,6 @@ options.IgnoringCyclicReferences()
 options.Excluding(ctx => ctx.Path.EndsWith("At"))
        .Excluding(ctx => ctx.Path.EndsWith("Time"))
        .Excluding(ctx => ctx.Path.Contains("Timestamp"))
-
 ```text
 
 ### Q4: Comparison Fails but Can't See the Difference?
@@ -284,7 +262,6 @@ options.Excluding(ctx => ctx.Path.EndsWith("At"))
 
 ```csharp
 options.WithTracing()  // Generate detailed comparison trace information
-
 ```text
 
 ## Template Files Reference
@@ -292,7 +269,6 @@ options.WithTracing()  // Generate detailed comparison trace information
 This skill provides the following template files:
 
 - `templates/comparison-patterns.cs`: Common comparison pattern examples
-
 - `templates/exclusion-strategies.cs`: Field exclusion strategies and extension methods
 
 ## Reference Resources
@@ -308,12 +284,10 @@ This skill content is distilled from the "Old School Software Engineer's Testing
 ### Official Documentation
 
 - [AwesomeAssertions GitHub](https://github.com/AwesomeAssertions/AwesomeAssertions)
-
 - [AwesomeAssertions Documentation](https://awesomeassertions.org/)
 
 ### Related Skills
 
 - `awesome-assertions-guide` - AwesomeAssertions basics and advanced usage
-
 - `unit-test-fundamentals` - Unit testing basics
 ````

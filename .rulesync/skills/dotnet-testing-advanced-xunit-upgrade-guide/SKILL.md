@@ -11,12 +11,7 @@ metadata:
   related_skills: 'xunit-project-setup, unit-test-fundamentals'
 ---
 
-<!--
-Attribution:
-
-- Source repo: https://github.com/kevintsengtw/dotnet-testing-agent-skills (MIT)
-- Ported/adapted into dotnet-agent-harness.
--->
+Source: kevintsengtw/dotnet-testing-agent-skills (MIT). Ported into dotnet-agent-harness.
 
 # xUnit Upgrade Guide: From 2.9.x to 3.x
 
@@ -25,10 +20,8 @@ Attribution:
 Use this skill when asked to perform the following tasks:
 
 - Upgrade existing xUnit 2.x test projects to xUnit 3.x
-
 - Evaluate the scope of impact for xUnit upgrade
 - Resolve compilation errors during xUnit upgrade
-
 - Use xUnit 3.x new features to improve tests
 
 ## Core Concepts
@@ -52,13 +45,11 @@ xUnit v3 adopts a new package naming strategy:
 xUnit 3.x strict requirements:
 
 - **.NET Framework 4.7.2+** or
-
 - **.NET 8.0+** (recommended)
 
 **Unsupported versions**:
 
 - .NET Core 3.1
-
 - .NET 5, 6, 7
 
 ---
@@ -77,7 +68,6 @@ xUnit 3.x strict requirements:
 <PropertyGroup>
   <OutputType>Exe</OutputType>
 </PropertyGroup>
-
 ```text
 
 ### 2. async void Tests No Longer Supported
@@ -98,7 +88,6 @@ public async Task TestSomeAsyncFunction()
     var result = await SomeAsyncMethod();
     Assert.True(result);
 }
-
 ```text
 
 ### 3. IAsyncLifetime Changes
@@ -120,7 +109,6 @@ public class MyTestClass : IAsyncLifetime
     public async Task InitializeAsync() { /* initialization */ }
     public async Task DisposeAsync() { /* all cleanup logic */ }
 }
-
 ```text
 
 ### 4. SkippableFact/SkippableTheory Removed
@@ -144,7 +132,6 @@ public void SkippableTest()
     }
     // test logic
 }
-
 ```text
 
 ### 5. SDK-style Projects Only
@@ -153,8 +140,8 @@ Check if project file starts with:
 
 ```xml
 <Project Sdk="Microsoft.NET.Sdk">
-
 ```text
+
 If traditional format, must convert to SDK-style first.
 
 ---
@@ -165,7 +152,6 @@ If traditional format, must convert to SDK-style first.
 
 ```bash
 git checkout -b feature/upgrade-xunit-v3
-
 ```text
 
 ### Step 2: Update Project Files
@@ -195,7 +181,6 @@ git checkout -b feature/upgrade-xunit-v3
     <PackageReference Include="NSubstitute" Version="5.3.0" />
   </ItemGroup>
 </Project>
-
 ```text
 
 ### Step 3: Fix async void Tests
@@ -204,8 +189,8 @@ Use IDE search:
 
 ```regex
 async\s+void.*\[(Fact|Theory)\]
-
 ```text
+
 Change all `async void` to `async Task`.
 
 ### Step 4: Update using Statements
@@ -216,7 +201,6 @@ Change all `async void` to `async Task`.
 
 // Keep
 using Xunit;
-
 ```text
 
 ### Step 5: Compile and Test
@@ -226,8 +210,9 @@ dotnet clean
 dotnet restore
 dotnet build
 dotnet test --verbosity normal
+```text
 
-## ```text
+---
 
 ## xUnit 3.x New Features
 
@@ -245,8 +230,8 @@ public void OnlyRunOnWindowsTest()
 
 public static bool IsWindowsEnvironment =>
     RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
-
 ```text
+
 **Imperative (Assert.Skip)**:
 
 ```csharp
@@ -262,7 +247,6 @@ public void SkipBasedOnEnvironmentVariableTest()
 
     // test logic...
 }
-
 ```text
 
 ### Explicit Tests
@@ -274,7 +258,6 @@ public void ExpensiveIntegrationTest()
     // This test won't run by default unless explicitly requested
     // Suitable for performance tests, long-running tests
 }
-
 ```text
 
 ### [Test] Attribute
@@ -286,7 +269,6 @@ public void UsingTestAttributeTest() { Assert.True(true); }
 
 [Fact]
 public void UsingFactAttributeTest() { Assert.True(true); }
-
 ```text
 
 ### Matrix Theory Data
@@ -306,7 +288,6 @@ public void MatrixTestExample(int number, string text)
     number.Should().BePositive();
     text.Should().NotBeNullOrEmpty();
 }
-
 ```text
 
 ### Assembly Fixtures
@@ -345,7 +326,6 @@ public class UserServiceTests
     [Fact]
     public void Test1() { /* use _dbFixture.ConnectionString */ }
 }
-
 ```text
 
 ### Test Pipeline Startup
@@ -364,8 +344,9 @@ public class TestPipelineStartup : ITestPipelineStartup
 
 // Register
 [assembly: TestPipelineStartup(typeof(TestPipelineStartup))]
+```text
 
-## ```text (continued)
+---
 
 ## xunit.runner.json Configuration
 
@@ -380,32 +361,29 @@ public class TestPipelineStartup : ITestPipelineStartup
   "preEnumerateTheories": true,
   "stopOnFail": false
 }
+```text
 
-## ```text (continued)
+---
 
 ## Test Report Formats
 
 xUnit 3.x supports multiple report formats:
 
 ```bash
-
 # Generate CTRF format report
-
 dotnet run -- -ctrf results.json
 
 # Generate TRX format report
-
 dotnet run -- -trx results.trx
 
 # Generate XML format report
-
 dotnet run -- -xml results.xml
 
 # Generate multiple format reports
-
 dotnet run -- -xml results.xml -ctrf results.json -trx results.trx
+```text
 
-## ```text (continued)
+---
 
 ## Common Issues and Solutions
 
@@ -424,7 +402,6 @@ In xUnit 3.x `DataAttribute` method signature has changed: `GetData(MethodInfo)`
 Confirm IDE version meets requirements:
 
 - Visual Studio 2022 17.8+
-
 - Rider 2023.3+
 - VS Code (latest)
 
@@ -434,45 +411,37 @@ If still issues, temporarily disable Microsoft Testing Platform:
 <PropertyGroup>
   <EnableMicrosoftTestingPlatform>false</EnableMicrosoftTestingPlatform>
 </PropertyGroup>
+```text
 
-## ```text (continued)
+---
 
 ## Upgrade Checklist
 
 ### Before Upgrade
 
 - [ ] Confirm target framework version (.NET 8+ or .NET Framework 4.7.2+)
-
 - [ ] Check project file format (SDK-style)
 - [ ] Identify all async void test methods
-
 - [ ] Check IAsyncLifetime implementations
 - [ ] Evaluate dependency package compatibility
-
 - [ ] Create backup branch
 
 ### During Upgrade
 
 - [ ] Update package references (use `xunit.v3`)
-
 - [ ] Remove `xunit.abstractions` references
 - [ ] Modify OutputType to Exe
-
 - [ ] Fix all async void test methods
 - [ ] Update using statements
-
 - [ ] Refactor custom attributes (if any)
 - [ ] Verify compilation success
-
 - [ ] Run all tests
 
 ### Post-Upgrade Verification
 
 - [ ] Functional completeness testing
-
 - [ ] Performance benchmark comparison
 - [ ] CI/CD Pipeline validation
-
 - [ ] Documentation update
 - [ ] Team training
 
@@ -497,19 +466,18 @@ xUnit 3.x enables Microsoft Testing Platform by default:
   <EnableMicrosoftTestingPlatform>true</EnableMicrosoftTestingPlatform>
   <OutputType>Exe</OutputType>
 </PropertyGroup>
+```text
 
-## ```text (continued)
+---
 
 ## Performance Improvements
 
 Performance improvements brought by xUnit 3.x:
 
 1. **Independent process execution**: Tests run in separate processes, better isolation
-
-1. **Improved parallel algorithm**: Smarter load balancing
-1. **Faster startup time**: Executable runs directly
-
-1. **Better memory isolation**: Reduced interference between tests
+2. **Improved parallel algorithm**: Smarter load balancing
+3. **Faster startup time**: Executable runs directly
+4. **Better memory isolation**: Reduced interference between tests
 
 ---
 
@@ -526,9 +494,7 @@ This skill content is distilled from the "Old School Software Engineer's Testing
 ### Official Documentation
 
 - [xUnit.net Official Website](https://xunit.net/)
-
 - [xUnit v3 New Features Documentation](https://xunit.net/docs/getting-started/v3/whats-new)
 - [xUnit 2.x -> 3.x Official Migration Guide](https://xunit.net/docs/getting-started/v3/migration)
-
 - [xunit.v3 NuGet Package](https://www.nuget.org/packages/xunit.v3)
 ````

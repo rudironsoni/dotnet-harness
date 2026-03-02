@@ -13,12 +13,7 @@ metadata:
   skill_type: 'overview'
 ---
 
-<!--
-Attribution:
-
-- Source repo: https://github.com/kevintsengtw/dotnet-testing-agent-skills (MIT)
-- Ported/adapted into dotnet-agent-harness.
--->
+Source: kevintsengtw/dotnet-testing-agent-skills (MIT). Ported into dotnet-agent-harness.
 
 # .NET Advanced Testing Skills Overview
 
@@ -35,14 +30,12 @@ This file is an "advanced testing navigation center" used to help find the corre
 #### Your Tasks Are
 
 1. ✅ Match corresponding advanced sub-skills based on user needs
-
-1. ✅ Use the `Skill` tool to load specific sub-skills
-1. ✅ Let sub-skills provide professional integration testing guidance
+2. ✅ Use the `Skill` tool to load specific sub-skills
+3. ✅ Let sub-skills provide professional integration testing guidance
 
 #### Prohibited Behaviors
 
 - ❌ Do not provide integration test code directly in this entry skill
-
 - ❌ Do not start implementing tests without loading sub-skills
 - ❌ Do not skip sub-skills to provide "general" integration testing advice
 
@@ -99,7 +92,6 @@ AI: I notice you need API integration testing. According to the quick reference 
     [Use Skill tool to load sub-skill]
 
 AI: Now following the ASP.NET Core Integration Testing skill guidelines to create tests for you...
-
 ```text
 
 ### ❌ Incorrect Flow
@@ -108,8 +100,9 @@ AI: Now following the ASP.NET Core Integration Testing skill guidelines to creat
 User: Please help me create API integration tests for ProductsController
 
 AI: Okay, let me write the integration tests... (start writing code directly without loading sub-skills)
+```text
 
-## ```text
+---
 
 ## 📚 Complete Skill List
 
@@ -124,13 +117,10 @@ To view the complete list of 8 advanced skills, detailed decision trees, and lea
 When you need the following advanced testing capabilities, I will help you find the correct skills:
 
 - Test complete Web API endpoints and HTTP flows
-
 - Use real databases in tests (containerized)
 - Test NoSQL databases (MongoDB, Redis, etc.)
-
 - Test microservice architectures and distributed systems
 - Upgrade test framework versions (xUnit 2.x → 3.x)
-
 - Migrate to new test frameworks (TUnit)
 - Create end-to-end integration tests
 
@@ -154,7 +144,7 @@ Quickly find corresponding advanced sub-skills based on testing scenarios (API t
 
 Complete mapping of 7 common tasks, including scenario descriptions, recommended skills, implementation steps, prompt examples, and expected code structures.
 
-> 📖 For details, please refer to the task mapping table in `references/task_mapping_table.md`.
+> 📖 For details, please refer to [references/task-mapping-table.md](references/task-mapping-table.md)
 
 ---
 
@@ -165,29 +155,21 @@ Choose appropriate testing strategies based on project complexity:
 ### Level 1: Simple WebApi Project
 
 **Project Characteristics**:
-
 - Simple CRUD API
-
 - No external dependencies or use in-memory implementations
 - Simple business logic
 
 **Recommended Skills**:
-
 - `dotnet-testing-advanced-aspnet-integration-testing`
 
 **Testing Focus**:
-
 - Route validation
-
 - Model binding
 - HTTP responses
-
 - Basic business logic
 
 **Sample Projects**:
-
 - TodoList API
-
 - Simple product catalog
 
 ---
@@ -195,29 +177,21 @@ Choose appropriate testing strategies based on project complexity:
 ### Level 2: WebApi Project with Service Dependencies
 
 **Project Characteristics**:
-
 - Has business logic layer (Services)
-
 - Depends on external services (can be Mocked)
 - Medium complexity
 
 **Recommended Skill Combination**:
-
 1. `dotnet-testing-advanced-aspnet-integration-testing` (fundamentals)
-
-1. `dotnet-testing-nsubstitute-mocking` (mocking dependencies)
+2. `dotnet-testing-nsubstitute-mocking` (mocking dependencies)
 
 **Testing Strategy**:
-
 - Use NSubstitute to create Service stubs
-
 - Test Controller and Service interactions
 - Validate error handling
 
 **Sample Projects**:
-
 - E-commerce API (with inventory, order services)
-
 - CMS system
 
 ---
@@ -225,34 +199,24 @@ Choose appropriate testing strategies based on project complexity:
 ### Level 3: Complete WebApi Project
 
 **Project Characteristics**:
-
 - Complex business logic
-
 - Needs real database
 - May have external API integrations
-
 - Complete error handling
 
 **Recommended Skill Combination**:
-
 1. `dotnet-testing-advanced-webapi-integration-testing` (complete flow)
-
-1. `dotnet-testing-advanced-testcontainers-database` (real database)
-1. `dotnet-testing-advanced-testcontainers-nosql` (if using NoSQL)
+2. `dotnet-testing-advanced-testcontainers-database` (real database)
+3. `dotnet-testing-advanced-testcontainers-nosql` (if using NoSQL)
 
 **Testing Strategy**:
-
 - Use Testcontainers to create real databases
-
 - Complete end-to-end testing
 - Test data preparation and cleanup
-
 - Validate all error scenarios
 
 **Sample Projects**:
-
 - Large e-commerce platform
-
 - Enterprise management system
 - SaaS application
 
@@ -275,23 +239,17 @@ Based on different project needs, the following skill combinations are recommend
 **Suitable**: Creating complete test suites for production projects
 
 **Skill Combination**:
-
 1. `dotnet-testing-advanced-aspnet-integration-testing` (fundamentals)
-
-1. `dotnet-testing-advanced-testcontainers-database` (real database)
-1. `dotnet-testing-advanced-webapi-integration-testing` (complete flow)
+2. `dotnet-testing-advanced-testcontainers-database` (real database)
+3. `dotnet-testing-advanced-webapi-integration-testing` (complete flow)
 
 **Learning Order**:
-
 1. Learn aspnet-integration-testing for fundamentals first
-
-1. Then learn testcontainers-database to master database testing
-1. Finally learn webapi-integration-testing for integrated application
+2. Then learn testcontainers-database to master database testing
+3. Finally learn webapi-integration-testing for integrated application
 
 **Expected Results**:
-
 - Can create complete tests for Web API projects
-
 - Use real databases to validate behavior
 - Test all CRUD endpoints and error handling
 
@@ -302,22 +260,16 @@ Based on different project needs, the following skill combinations are recommend
 **Suitable**: Microservice architectures, distributed systems
 
 **Skill Combination**:
-
 1. `dotnet-testing-advanced-aspire-testing` (core)
-
-1. `dotnet-testing-advanced-testcontainers-database` (database)
-1. `dotnet-testing-advanced-testcontainers-nosql` (NoSQL)
+2. `dotnet-testing-advanced-testcontainers-database` (database)
+3. `dotnet-testing-advanced-testcontainers-nosql` (NoSQL)
 
 **Learning Order**:
-
 1. Learn testcontainers first (database testing fundamentals)
-
-1. Then learn aspire-testing (microservice testing)
+2. Then learn aspire-testing (microservice testing)
 
 **Expected Results**:
-
 - Test .NET Aspire projects
-
 - Validate inter-service communication
 - Use containerized environments for testing
 
@@ -328,38 +280,27 @@ Based on different project needs, the following skill combinations are recommend
 **Suitable**: Test framework upgrades or migrations
 
 #### Option A: xUnit Upgrade
-
 **Skills**:
-
 - `dotnet-testing-advanced-xunit-upgrade-guide`
 
 **Suitable**:
-
 - Existing projects using xUnit 2.x
-
 - Want to upgrade to latest version
 
 ---
 
 #### Option B: TUnit Migration
-
 **Skill Combination**:
-
 1. `dotnet-testing-advanced-tunit-fundamentals` (fundamentals)
-
-1. `dotnet-testing-advanced-tunit-advanced` (advanced)
+2. `dotnet-testing-advanced-tunit-advanced` (advanced)
 
 **Suitable**:
-
 - New projects choosing test frameworks
-
 - Considering migration from xUnit
 
 **Learning Order**:
-
 1. Learn fundamentals first to understand basics
-
-1. Then learn advanced to master advanced features
+2. Then learn advanced to master advanced features
 
 ---
 
@@ -370,33 +311,24 @@ Before learning advanced skills, it is recommended to master the following funda
 ### Required Skills
 
 #### 1. dotnet-testing-unit-test-fundamentals
-
 **Why Required**:
-
 - Integration tests also follow 3A Pattern
-
 - FIRST principles equally apply
 - Need to understand testing fundamentals concepts
 
 ---
 
 #### 2. dotnet-testing-xunit-project-setup
-
 **Why Required**:
-
 - Need to create test projects
-
 - Understand project structure
 - Understand package management
 
 ---
 
 #### 3. dotnet-testing-awesome-assertions-guide
-
 **Why Required**:
-
 - Integration tests need to validate HTTP responses
-
 - FluentAssertions.Web provides powerful API assertions
 - Improve test readability
 
@@ -405,21 +337,15 @@ Before learning advanced skills, it is recommended to master the following funda
 ### Recommended Skills
 
 #### 1. dotnet-testing-nsubstitute-mocking
-
 **Why Recommended**:
-
 - May need to Mock external services in integration tests
-
 - WebApplicationFactory needs to replace services
 
 ---
 
 #### 2. dotnet-testing-autofixture-basics
-
 **Why Recommended**:
-
 - Quickly generate test data
-
 - Reduce integration test boilerplate code
 
 ---
@@ -438,20 +364,16 @@ Advanced skills build upon fundamental skills:
 
 **Fundamental Testing Capabilities** → `dotnet-testing` (Fundamental Skill Set)
 - Unit test fundamentals
-
 - Test data generation
 - Assertions and mocking
-
 - Special scenario handling
 
 ### ↓ Advanced Applications
 
 **Advanced Integration Testing** → `dotnet-testing-advanced` (This Skill Set)
 - Web API integration testing
-
 - Containerized testing
 - Microservice testing
-
 - Framework upgrades
 
 **Learning Recommendation**:
@@ -472,16 +394,12 @@ Complete the core skills of `dotnet-testing` fundamental skill set first, then e
 ### Technical Requirements
 
 **Integration Testing Skills**:
-
 - .NET 8+
-
 - Docker Desktop
 - WSL2 (Windows environment)
 
 **Aspire Testing Skills**:
-
 - .NET 8+
-
 - .NET Aspire Workload
 - Docker Desktop
 
@@ -492,12 +410,9 @@ Complete the core skills of `dotnet-testing` fundamental skill set first, then e
 Choose the advanced skill that matches your needs to start learning, or tell me your specific situation and I will recommend the most suitable learning path!
 
 **Quick Start**:
-
 - Want to test APIs → Start with `dotnet-testing-advanced-aspnet-integration-testing`
-
 - Need real database → Start with `dotnet-testing-advanced-testcontainers-database`
 - Microservice project → Use `dotnet-testing-advanced-aspire-testing`
-
 - Framework upgrade → Use corresponding upgrade guide
 - Unsure → Tell me your project situation and I will help you analyze
 ````

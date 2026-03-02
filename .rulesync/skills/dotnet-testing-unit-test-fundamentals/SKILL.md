@@ -11,12 +11,7 @@ metadata:
   related_skills: 'xunit-project-setup, test-naming-conventions, awesome-assertions-guide'
 ---
 
-<!--
-Attribution:
-
-- Source repo: https://github.com/kevintsengtw/dotnet-testing-agent-skills (MIT)
-- Ported/adapted into dotnet-agent-harness.
--->
+Source: kevintsengtw/dotnet-testing-agent-skills (MIT). Ported into dotnet-agent-harness.
 
 # .NET Unit Test Fundamentals Guide
 
@@ -25,10 +20,8 @@ Attribution:
 Use this skill when asked to perform the following tasks:
 
 - Create unit tests for .NET classes or methods
-
 - Review or improve existing test quality
 - Design test cases following FIRST principles
-
 - Explain test naming conventions and best practices
 - Write tests using xUnit
 
@@ -49,7 +42,6 @@ public void Add_WithInput1And2_ShouldReturn3()
     var result = calculator.Add(1, 2);
     Assert.Equal(3, result);
 }
-
 ```text
 
 ### I - Independent
@@ -64,7 +56,6 @@ public void Increment_StartingFrom0_ShouldReturn1()
     counter.Increment();
     Assert.Equal(1, counter.Value);
 }
-
 ```text
 
 ### R - Repeatable
@@ -83,7 +74,6 @@ public void Increment_ExecutedMultipleTimes_ShouldProduceConsistentResults()
     // This test produces the same result every execution
     Assert.Equal(3, counter.Value);
 }
-
 ```text
 
 ### S - Self-Validating
@@ -99,7 +89,6 @@ public void IsValidEmail_WithValidInput_ShouldReturnTrue()
 
     Assert.True(result); // Clear pass or fail
 }
-
 ```text
 
 ### T - Timely
@@ -126,7 +115,6 @@ public void Add_WithNegativeAndPositiveNumbers_ShouldReturnCorrectResult()
     // Assert - verify results match expectations
     Assert.Equal(expected, result);
 }
-
 ```text
 
 ### Block Responsibilities
@@ -143,7 +131,6 @@ Use the following format to name test methods:
 
 ```text
 [MethodUnderTest]_[TestScenario]_[ExpectedBehavior]
-
 ```text
 
 ### Naming Examples
@@ -172,7 +159,6 @@ public void Add_WithInput0And0_ShouldReturn0()
     var result = calculator.Add(0, 0);
     Assert.Equal(0, result);
 }
-
 ```text
 
 ### [Theory] + [InlineData] - Parameterized Tests
@@ -191,7 +177,6 @@ public void Add_WithVariousNumberCombinations_ShouldReturnCorrectResult(int a, i
     var result = calculator.Add(a, b);
     Assert.Equal(expected, result);
 }
-
 ```text
 
 ### Testing Multiple Invalid Inputs
@@ -208,7 +193,6 @@ public void IsValidEmail_WithInvalidEmailFormats_ShouldReturnFalse(string invali
     var result = emailHelper.IsValidEmail(invalidEmail);
     Assert.False(result);
 }
-
 ```text
 
 ## Exception Testing
@@ -232,7 +216,6 @@ public void Divide_WithInput10And0_ShouldThrowDivideByZeroException()
     // Verify exception message
     Assert.Equal("Divisor cannot be zero", exception.Message);
 }
-
 ```text
 
 ## Test Project Structure
@@ -249,7 +232,6 @@ Solution/
     └── MyProject.Tests/
         ├── CalculatorTests.cs
         └── MyProject.Tests.csproj
-
 ```text
 
 ## Test Project Template (.csproj)
@@ -286,7 +268,6 @@ Solution/
     </ItemGroup>
 
 </Project>
-
 ```text
 
 ## Common Assertion Methods
@@ -308,10 +289,8 @@ Solution/
 When generating tests for a method, ensure coverage of:
 
 - [ ] **Happy Path** - Standard input produces expected output
-
 - [ ] **Boundary Conditions** - Minimum, maximum values, zero, empty strings
 - [ ] **Invalid Input** - null, negative numbers, wrong formats
-
 - [ ] **Exception Cases** - Scenarios expected to throw exceptions
 
 ## Reference Resources

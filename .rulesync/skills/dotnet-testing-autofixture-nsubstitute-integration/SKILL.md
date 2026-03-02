@@ -11,12 +11,7 @@ metadata:
   related_skills: 'nsubstitute-mocking, autofixture-basics, autodata-xunit-integration'
 ---
 
-<!--
-Attribution:
-
-- Source repo: https://github.com/kevintsengtw/dotnet-testing-agent-skills (MIT)
-- Ported/adapted into dotnet-agent-harness.
--->
+Source: kevintsengtw/dotnet-testing-agent-skills (MIT). Ported into dotnet-agent-harness.
 
 # AutoFixture + NSubstitute Auto-Mocking Integration
 
@@ -31,20 +26,16 @@ multiple dependencies, allowing developers to focus on test logic rather than te
 Use this skill when asked to perform the following tasks:
 
 - Test service classes with multiple interface dependencies
-
 - Create test setups that automatically mock all interface dependencies
 - Use `[Frozen]` attribute to ensure dependency instances remain consistent throughout tests
-
 - Create project-level custom AutoData attributes to integrate multiple customization settings
 - Combine fixed test values with automatically generated objects for parameterized tests
 
 ### Core Value
 
 - **Reduce boilerplate code**: No need to manually create `Substitute.For<T>()` for each interface
-
 - **Automatically handle complex dependency graphs**: AutoFixture automatically resolves and creates required objects
 - **Improve test maintainability**: When constructors change, test code usually doesn't need to be modified
-
 - **Maintain test focus**: Let developers focus on test logic rather than object creation
 
 ---
@@ -54,18 +45,14 @@ Use this skill when asked to perform the following tasks:
 ### Required Packages
 
 ````bash
-
 # Core packages
-
 dotnet add package AutoFixture.AutoNSubstitute
 
 # Related packages (if not already installed)
-
 dotnet add package AutoFixture
 dotnet add package AutoFixture.Xunit2
 dotnet add package NSubstitute
 dotnet add package xunit
-
 ```text
 
 ### NuGet Package Information
@@ -85,11 +72,9 @@ dotnet add package xunit
 When adding `AutoNSubstituteCustomization` to AutoFixture, it automatically:
 
 1. **Detects interface types**: When AutoFixture encounters interfaces or abstract classes
-
-1. **Automatically creates substitutes**: Uses NSubstitute's `Substitute.For<T>()` to create mock objects
-1. **Injects dependencies**: Injects these substitute objects into required constructors
-
-1. **Maintains instance consistency**: Ensures same type substitutes remain consistent within a test
+2. **Automatically creates substitutes**: Uses NSubstitute's `Substitute.For<T>()` to create mock objects
+3. **Injects dependencies**: Injects these substitute objects into required constructors
+4. **Maintains instance consistency**: Ensures same type substitutes remain consistent within a test
 
 ```csharp
 using AutoFixture;
@@ -101,7 +86,6 @@ var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
 // Automatically create service and its dependencies
 // All interface dependencies of MyService become NSubstitute substitutes
 var service = fixture.Create<MyService>();
-
 ```text
 
 ### FrozenAttribute Freezing Mechanism
@@ -109,7 +93,6 @@ var service = fixture.Create<MyService>();
 The `[Frozen]` attribute controls instances of a type in tests:
 
 - When a parameter is marked with `[Frozen]`, AutoFixture creates one instance of this class and **freezes** it
-
 - The same frozen instance is used throughout the test method
 - This is especially important for tests that need to set dependency behavior and then verify the SUT
 
@@ -126,7 +109,6 @@ public async Task TestMethod(
     // SUT internally uses the same repository instance
     var result = await sut.DoSomething();
 }
-
 ```text
 
 ### Importance of Parameter Order
@@ -143,8 +125,9 @@ public async Task TestMethod(
 public async Task TestMethod(
     MyService sut,
     [Frozen] IRepository repository)  // Frozen too late
+```text
 
-## ```text
+---
 
 ## Traditional Approach vs AutoNSubstitute Approach
 
@@ -171,12 +154,11 @@ public async Task TraditionalWay()
     // Assert
     result.Should().NotBeNull();
 }
-
 ```text
+
 **Problems**:
 
 - When services add new dependencies, all tests need modification
-
 - Large amounts of repetitive `Substitute.For<T>()` calls
 - Test code is verbose, making it difficult to quickly understand test intent
 
@@ -198,12 +180,11 @@ public async Task WithAutoNSubstitute(
     // Assert
     result.Should().NotBeNull();
 }
-
 ```text
+
 **Advantages**:
 
 - Only declare dependencies that need interaction
-
 - Other dependencies (logger, notificationService, cacheService) are automatically created
 - When constructors change, tests usually don't need modification
 
@@ -216,7 +197,6 @@ public async Task WithAutoNSubstitute(
 In actual projects, you typically need to integrate multiple customization settings:
 
 - **AutoNSubstituteCustomization**: Automatically creates NSubstitute substitutes for interfaces
-
 - **Project-specific Customizations**: Such as Mapper settings, validator settings, etc.
 - **Consistent test infrastructure**: Ensures the entire project uses the same settings
 
@@ -251,7 +231,6 @@ public class AutoDataWithCustomizationAttribute : AutoDataAttribute
         return fixture;
     }
 }
-
 ```text
 
 ### InlineAutoDataWithCustomizationAttribute Implementation
@@ -279,12 +258,11 @@ public class InlineAutoDataWithCustomizationAttribute : InlineAutoDataAttribute
     {
     }
 }
-
 ```text
 
 ### Important Implementation Details
 
-#### Why use `new AutoDataWithCustomizationAttribute()` instead of `CreateFixture` method?
+### Why use `new AutoDataWithCustomizationAttribute()` instead of `CreateFixture` method?
 
 ```csharp
 // ❌ Wrong: InlineAutoDataAttribute needs AutoDataAttribute, not Func<IFixture>
@@ -294,12 +272,11 @@ public InlineAutoDataWithCustomizationAttribute(params object[] values)
 // ✅ Correct: Pass AutoDataAttribute instance
 public InlineAutoDataWithCustomizationAttribute(params object[] values)
     : base(new AutoDataWithCustomizationAttribute(), values)
-
 ```text
+
 Reason:
 
 - `InlineAutoDataAttribute` inherits from `CompositeDataAttribute`
-
 - It needs to receive an `AutoDataAttribute` instance as the data source provider
 - This allows reusing all settings from `AutoDataWithCustomizationAttribute`
 
@@ -354,12 +331,12 @@ Covers basic tests, Frozen dependency behavior setup, automatically generated te
    - Gradually expand to complex scenarios
    - Let the team gradually become familiar with the pattern
 
-1. **Team Training**
+2. **Team Training**
    - Ensure team understands Frozen mechanism
    - Explain importance of parameter order
    - Share debugging techniques
 
-1. **Establish Conventions**
+3. **Establish Conventions**
    - When to use auto-generation vs manual creation
    - Naming and organization of custom Customizations
    - Test data control strategy
@@ -377,13 +354,11 @@ MyProject.Tests/
 │   ├── OrderServiceTests.cs
 │   └── ShipperServiceTests.cs
 └── ...
-
 ```text
 
 ### Naming Conventions
 
 - **Custom AutoData Attributes**: `[ProjectName]AutoDataAttribute` or `AutoDataWithCustomizationAttribute`
-
 - **Customization Classes**: `[Feature]Customization` (e.g., `MapsterMapperCustomization`)
 - **Test Methods**: Maintain `Method_Scenario_Expected` naming pattern
 
@@ -401,9 +376,9 @@ MyProject.Tests/
 
    // ✅ Frozen parameter must be before SUT
    public void Test([Frozen] IRepository repo, MyService sut)
-````
+```text
 
-1. **Forgetting AutoNSubstituteCustomization**
+2. **Forgetting AutoNSubstituteCustomization**
 
    ```csharp
    // ❌ Without AutoNSubstitute, interfaces will produce exceptions
@@ -411,9 +386,9 @@ MyProject.Tests/
 
    // ✅ Add AutoNSubstituteCustomization
    var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
-   ```
+```text
 
-1. **Over-reliance on Auto-Generation**
+3. **Over-reliance on Auto-Generation**
 
    ```csharp
    // ❌ Test intent unclear
@@ -433,12 +408,11 @@ MyProject.Tests/
        var result = sut.Process(order);
        result.Status.Should().Be(OrderStatus.Processed);
    }
-   ```
+```text
 
 ### Performance Considerations
 
 - Each test method creates a new Fixture and all dependencies
-
 - Complex object graphs may increase test execution time
 - Consider using `[ClassData]` or `IClassFixture<T>` to share setup
 
@@ -446,12 +420,12 @@ MyProject.Tests/
 
 ## Related Skills
 
-| Skill Name                   | Relationship Description                                  |
-| ---------------------------- | --------------------------------------------------------- |
+| Skill Name                   | Relationship Description                               |
+| ---------------------------- | ------------------------------------------------------ |
 | `autofixture-basics`         | AutoFixture basics, prerequisite knowledge for this skill |
-| `autofixture-customization`  | Advanced usage of custom Customizations                   |
-| `autodata-xunit-integration` | Complete explanation of AutoData attribute family         |
-| `nsubstitute-mocking`        | NSubstitute basics, detailed Mock setup explanation       |
+| `autofixture-customization`  | Advanced usage of custom Customizations                |
+| `autodata-xunit-integration` | Complete explanation of AutoData attribute family      |
+| `nsubstitute-mocking`        | NSubstitute basics, detailed Mock setup explanation    |
 
 ---
 
@@ -459,8 +433,7 @@ MyProject.Tests/
 
 ### Original Articles
 
-This skill content is distilled from the "Old School Software Engineer's Testing Practice - 30 Day Challenge" article
-series:
+This skill content is distilled from the "Old School Software Engineer's Testing Practice - 30 Day Challenge" article series:
 
 - **Day 13 - AutoFixture Integration with NSubstitute: Automatically Creating Mock Objects**
   - Article: https://ithelp.ithome.com.tw/articles/10375419
@@ -469,7 +442,6 @@ series:
 ### Official Documentation
 
 - [AutoFixture.AutoNSubstitute NuGet Package](https://www.nuget.org/packages/AutoFixture.AutoNSubstitute/)
-
 - [AutoFixture Documentation - Auto Mocking](https://autofixture.readthedocs.io/en/stable/)
 - [NSubstitute Documentation](https://nsubstitute.github.io/help/getting-started/)
 
@@ -477,9 +449,10 @@ series:
 
 - [Using AutoFixture.AutoData to Rewrite Previous Test Code | mrkt's Programming Learning Notes](https://www.dotblogs.com.tw/mrkt/2024/09/29/191300)
 
+
 ### Sample Code
 
 - [custom-autodata-attributes.cs](templates/custom-autodata-attributes.cs) - Custom AutoData attributes template
-
 - [frozen-patterns.cs](templates/frozen-patterns.cs) - Frozen mechanism usage patterns
 - [service-testing-examples.cs](templates/service-testing-examples.cs) - Complete service layer testing examples
+````

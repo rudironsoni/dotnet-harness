@@ -11,12 +11,7 @@ metadata:
   related_skills: 'autofixture-basics, bogus-fake-data, test-data-builder-pattern'
 ---
 
-<!--
-Attribution:
-
-- Source repo: https://github.com/kevintsengtw/dotnet-testing-agent-skills (MIT)
-- Ported/adapted into dotnet-agent-harness.
--->
+Source: kevintsengtw/dotnet-testing-agent-skills (MIT). Ported into dotnet-agent-harness.
 
 # AutoFixture and Bogus Integration Application Guide
 
@@ -25,13 +20,10 @@ Attribution:
 Use this skill when asked to perform the following tasks:
 
 - Integrate AutoFixture and Bogus tools
-
 - Create hybrid test data generators
 - Design ISpecimenBuilder integrating Bogus data generation
-
 - Create custom AutoData attributes using Bogus
 - Handle circular reference issues
-
 - Create unified test data factories
 - Design test base classes integrating data generation functionality
 
@@ -44,14 +36,12 @@ Use this skill when asked to perform the following tasks:
 **AutoFixture Advantages**:
 
 - Quickly generate anonymous test data
-
 - Automatically handle complex object structures
 - Good circular reference handling mechanism
 
 **Bogus Advantages**:
 
 - Generate realistic semantic data
-
 - Rich data type support (Email, Phone, Address, etc.)
 - Data formats friendly to validation
 
@@ -67,8 +57,9 @@ var user = integratedFixture.Create<User>();
 // user.Email is "john.doe@example.com"
 // user.FirstName is "John"
 // Other properties automatically filled by AutoFixture
+```text
 
-## ```text
+---
 
 ## Package Installation
 
@@ -78,8 +69,9 @@ var user = integratedFixture.Create<User>();
 <PackageReference Include="Bogus" Version="35.6.3" />
 <PackageReference Include="xunit" Version="2.9.3" />
 <PackageReference Include="AwesomeAssertions" Version="9.1.0" />
+```text
 
-## ```text (continued)
+---
 
 ## Integration Architecture
 
@@ -117,8 +109,8 @@ public class Company
 {
     public List<User> Employees { get; set; } = new();  // Company references User
 }
-
 ```text
+
 **Problem**: User → Company → Employees(User) → Company → ... infinite loop
 
 ### Solution: OmitOnRecursionBehavior
@@ -129,12 +121,11 @@ fixture.Behaviors.OfType<ThrowingRecursionBehavior>()
     .ToList()
     .ForEach(b => fixture.Behaviors.Remove(b));
 fixture.Behaviors.Add(new OmitOnRecursionBehavior());
-
 ```text
+
 **Effect**:
 
 - ✅ Avoid StackOverflowException
-
 - ✅ Circular reference properties set to null or empty collection
 - ⚠️ Some deep properties may be null (this is expected behavior)
 
@@ -152,7 +143,6 @@ public class BogusAutoDataAttribute : AutoDataAttribute
     {
     }
 }
-
 ```text
 
 ### Usage
@@ -166,8 +156,9 @@ public void UsingIntegratedDataTest(User user, Address address)
     user.FirstName.Should().NotBeNullOrEmpty();
     address.City.Should().NotBeNullOrEmpty();
 }
+```text
 
-## ```text (continued)
+---
 
 ## Hybrid Generator
 
@@ -180,7 +171,6 @@ public interface ITestDataGenerator
     IEnumerable<T> Generate<T>(int count);
     T Generate<T>(Action<T> configure);
 }
-
 ```text
 
 ### HybridTestDataGenerator Implementation
@@ -214,8 +204,9 @@ public class HybridTestDataGenerator : ITestDataGenerator
         return item;
     }
 }
+```text
 
-## ```text (continued)
+---
 
 ## Integrated Test Data Factory
 
@@ -283,8 +274,9 @@ public class IntegratedTestDataFactory
         };
     }
 }
+```text
 
-## ```text (continued)
+---
 
 ## Test Base Class
 
@@ -325,8 +317,9 @@ public abstract class TestBase
         return instance;
     }
 }
+```text
 
-## ```text (continued)
+---
 
 ## Seed Management and Reproducibility
 
@@ -335,7 +328,6 @@ public abstract class TestBase
 Since AutoFixture and Bogus have different random number management mechanisms:
 
 - ✅ Seed ensures test behavior stability
-
 - ✅ Seed ensures data format consistency
 - ❌ Cannot guarantee all property values are identical
 
@@ -348,8 +340,9 @@ var factory = new IntegratedTestDataFactory(seed: 12345);
 // If fully reproducible is needed, use single tool
 var faker = new Faker<User>();
 faker.UseSeed(12345);
+```text
 
-## ```text (continued)
+---
 
 ## Usage Examples
 
@@ -370,7 +363,6 @@ public void AutoFixture_Integrated_With_Bogus_Should_Generate_Realistic_Data()
     user.FirstName.Should().NotBeNullOrEmpty();
     user.Phone.Should().MatchRegex(@"[\d\-\(\)\s]+");
 }
-
 ```text
 
 ### Using Factory to Create Test Scenarios
@@ -396,8 +388,9 @@ public void Factory_Should_Create_Complete_Test_Scenario()
         user.Email.Should().Contain("@");
     });
 }
+```text
 
-## ```text (continued)
+---
 
 ## Best Practices
 
@@ -407,37 +400,35 @@ public void Factory_Should_Create_Complete_Test_Scenario()
 
    ```csharp
    fixture.WithOmitOnRecursion().WithBogus();
-````
+```text
 
-1. **Create dedicated SpecimenBuilders for common entities**
+2. **Create dedicated SpecimenBuilders for common entities**
 
-1. **Use Seed to ensure test stability**
+3. **Use Seed to ensure test stability**
 
-1. **Create test base classes to unify data generation logic**
+4. **Create test base classes to unify data generation logic**
 
-1. **Use cache appropriately to improve performance**
+5. **Use cache appropriately to improve performance**
 
 ### Things to Avoid
 
 1. ❌ Over-engineering, keep it simple and practical
-
-1. ❌ Expecting integration environment to be fully reproducible
-1. ❌ Ignoring circular reference handling
-
-1. ❌ Recreating Fixture in every test
+2. ❌ Expecting integration environment to be fully reproducible
+3. ❌ Ignoring circular reference handling
+4. ❌ Recreating Fixture in every test
 
 ---
 
 ## Comparison: Integration vs AutoFixture/Bogus Alone
 
-| Aspect                       | Pure AutoFixture | Pure Bogus                   | Integrated Solution |
-| ---------------------------- | ---------------- | ---------------------------- | ------------------- |
-| Data Realism                 | Low              | High                         | High                |
-| Configuration Complexity     | Low              | Medium                       | Medium              |
-| Object Relationship Handling | Automatic        | Manual                       | Automatic           |
-| Circular Reference Handling  | Built-in         | None                         | Integrated          |
-| Reproducibility              | High             | High                         | Medium              |
-| Applicable Scenarios         | Unit tests       | Integration tests/Prototypes | Both                |
+| Aspect              | Pure AutoFixture | Pure Bogus     | Integrated Solution |
+| ------------------- | ---------------- | -------------- | ------------------- |
+| Data Realism        | Low              | High           | High                |
+| Configuration Complexity | Low         | Medium         | Medium              |
+| Object Relationship Handling | Automatic | Manual         | Automatic           |
+| Circular Reference Handling | Built-in   | None           | Integrated          |
+| Reproducibility     | High             | High           | Medium              |
+| Applicable Scenarios | Unit tests      | Integration tests/Prototypes | Both |
 
 ---
 
@@ -445,8 +436,7 @@ public void Factory_Should_Create_Complete_Test_Scenario()
 
 ### Original Articles
 
-This skill content is distilled from the "Old School Software Engineer's Testing Practice - 30 Day Challenge" article
-series:
+This skill content is distilled from the "Old School Software Engineer's Testing Practice - 30 Day Challenge" article series:
 
 - **Day 15 - AutoFixture and Bogus Integration: Combining Both Advantages**
   - Article: https://ithelp.ithome.com.tw/articles/10375620
@@ -455,7 +445,6 @@ series:
 ### Official Documentation
 
 - [AutoFixture GitHub](https://github.com/AutoFixture/AutoFixture)
-
 - [Bogus GitHub Repository](https://github.com/bchavez/Bogus)
 
 ---
@@ -463,8 +452,8 @@ series:
 ## Related Skills
 
 - [autofixture-basics](../autofixture-basics/) - AutoFixture basics
-
 - [autofixture-customization](../autofixture-customization/) - AutoFixture customization strategies
 - [autodata-xunit-integration](../autodata-xunit-integration/) - AutoData attribute integration
-
 - [bogus-fake-data](../bogus-fake-data/) - Bogus fake data generator
+
+````

@@ -11,12 +11,7 @@ metadata:
   related_skills: 'autodata-xunit-integration, autofixture-customization, autofixture-bogus-integration'
 ---
 
-<!--
-Attribution:
-
-- Source repo: https://github.com/kevintsengtw/dotnet-testing-agent-skills (MIT)
-- Ported/adapted into dotnet-agent-harness.
--->
+Source: kevintsengtw/dotnet-testing-agent-skills (MIT). Ported into dotnet-agent-harness.
 
 # AutoFixture Basics: Automatically Generate Test Data
 
@@ -31,12 +26,10 @@ logic correctness.
 Traditional test data preparation pain points:
 
 1. **Too much boilerplate code**: 90% of code is preparing data, real test logic is buried
-
-1. **Unclear test focus**: Hard to quickly understand what this test is validating
-1. **Difficult maintenance**: When object structure changes, all related tests need modification
-
-1. **Data dependency**: Tests may accidentally depend on specific data values
-1. **Repeated code**: Same data preparation logic repeated in multiple tests
+2. **Unclear test focus**: Hard to quickly understand what this test is validating
+3. **Difficult maintenance**: When object structure changes, all related tests need modification
+4. **Data dependency**: Tests may accidentally depend on specific data values
+5. **Repeated code**: Same data preparation logic repeated in multiple tests
 
 AutoFixture can be seen as the **automated evolution version of Test Data Builder Pattern**, automatically generating
 complex test data, letting us focus on test logic itself.
@@ -46,14 +39,13 @@ complex test data, letting us focus on test logic itself.
 ````xml
 <PackageReference Include="AutoFixture" Version="4.18.1" />
 <PackageReference Include="AutoFixture.Xunit2" Version="4.18.1" />
-
 ```text
+
 Or install via command line:
 
 ```powershell
 dotnet add package AutoFixture
 dotnet add package AutoFixture.Xunit2
-
 ```text
 
 ## Basic Usage
@@ -94,7 +86,6 @@ public abstract class AutoFixtureTestBase
         return fixture;
     }
 }
-
 ```text
 
 ## xUnit Integration
@@ -142,18 +133,15 @@ AutoFixture is commonly used for Entity testing (with Theory), DTO validation, a
 ### Should Do
 
 1. Use anonymous testing concept - focus on test logic not specific data
-
-1. Only fix specific values when necessary - use `Build<T>().With()` for key properties
-1. Create shared base class - unify handling of circular references
-
-1. Reasonable collection sizes - adjust `CreateMany()` quantity based on test purpose
+2. Only fix specific values when necessary - use `Build<T>().With()` for key properties
+3. Create shared base class - unify handling of circular references
+4. Reasonable collection sizes - adjust `CreateMany()` quantity based on test purpose
 
 ### Should Avoid
 
 1. Over-reliance on random values - don't assume specific content of random values
-
-1. Ignore boundary values - still need explicit boundary case testing
-1. Abuse auto-generation - simple tests may be clearer with fixed values
+2. Ignore boundary values - still need explicit boundary case testing
+3. Abuse auto-generation - simple tests may be clearer with fixed values
 
 ## Hybrid Strategy Recommendation
 
@@ -176,9 +164,7 @@ This skill content is extracted from "Old School Software Engineer's Testing Pra
 ### Official Documentation
 
 - [AutoFixture GitHub](https://github.com/AutoFixture/AutoFixture)
-
 - [AutoFixture Official Website](https://autofixture.github.io/)
 - [AutoFixture Quick Start](https://autofixture.github.io/docs/quick-start/)
-
 - [AutoFixture NuGet](https://www.nuget.org/packages/autofixture)
 ````

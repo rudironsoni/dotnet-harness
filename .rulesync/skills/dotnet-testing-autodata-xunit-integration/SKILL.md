@@ -11,31 +11,21 @@ metadata:
   related_skills: 'autofixture-basics, autofixture-customization, autofixture-nsubstitute-integration'
 ---
 
-<!--
-Attribution:
-
-- Source repo: https://github.com/kevintsengtw/dotnet-testing-agent-skills (MIT)
-- Ported/adapted into dotnet-agent-harness.
--->
+Source: kevintsengtw/dotnet-testing-agent-skills (MIT). Ported into dotnet-agent-harness.
 
 # AutoData Attribute Family: xUnit and AutoFixture Integration Application
 
 ## Applicable Scenarios
 
 - AutoData
-
 - InlineAutoData
 - MemberAutoData
-
 - CompositeAutoData
 - xUnit AutoFixture integration
-
 - parameterized test data
 - test parameter injection
-
 - CollectionSizeAttribute
 - external test data
-
 - CSV test data
 - JSON test data
 
@@ -48,24 +38,20 @@ significantly reducing test preparation code.
 ### Core Features
 
 1. **AutoData**: Automatically generate all test parameters
-
-1. **InlineAutoData**: Mix fixed values with auto-generation
-1. **MemberAutoData**: Combine external data sources
-
-1. **CompositeAutoData**: Multiple data source integration
-1. **CollectionSizeAttribute**: Control collection generation quantity
+2. **InlineAutoData**: Mix fixed values with auto-generation
+3. **MemberAutoData**: Combine external data sources
+4. **CompositeAutoData**: Multiple data source integration
+5. **CollectionSizeAttribute**: Control collection generation quantity
 
 ## Package Installation
 
 ````xml
 <PackageReference Include="AutoFixture" Version="4.18.1" />
 <PackageReference Include="AutoFixture.Xunit2" Version="4.18.1" />
-
 ```text
 
 ```bash
 dotnet add package AutoFixture.Xunit2
-
 ```text
 
 ## AutoData: Fully Automatic Parameter Generation
@@ -105,7 +91,6 @@ public void AutoData_Should_Automatically_Generate_All_Parameters(Person person,
     message.Should().NotBeNullOrEmpty();
     count.Should().NotBe(0);
 }
-
 ```text
 
 ### Constrain Parameters via DataAnnotation
@@ -123,7 +108,6 @@ public void AutoData_Constrain_Parameters_Via_DataAnnotation(
     percentage.Should().BeInRange(1, 100);
     person.Should().NotBeNull();
 }
-
 ```text
 
 ## InlineAutoData: Mixing Fixed Values with Auto-Generation
@@ -155,7 +139,6 @@ public void InlineAutoData_Mix_Fixed_Values_With_Auto_Generate(
     customer.CreditLimit.Should().BeOneOf(1000, 500, 100);
     customer.Person.Should().NotBeNull();
 }
-
 ```text
 
 ### Parameter Order Consistency
@@ -178,7 +161,6 @@ public void InlineAutoData_Parameter_Order_Consistency(
     description.Should().NotBeNullOrEmpty();
     product.Should().NotBeNull();
 }
-
 ```text
 
 ### ⚠️ Important Limitation: Only Compile-Time Constants
@@ -194,8 +176,8 @@ private const decimal VipCreditLimit = 100000m;
 
 // ❌ Wrong: Cannot use expressions
 [InlineAutoData("VIP", 100 * 1000)]  // Compile error
-
 ```text
+
 When complex data is needed, use `MemberAutoData` instead.
 
 ## MemberAutoData: Combining External Data Sources
@@ -236,7 +218,6 @@ public class MemberAutoDataTests
         categorizedProduct.Product.Should().NotBeNull();
     }
 }
-
 ```text
 
 ### Using Static Properties
@@ -266,7 +247,6 @@ public void MemberAutoData_Using_Static_Property_Order_Status_Transition(
     // Assert
     order.Status.Should().Be(toStatus);
 }
-
 ```text
 
 ## Custom AutoData Attributes
@@ -301,7 +281,6 @@ public class DomainAutoDataAttribute : AutoDataAttribute
         return fixture;
     }
 }
-
 ```text
 
 ### BusinessAutoDataAttribute
@@ -326,7 +305,6 @@ public class BusinessAutoDataAttribute : AutoDataAttribute
         return fixture;
     }
 }
-
 ```text
 
 ### Using Custom AutoData
@@ -349,7 +327,6 @@ public void Using_BusinessAutoData(Order order)
     order.Amount.Should().BeInRange(1000, 49999);
     order.OrderNumber.Should().StartWith("ORD");
 }
-
 ```text
 
 ## CompositeAutoData: Multiple Data Source Integration
@@ -367,7 +344,6 @@ public void CompositeAutoData_Integrate_Multiple_Data_Sources(
     product.IsAvailable.Should().BeTrue();        // DomainAutoData setting
     order.Status.Should().Be(OrderStatus.Created); // BusinessAutoData setting
 }
-
 ```text
 
 ## CollectionSizeAttribute: Control Collection Size
@@ -428,7 +404,6 @@ private static decimal CalculateDiscount(string customerType, decimal orderAmoun
     var largeOrderBonus = orderAmount > 30000m ? 0.05m : 0m;
     return Math.Min(baseDiscount + largeOrderBonus, 0.3m);
 }
-
 ```text
 
 ## Best Practices
@@ -439,15 +414,15 @@ private static decimal CalculateDiscount(string customerType, decimal orderAmoun
    - Use `[StringLength]`, `[Range]` on parameters to constrain data ranges
    - Ensure generated data meets business rules
 
-1. **Create Reusable Custom AutoData**
+2. **Create Reusable Custom AutoData**
    - Create dedicated AutoData attributes for different domains
    - Centrally manage test data generation rules
 
-1. **Use MemberAutoData for Complex Data**
+3. **Use MemberAutoData for Complex Data**
    - Use when InlineAutoData cannot meet requirements
    - Supports variables, expressions, and external data sources
 
-1. **Organize Test Data Sources**
+4. **Organize Test Data Sources**
    - Create hierarchical data source structures
    - Manage related data centrally
 
@@ -457,11 +432,11 @@ private static decimal CalculateDiscount(string customerType, decimal orderAmoun
    - InlineAutoData only accepts compile-time constants
    - Use MemberAutoData for dynamic values
 
-1. **Don't Overcomplicate CompositeAutoData**
+2. **Don't Overcomplicate CompositeAutoData**
    - Avoid combining too many AutoData sources
    - Keep configurations understandable
 
-1. **Don't Ignore Parameter Order**
+3. **Don't Ignore Parameter Order**
    - InlineAutoData fixed values must match parameter order
    - Wrong order causes type mismatch
 
@@ -470,17 +445,14 @@ private static decimal CalculateDiscount(string customerType, decimal orderAmoun
 See example files in the [templates](./templates) folder:
 
 - [autodata-attributes.cs](./templates/autodata-attributes.cs) - AutoData attribute family usage examples
-
 - [external-data-integration.cs](./templates/external-data-integration.cs) - CSV/JSON external data integration
 - [advanced-patterns.cs](./templates/advanced-patterns.cs) - Advanced patterns and CollectionSizeAttribute
 
 ## Relationship with Other Skills
 
 - **autofixture-basics**: Prerequisite knowledge for this skill
-
 - **autofixture-customization**: Customization strategies can be used for AutoData attributes
 - **autofixture-nsubstitute-integration**: Next learning goal
-
 - **awesome-assertions-guide**: Use together to improve test readability
 
 ## Reference Resources
@@ -496,9 +468,7 @@ This skill content is distilled from the "Old School Software Engineer's Testing
 ### Official Documentation
 
 - [AutoFixture Cheat Sheet - AutoData Theories](https://github.com/AutoFixture/AutoFixture/wiki/Cheat-Sheet#autodata-theories)
-
 - [AutoDataAttribute API Reference](https://autofixture.io/api/AutoFixture.Xunit.AutoDataAttribute.html)
 - [InlineAutoDataAttribute API Reference](https://autofixture.io/api/AutoFixture.Xunit.InlineAutoDataAttribute.html)
-
 - [CsvHelper Official Documentation](https://joshclose.github.io/CsvHelper/)
 ````
