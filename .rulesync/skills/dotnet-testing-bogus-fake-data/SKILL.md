@@ -155,7 +155,7 @@ var domainName = faker.Internet.DomainName(); // Domain name
 var ipAddress = faker.Internet.Ip();          // IPv4 address
 var ipv6 = faker.Internet.Ipv6();             // IPv6 address
 var userName = faker.Internet.UserName();     // Username
-var Password=<DB_PASSWORD_PLACEHOLDER>;     // Password
+ var password = "<PASSWORD_PLACEHOLDER>";     // Password
 var email = faker.Internet.Email();           // Email
 
 ```text

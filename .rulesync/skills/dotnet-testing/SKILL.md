@@ -245,7 +245,7 @@ paths, and code examples.
 Provide 7 common testing tasks (create project from scratch, service dependency testing, time logic testing, etc.) with
 skill combination recommendations, implementation steps, and prompt examples.
 
-> 📖 For details, please refer to [references/task-mapping-table.md](references/task-mapping-table.md)
+> 📖 For details, please refer to the task mapping table in `references/task-mapping-table.md`.
 
 ## Learning Path Recommendations
 
