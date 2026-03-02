@@ -83,3 +83,11 @@ Thumbs.db
 /current_branch.txt
 /recent_commits.txt
 /summary.json
+
+# Additional repo-root helper artifacts
+/$FILES_CHANGED_TMP
+/branch_after_exception.txt
+/changed_files_after_edits.txt
+/git_log_commits.txt
+/pre_files.txt
+/pre_pattern_matches.txt
