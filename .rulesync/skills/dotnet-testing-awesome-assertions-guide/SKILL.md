@@ -3,6 +3,7 @@ name: dotnet-testing-awesome-assertions-guide
 description: |
   Using AwesomeAssertions for fluent and readable test assertion skill. Used when writing clear assertions, comparing objects, validating collections, handling complex comparisons. Covers Should(), BeEquivalentTo(), Contain(), ThrowAsync() and complete API.
   Keywords: assertions, awesome assertions, fluent assertions, assertion, fluent assertion, Should(), Be(), BeEquivalentTo, Contain, ThrowAsync, NotBeNull, object comparison, collection validation, exception assertion, AwesomeAssertions, FluentAssertions, fluent syntax
+targets: ['*']
 license: MIT
 metadata:
   author: Kevin Tseng

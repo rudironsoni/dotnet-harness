@@ -3,6 +3,7 @@ name: dotnet-testing-unit-test-fundamentals
 description: |
   .NET unit test fundamentals and FIRST principles specialized skill. Used when creating unit tests, understanding testing basics, learning 3A Pattern, and mastering testing best practices. Covers FIRST principles, AAA Pattern, Fact/Theory, testing pyramid, etc.
   Keywords: unit test, unit test, unit testing, test fundamentals, testing fundamentals, FIRST principle, FIRST principle, 3A pattern, AAA pattern, Arrange Act Assert, Fact, Theory, InlineData, how to write tests, testing best practices, create unit test
+targets: ['*']
 license: MIT
 metadata:
   author: Kevin Tseng

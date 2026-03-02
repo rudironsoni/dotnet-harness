@@ -3,6 +3,7 @@ name: dotnet-testing-autofixture-nsubstitute-integration
 description: |
   AutoFixture and NSubstitute Integration Guide - Implementing Auto-Mocking. Use when you need to automatically create mock objects and simplify testing of complex dependency injection. Covers AutoNSubstituteDataAttribute, Frozen mechanism, Greedy construction strategy. Includes customized handling for special dependencies like IMapper (AutoMapper/Mapster).
   Keywords: autofixture nsubstitute, auto mocking, AutoNSubstituteDataAttribute, auto-mocking, Frozen, AutoNSubstituteCustomization, AutoFixture.AutoNSubstitute, Greedy, fixture.Freeze, Received(), Returns(), IMapper, AutoMapper, Mapster, mapper testing
+targets: ['*']
 license: MIT
 metadata:
   author: Kevin Tseng
