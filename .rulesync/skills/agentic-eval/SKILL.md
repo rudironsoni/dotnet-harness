@@ -14,7 +14,8 @@ Portions derived from github/awesome-copilot (MIT License). Used under MIT Licen
 
 # Agentic Evaluation Patterns
 
-Patterns for self-improvement through iterative evaluation and refinement.
+Patterns for self-improvement through iterative evaluation and refinement, built using the `.NET` and
+`Microsoft.Extensions.AI` ecosystem.
 
 ## Overview
 
@@ -33,93 +34,231 @@ iterative refinement loops.
 
 Agent evaluates and improves its own output through self-critique.
 
-```python
-def reflect_and_refine(task: str, criteria: list[str], max_iterations: int = 3) -> str:
-    """Generate with reflection loop."""
-    output = llm(f"Complete this task:\n{task}")
+```csharp
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.Extensions.AI;
 
-    for _ in range(max_iterations):
-        critique = llm(
-            """
-            Evaluate this output against criteria:
-            {criteria}
+namespace DotNetAgentHarness.Evals.Engine;
 
-            Output:
-            {output}
+public class BasicReflection(IChatClient chatClient)
+{
+    public async Task<string> ReflectAndRefineAsync(string task, string[] criteria, int maxIterations = 3, CancellationToken cancellationToken = default)
+    {
+        var response = await chatClient.GetResponseAsync($"Complete this task:\n{task}", cancellationToken: cancellationToken);
+        var output = response.Text ?? string.Empty;
 
-            Rate each: PASS/FAIL with feedback as JSON.
-            """.format(criteria=criteria, output=output)
-        )
+        for (int i = 0; i < maxIterations; i++)
+        {
+            var prompt = $"""
+                Evaluate this output against criteria:
+                {string.Join(", ", criteria)}
 
-        critique_data = json.loads(critique)
-        all_pass = all(c["status"] == "PASS" for c in critique_data.values())
-        if all_pass:
-            return output
+                Output:
+                {output}
 
-        failed = {k: v["feedback"] for k, v in critique_data.items() if v["status"] == "FAIL"}
-        output = llm(f"Improve to address: {failed}\nOriginal: {output}")
+                Rate each criteria. Return ONLY a JSON object where keys are the criteria and values are objects with a 'status' ("PASS" or "FAIL") and 'feedback' string.
+                """;
 
-    return output
+            var critiqueResponse = await chatClient.GetResponseAsync(
+                prompt,
+                new ChatOptions { ResponseFormat = ChatResponseFormat.Json },
+                cancellationToken);
+
+            var critiqueText = critiqueResponse.Text ?? "{}";
+            Dictionary<string, CritiqueResult>? critiqueData = null;
+
+            try
+            {
+                critiqueData = JsonSerializer.Deserialize<Dictionary<string, CritiqueResult>>(critiqueText);
+            }
+            catch (JsonException)
+            {
+                // Fallback to empty if json parsing fails
+                critiqueData = new Dictionary<string, CritiqueResult>();
+            }
+
+            if (critiqueData != null && critiqueData.Count > 0 && critiqueData.Values.All(c => c.Status == "PASS"))
+            {
+                return output;
+            }
+
+            var failed = critiqueData?
+                .Where(kvp => kvp.Value.Status == "FAIL")
+                .ToDictionary(kvp => kvp.Key, kvp => kvp.Value.Feedback) ?? new Dictionary<string, string>();
+
+            if (failed.Count == 0)
+            {
+                // If nothing explicitly failed but parsing succeeded, break out to avoid unguided infinite loops
+                break;
+            }
+
+            var failedJson = JsonSerializer.Serialize(failed);
+
+            var refinePrompt = $"Improve the original output to address these failures: {failedJson}\nOriginal Output: {output}";
+            var improvedResponse = await chatClient.GetResponseAsync(refinePrompt, cancellationToken: cancellationToken);
+            output = improvedResponse.Text ?? string.Empty;
+        }
+
+        return output;
+    }
+
+    private class CritiqueResult
+    {
+        [JsonPropertyName("status")]
+        public string Status { get; set; } = string.Empty;
+
+        [JsonPropertyName("feedback")]
+        public string Feedback { get; set; } = string.Empty;
+    }
+}
 ```
 
-**Key insight**: Use structured JSON output for reliable parsing of critique results.
+**Key insight**: Use structured JSON output for reliable parsing of critique results. In `.NET`, you can also use
+`IChatClient` directly with structured output models to avoid manual deserialization checking.
 
 ## Pattern 2: Evaluator-Optimizer
 
 Separate generation and evaluation into distinct components for clearer responsibilities.
 
-```python
-class EvaluatorOptimizer:
-    def __init__(self, score_threshold: float = 0.8):
-        self.score_threshold = score_threshold
+```csharp
+using System;
+using System.Collections.Generic;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.Extensions.AI;
 
-    def generate(self, task: str) -> str:
-        return llm(f"Complete: {task}")
+namespace DotNetAgentHarness.Evals.Engine;
 
-    def evaluate(self, output: str, task: str) -> dict:
-        return json.loads(
-            llm(
-                """
-                Evaluate output for task: {task}
+public class EvaluatorOptimizer(IChatClient chatClient, double scoreThreshold = 0.8)
+{
+    public async Task<string> GenerateAsync(string task, CancellationToken cancellationToken = default)
+    {
+        var response = await chatClient.GetResponseAsync($"Complete: {task}", cancellationToken: cancellationToken);
+        return response.Text ?? string.Empty;
+    }
 
-                Output:
-                {output}
+    public async Task<EvaluationResult> EvaluateAsync(string output, string task, CancellationToken cancellationToken = default)
+    {
+        var prompt = $$"""
+            Evaluate output for task: {{task}}
 
-                Return JSON: {{"overall_score": 0-1, "dimensions": {{"accuracy": ..., "clarity": ...}}}}
-                """.format(task=task, output=output)
-            )
-        )
+            Output:
+            {{output}}
 
-    def optimize(self, output: str, feedback: dict) -> str:
-        return llm(f"Improve based on feedback: {feedback}\nOutput: {output}")
+            Return JSON in this format: { "overall_score": 0.0, "dimensions": { "accuracy": 0.0, "clarity": 0.0 } }
+            """;
 
-    def run(self, task: str, max_iterations: int = 3) -> str:
-        output = self.generate(task)
-        for _ in range(max_iterations):
-            evaluation = self.evaluate(output, task)
-            if evaluation["overall_score"] >= self.score_threshold:
-                break
-            output = self.optimize(output, evaluation)
-        return output
+        var response = await chatClient.GetResponseAsync(
+            prompt,
+            new ChatOptions { ResponseFormat = ChatResponseFormat.Json },
+            cancellationToken);
+
+        var jsonText = response.Text ?? "{}";
+
+        try
+        {
+            return JsonSerializer.Deserialize<EvaluationResult>(jsonText) ?? new EvaluationResult();
+        }
+        catch (JsonException)
+        {
+            return new EvaluationResult();
+        }
+    }
+
+    public async Task<string> OptimizeAsync(string output, EvaluationResult feedback, CancellationToken cancellationToken = default)
+    {
+        var feedbackJson = JsonSerializer.Serialize(feedback);
+        var prompt = $"Improve based on feedback: {feedbackJson}\nOutput: {output}";
+        var response = await chatClient.GetResponseAsync(prompt, cancellationToken: cancellationToken);
+        return response.Text ?? string.Empty;
+    }
+
+    public async Task<string> RunAsync(string task, int maxIterations = 3, CancellationToken cancellationToken = default)
+    {
+        var output = await GenerateAsync(task, cancellationToken);
+
+        for (int i = 0; i < maxIterations; i++)
+        {
+            var evaluation = await EvaluateAsync(output, task, cancellationToken);
+            if (evaluation.OverallScore >= scoreThreshold)
+            {
+                break;
+            }
+            output = await OptimizeAsync(output, evaluation, cancellationToken);
+        }
+
+        return output;
+    }
+}
+
+public class EvaluationResult
+{
+    [JsonPropertyName("overall_score")]
+    public double OverallScore { get; set; }
+
+    [JsonPropertyName("dimensions")]
+    public Dictionary<string, double> Dimensions { get; set; } = new();
+}
 ```
 
 ## Pattern 3: Code-Specific Reflection
 
 Test-driven refinement loop for code generation.
 
-```python
-class CodeReflector:
-    def reflect_and_fix(self, spec: str, max_iterations: int = 3) -> str:
-        code = llm(f"Write Python code for: {spec}")
-        tests = llm(f"Generate pytest tests for: {spec}\nCode: {code}")
+```csharp
+using System;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.Extensions.AI;
 
-        for _ in range(max_iterations):
-            result = run_tests(code, tests)
-            if result["success"]:
-                return code
-            code = llm(f"Fix error: {result['error']}\nCode: {code}")
+namespace DotNetAgentHarness.Evals.Engine;
 
-        return code
+public class CodeReflector(IChatClient chatClient)
+{
+    public async Task<string> ReflectAndFixAsync(string spec, int maxIterations = 3, CancellationToken cancellationToken = default)
+    {
+        var codeResponse = await chatClient.GetResponseAsync($"Write C# code for: {spec}", cancellationToken: cancellationToken);
+        var code = codeResponse.Text ?? string.Empty;
+
+        var testsResponse = await chatClient.GetResponseAsync($"Generate xUnit tests for: {spec}\nCode: {code}", cancellationToken: cancellationToken);
+        var tests = testsResponse.Text ?? string.Empty;
+
+        for (int i = 0; i < maxIterations; i++)
+        {
+            var result = await RunTestsAsync(code, tests, cancellationToken);
+            if (result.Success)
+            {
+                return code;
+            }
+
+            var fixResponse = await chatClient.GetResponseAsync($"Fix error: {result.Error}\nCode: {code}", cancellationToken: cancellationToken);
+            code = fixResponse.Text ?? string.Empty;
+        }
+
+        return code;
+    }
+
+    // Stub for actual test execution
+    private Task<TestResult> RunTestsAsync(string code, string tests, CancellationToken cancellationToken = default)
+    {
+        // In a real implementation, you would compile and run the tests dynamically
+        return Task.FromResult(new TestResult { Success = false, Error = "Mock test failure" });
+    }
+
+    private class TestResult
+    {
+        public bool Success { get; set; }
+        public string Error { get; set; } = string.Empty;
+    }
+}
 ```
 
 ## Evaluation Strategies
@@ -128,39 +267,75 @@ class CodeReflector:
 
 Evaluate whether output achieves the expected result.
 
-```python
-def evaluate_outcome(task: str, output: str, expected: str) -> str:
-    return llm(
-        f"Does output achieve expected outcome? Task: {task}, Expected: {expected}, Output: {output}"
-    )
+```csharp
+public async Task<string> EvaluateOutcomeAsync(string task, string output, string expected, CancellationToken cancellationToken = default)
+{
+    var response = await chatClient.GetResponseAsync(
+        $"Does output achieve expected outcome? Task: {task}, Expected: {expected}, Output: {output}",
+        cancellationToken: cancellationToken
+    );
+    return response.Text ?? string.Empty;
+}
 ```
 
 ### LLM-as-Judge
 
 Use LLM to compare and rank outputs.
 
-```python
-def llm_judge(output_a: str, output_b: str, criteria: str) -> str:
-    return llm(f"Compare outputs A and B for {criteria}. Which is better and why?")
+```csharp
+public async Task<string> LlmJudgeAsync(string outputA, string outputB, string criteria, CancellationToken cancellationToken = default)
+{
+    var response = await chatClient.GetResponseAsync(
+        $"Compare outputs A and B for {criteria}. Which is better and why?\n\nOutput A:\n{outputA}\n\nOutput B:\n{outputB}",
+        cancellationToken: cancellationToken
+    );
+    return response.Text ?? string.Empty;
+}
 ```
 
 ### Rubric-Based
 
 Score outputs against weighted dimensions.
 
-```python
-RUBRIC = {
-    "accuracy": {"weight": 0.4},
-    "clarity": {"weight": 0.3},
-    "completeness": {"weight": 0.3},
+```csharp
+public class RubricDimension
+{
+    public double Weight { get; set; }
 }
 
+public async Task<double> EvaluateWithRubricAsync(string output, Dictionary<string, RubricDimension> rubric, CancellationToken cancellationToken = default)
+{
+    var dimensions = string.Join(", ", rubric.Keys);
+    var prompt = $"Rate 1-5 for each dimension: {dimensions}\nOutput: {output}\n\nReturn ONLY a JSON dictionary where keys are dimensions and values are numbers.";
 
-def evaluate_with_rubric(output: str, rubric: dict) -> float:
-    scores = json.loads(
-        llm(f"Rate 1-5 for each dimension: {list(rubric.keys())}\nOutput: {output}")
-    )
-    return sum(scores[d] * rubric[d]["weight"] for d in rubric) / 5
+    var response = await chatClient.GetResponseAsync(
+        prompt,
+        new ChatOptions { ResponseFormat = ChatResponseFormat.Json },
+        cancellationToken);
+
+    var jsonText = response.Text ?? "{}";
+    Dictionary<string, double> scores;
+
+    try
+    {
+        scores = JsonSerializer.Deserialize<Dictionary<string, double>>(jsonText) ?? new Dictionary<string, double>();
+    }
+    catch (JsonException)
+    {
+        scores = new Dictionary<string, double>();
+    }
+
+    double totalScore = 0;
+    foreach (var dimension in rubric.Keys)
+    {
+        if (scores.TryGetValue(dimension, out var score))
+        {
+            totalScore += score * rubric[dimension].Weight;
+        }
+    }
+
+    return totalScore / 5.0; // Normalize
+}
 ```
 
 ## Best Practices
@@ -183,9 +358,9 @@ def evaluate_with_rubric(output: str, rubric: dict) -> float:
 
 ### Implementation
 
-- [ ] Implement `generate()`
-- [ ] Implement `evaluate()` with structured output
-- [ ] Implement `optimize()`
+- [ ] Implement `GenerateAsync()`
+- [ ] Implement `EvaluateAsync()` with structured output
+- [ ] Implement `OptimizeAsync()`
 - [ ] Wire up the refinement loop
 
 ### Safety
