@@ -10,7 +10,15 @@ This toolkit provides:
 - 15 specialist agents/subagents
 - shared RuleSync rules, commands, hooks, and MCP config
 
-Compatible targets include Claude Code, GitHub Copilot CLI, OpenCode, Codex CLI, Gemini CLI, Antigravity, and Factory Droid.
+Compatible targets include:
+
+- Claude Code
+- GitHub Copilot CLI
+- OpenCode
+- Codex CLI
+- Gemini CLI
+- Antigravity
+- Factory Droid
 
 ## Recommended install
 
@@ -53,8 +61,9 @@ rulesync generate --targets "claudecode,codexcli,opencode,geminicli,antigravity,
 If RuleSync reports `Multiple root rulesync rules found`, ensure only one root overview rule exists in
 `.rulesync/rules/`.
 
-If `dotnet-agent-harness:*` commands are available, prefer executing the local runtime command (`dotnet agent-harness ...`)
-instead of manually reproducing catalog, prompt, incident, or graph logic from source files.
+If `dotnet-agent-harness:*` commands are available, prefer executing the local runtime command
+(`dotnet agent-harness ...`) instead of manually reproducing catalog, prompt, incident, or graph logic from source
+files.
 
 ## Contributing
 

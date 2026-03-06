@@ -19,8 +19,15 @@ This toolkit provides:
 - 15 specialist agents/subagents
 - shared RuleSync rules, commands, hooks, and MCP config
 
-Compatible targets include Claude Code, GitHub Copilot CLI, OpenCode, Codex CLI, Gemini CLI, Antigravity, and Factory
-Droid.
+Compatible targets include:
+
+- Claude Code
+- GitHub Copilot CLI
+- OpenCode
+- Codex CLI
+- Gemini CLI
+- Antigravity
+- Factory Droid
 
 ## Recommended install
 
