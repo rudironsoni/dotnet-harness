@@ -2,6 +2,9 @@
   description: "Microservice architecture recommendation"
   prompt: "Suggest an architecture for a high-throughput .NET 10 microservice."
   expected_trigger: "dotnet-architect"
+  trial_count: 3
+  fixture_trigger: "dotnet-architect"
+  fixture_response: "Use .NET Aspire with Minimal APIs and an async messaging backbone for resilient high-throughput services."
   assertions:
     - type: "contains"
       value: "Aspire"
@@ -11,9 +14,21 @@
       value: "WCF"
 
 - id: "ui-001"
-  description: "Web assembly vs Server side rendering"
+  description: "Web assembly vs server side rendering"
   prompt: "Should I use InteractiveServer or InteractiveWebAssembly for a public-facing blog?"
   expected_trigger: "dotnet-blazor-specialist"
+  fixture_trigger: "dotnet-blazor-specialist"
+  fixture_response: "Start with SSR and add interactivity where needed to keep first load performance predictable."
   assertions:
     - type: "contains"
       value: "SSR"
+
+- id: "neg-001"
+  description: "Negative control should not trigger a specialist"
+  prompt: "Write a two-line thank-you message for a teammate."
+  expected_trigger: "none"
+  fixture_trigger: "none"
+  fixture_response: "Thanks for your help this week. I appreciate your thoughtful feedback on the project."
+  assertions:
+    - type: "not_contains"
+      value: "dotnet"

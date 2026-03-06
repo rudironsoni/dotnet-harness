@@ -57,6 +57,7 @@ replit.md
 
 # Temporary directories
 .tmp/
+.dotnet-agent-harness/
 
 # Build output
 dist/
@@ -65,6 +66,8 @@ packages/dotnet-agent-harness-*/bundled/
 # .NET build intermediates (repo-local)
 src/**/bin/
 src/**/obj/
+tests/**/bin/
+tests/**/obj/
 
 # Local editor and OS files
 .DS_Store

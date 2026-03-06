@@ -1,0 +1,6 @@
+{
+  "id": "blazor-app",
+  "displayName": "Blazor App",
+  "description": "Scaffold a Blazor app with harness bootstrap files.",
+  "dotNetTemplate": "blazor"
+}

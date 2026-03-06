@@ -5,7 +5,8 @@ hero:
   name: 'dotnet-agent-harness'
   text: 'Comprehensive .NET Development Toolkit'
   tagline:
-    131 skills, 15 subagents, and expert guidance for modern C#, ASP.NET Core, MAUI, Blazor, and cloud-native apps
+    189 skills, 15 subagents, 20 commands, and a runtime harness for modern C#, ASP.NET Core, MAUI, Blazor, and
+    cloud-native apps
   image:
     src: /logo.png
     alt: dotnet-agent-harness
@@ -22,7 +23,7 @@ hero:
 
 features:
   - icon: 🎯
-    title: 131 Specialized Skills
+    title: 189 Specialized Skills
     details: Deep expertise across the entire .NET ecosystem, from C# coding standards to cloud deployment patterns.
 
   - icon: 🤖
@@ -30,16 +31,16 @@ features:
     details: Specialized agents for MAUI, Blazor, Security, Performance, and more - each with focused tool profiles.
 
   - icon: 🛠️
-    title: 15 Slash Commands
-    details: Powerful commands for research, testing, profiling, and documentation generation.
+    title: 20 Commands and Runtime Workflows
+    details: Slash commands plus runtime CLI workflows for prompt assembly, incidents, validation, and eval automation.
 
   - icon: 🔌
     title: MCP Integration
-    details: Seamless integration with Serena, Context7, Microsoft Learn, GitHub, and Docker MCP servers.
+    details: Seamless integration with Serena, Context7, Microsoft Learn, GitHub, DeepWiki, and WinDbg MCP servers.
 
   - icon: 🐳
-    title: Docker & GitHub Actions
-    details: Containerized toolkit with official GitHub Actions for CI/CD integration.
+    title: CI and Release Automation
+    details: Eval artifact emission, prompt evidence capture, and incident creation for nightly and release workflows.
 
   - icon: 🔍
     title: Semantic Search
@@ -50,13 +51,33 @@ features:
 
 ```bash
 # Install rulesync
-npm install -g rulesync
+curl -fsSL https://github.com/dyoshikawa/rulesync/releases/latest/download/install.sh | bash
 
 # Fetch the toolkit
 rulesync fetch rudironsoni/dotnet-agent-harness:.rulesync
 
 # Generate for your platform
 rulesync generate --targets "*" --features "*"
+```
+
+## Maintainer Runtime
+
+```bash
+# Build the runtime CLI and eval runner
+dotnet build src/DotNetAgentHarness.Tools/DotNetAgentHarness.Tools.csproj
+dotnet build src/DotNetAgentHarness.Evals/DotNetAgentHarness.Evals.csproj
+
+# Prepare a repository-aware prompt bundle
+dotnet run --project src/DotNetAgentHarness.Tools/DotNetAgentHarness.Tools.csproj -- \
+  prepare-message "Review the validation pipeline" \
+  --target src/DotNetAgentHarness.Tools/DotNetAgentHarness.Tools.csproj \
+  --platform codexcli \
+  --write-evidence \
+  --evidence-id review-validation
+
+# Diff prompt bundles or capture incidents
+dotnet run --project src/DotNetAgentHarness.Tools/DotNetAgentHarness.Tools.csproj -- \
+  compare-prompts review-validation review-validation-v2
 ```
 
 ## Platform Support
@@ -78,10 +99,11 @@ rulesync generate --targets "*" --features "*"
 ```mermaid
 graph TB
     subgraph "dotnet-agent-harness Toolkit"
-        SKILLS[131 Skills]
+        SKILLS[189 Skills]
         SUBAGENTS[15 Subagents]
-        COMMANDS[15 Commands]
-        MCP[5 MCP Servers]
+        COMMANDS[20 Commands]
+        MCP[6 MCP Servers]
+        RUNTIME[Runtime CLI]
     end
 
     subgraph "Distribution"
@@ -99,18 +121,24 @@ graph TB
     SUBAGENTS --> OPENCODE
     COMMANDS --> CLAUDE
     COMMANDS --> OPENCODE
+    RUNTIME --> CODEX
+    RUNTIME --> COPILOT
 ```
 
 ## Latest Enhancements
 
-### Phase 4 Complete 🎉
+### Runtime and Governance
 
-- **5 New Commands**: `/dotnet-agent-harness:search`, `/dotnet-agent-harness:test`, `/dotnet-agent-harness:profile`,
-  `/dotnet-agent-harness:graph`, `/dotnet-agent-harness:compare`
-- **VS Code Extension**: Real-time validation and autocomplete
-- **Skill Manifest**: Dependency tracking and version resolution
-- **Quick-Start Templates**: web-api, blazor-app, maui-mobile, clean-arch, console, classlib
-- **Offline Mode**: Air-gapped environment support
-- **Docker & GitHub Actions**: Containerized toolkit
+- **Prompt assembly**: `prepare-message` builds persona-aware prompt bundles from repo analysis, skills, and target
+  resolution.
+- **Prompt evidence**: prepared-message reports and rendered prompts can be persisted under
+  `.dotnet-agent-harness/evidence/`.
+- **Prompt diffing**: `compare-prompts` shows section-level changes across system, tool, skill, and request layers.
+- **Incident tracking**: `incident add`, `from-eval`, `resolve`, and `close` link failures to prompt evidence and
+  regression cases.
+- **Eval artifacts**: the eval runner emits machine-readable artifacts that can be consumed by CI and governance
+  workflows.
+- **CI auto-linking**: `scripts/ci/run_evals.sh` can create incidents automatically when an eval artifact contains
+  failed trials.
 
 [View Full Changelog](/guide/changelog)

@@ -1,0 +1,37 @@
+{
+  "id": "tester",
+  "displayName": "Verification Specialist",
+  "description": "Designs and executes .NET validation strategy, test additions, and failure triage.",
+  "purpose": "Drive verification-first execution using repository-native tests, fixtures, and validation commands.",
+  "riskTier": "high",
+  "defaultSubagent": "dotnet-testing-specialist",
+  "preferredSubagents": [
+    "dotnet-testing-specialist",
+    "dotnet-code-review-agent",
+    "dotnet-performance-analyst"
+  ],
+  "defaultSkills": [
+    "dotnet-testing-strategy",
+    "dotnet-xunit",
+    "dotnet-integration-testing",
+    "dotnet-agent-harness-test-framework"
+  ],
+  "allowedTools": ["Read", "Grep", "Glob", "Bash", "Edit", "Write"],
+  "forbiddenTools": [],
+  "outputContract": [
+    "state the verification goal and test scope",
+    "prefer existing test infrastructure before adding new frameworks",
+    "show the exact validation command or test path used",
+    "call out residual coverage or flakiness risks"
+  ],
+  "intentSignals": ["test", "coverage", "verify", "xunit", "integration", "flaky"],
+  "systemDirectives": [
+    "Prefer deterministic verification paths over broad exploratory testing.",
+    "Escalate missing test infrastructure as a repository risk, not as a silent assumption."
+  ],
+  "toolDirectives": [
+    "Use repo-native validation commands where possible.",
+    "Keep verification scoped to the affected target when the repository is large."
+  ],
+  "requestDirectives": ["Rewrite the request into a verification plan with explicit scope."]
+}

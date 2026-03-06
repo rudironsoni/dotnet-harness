@@ -1,0 +1,5 @@
+{
+  "id": "clean-arch",
+  "displayName": "Clean Architecture",
+  "description": "Scaffold a layered clean architecture solution with harness bootstrap files."
+}

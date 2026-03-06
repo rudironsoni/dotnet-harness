@@ -1,245 +1,246 @@
 # Integration Guide
 
+This guide covers the maintained integration surfaces in this repository:
+
+1. RuleSync installation into a consumer repo
+2. Runtime CLI usage for maintainers and CI
+3. Prompt evidence, incident tracking, and eval artifact workflows
+4. MCP prerequisites and validation
+
 ## Quick Start
 
-### 1. Install Prerequisites
+### 1. Install the Toolkit into a Repo
 
 ```bash
-# Install Node.js (for MCP servers that use npx)
-curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-sudo apt-get install -y nodejs
+# Install rulesync
+curl -fsSL https://github.com/dyoshikawa/rulesync/releases/latest/download/install.sh | bash
 
-# Install uv (for Python-based MCP servers)
-curl -LsSf https://astral.sh/uv/install.sh | sh
+# Fetch the toolkit
+rulesync fetch rudironsoni/dotnet-agent-harness:.rulesync
+
+# Generate for all supported targets
+rulesync generate --targets "*" --features "*"
 ```
 
-### 2. Configure MCP Servers
+This creates generated platform folders such as `.claude/`, `.opencode/`, `.github/`, `.codex/`, and `.gemini/`.
 
-The `.mcp.json` file is already configured with 7 MCP servers:
+### 2. Build the Runtime Executables
 
-```json
-{
-  "mcpServers": {
-    "serena": { "type": "stdio", "command": "uvx", ... },
-    "context7": { "type": "stdio", "command": "npx", ... },
-    "github-mcp": { "type": "stdio", "command": "npx", ... },
-    "docker-mcp": { "type": "stdio", "command": "docker", ... },
-    "microsoftdocs-mcp": { "type": "http", "url": "..." },
-    "deepwiki": { "type": "http", "url": "..." },
-    "mcp-windbg": { "type": "stdio", "command": "uvx", ... }
-  }
-}
-```
-
-### 3. Set Environment Variables
+The repository also ships two `.NET` runtimes used by maintainers and CI:
 
 ```bash
-# Required for github-mcp
-export GITHUB_TOKEN=your_github_personal_access_token
-
-# Optional: For debugging
-export MCP_DEBUG=true
+dotnet build src/DotNetAgentHarness.Tools/DotNetAgentHarness.Tools.csproj
+dotnet build src/DotNetAgentHarness.Evals/DotNetAgentHarness.Evals.csproj
 ```
 
-### 4. Test MCP Integration
+### 3. Run Repository Analysis
 
 ```bash
-# Verify MCP configuration is valid
-jq empty .mcp.json && echo "✓ MCP configuration is valid"
+dotnet run --project src/DotNetAgentHarness.Tools/DotNetAgentHarness.Tools.csproj -- \
+  analyze --format json
 
-# Check server count
-jq '.mcpServers | length' .mcp.json
-# Expected: 7
+dotnet run --project src/DotNetAgentHarness.Tools/DotNetAgentHarness.Tools.csproj -- \
+  recommend --format json
 ```
 
-### 5. Use Skills
+These commands build the repo profile that powers prompt preparation, validation, and recommendations.
+
+## Prompt Assembly and Evidence
+
+Use `prepare-message` to build a deterministic, repository-aware prompt bundle before implementation, review, or
+planning:
 
 ```bash
-# List available skills
-ls .opencode/skill/*/SKILL.md
-
-# Create a new skill from template
-cp .opencode/skill/SKILL_TEMPLATE.md .opencode/skill/my-new-skill/SKILL.md
+dotnet run --project src/DotNetAgentHarness.Tools/DotNetAgentHarness.Tools.csproj -- \
+  prepare-message "Review the runtime validation path" \
+  --target src/DotNetAgentHarness.Tools/DotNetAgentHarness.Tools.csproj \
+  --platform codexcli \
+  --write-evidence \
+  --evidence-id review-runtime-validation \
+  --format json
 ```
 
----
+The output includes:
 
-## Example Commands
+- resolved persona
+- resolved target or ambiguity warning
+- recommended skills and preferred subagent
+- enriched request text
+- four-layer prompt bundle
+- rendered prompt for the selected platform
+- optional saved evidence
 
-### Example 1: Check MCP Server Status
+Saved prompt artifacts live under:
+
+```text
+.dotnet-agent-harness/evidence/prepared-messages/
+```
+
+Compare two prompt bundles when reviewing changes to personas, tool policy, or request shaping:
 
 ```bash
-# List all configured MCP servers
+dotnet run --project src/DotNetAgentHarness.Tools/DotNetAgentHarness.Tools.csproj -- \
+  compare-prompts review-runtime-validation review-runtime-validation-v2 --format json
+```
+
+## Incident Workflow
+
+Incidents link prompt evidence and eval failures to a durable record under:
+
+```text
+.dotnet-agent-harness/incidents/
+```
+
+### Create an Incident from Prompt Evidence
+
+```bash
+dotnet run --project src/DotNetAgentHarness.Tools/DotNetAgentHarness.Tools.csproj -- \
+  incident add "Reviewer misrouted validation request" \
+  --prompt-evidence review-runtime-validation \
+  --severity high \
+  --owner platform-team
+```
+
+### Create an Incident from an Eval Artifact
+
+```bash
+dotnet run --project src/DotNetAgentHarness.Tools/DotNetAgentHarness.Tools.csproj -- \
+  incident from-eval nightly-routing \
+  --prompt-evidence review-runtime-validation \
+  --incident-id nightly-routing-failure \
+  --owner eval-bot
+```
+
+### Inspect Saved Incidents
+
+```bash
+dotnet run --project src/DotNetAgentHarness.Tools/DotNetAgentHarness.Tools.csproj -- incident list
+dotnet run --project src/DotNetAgentHarness.Tools/DotNetAgentHarness.Tools.csproj -- incident show nightly-routing-failure
+```
+
+### Resolve and Close Incidents
+
+Do not resolve or close an incident without a linked permanent regression case.
+
+```bash
+dotnet run --project src/DotNetAgentHarness.Tools/DotNetAgentHarness.Tools.csproj -- \
+  incident resolve nightly-routing-failure \
+  --owner platform-team \
+  --rationale "Added permanent regression coverage." \
+  --regression-case routing-reviewer-001 \
+  --regression-path tests/eval/cases/routing.yaml
+
+dotnet run --project src/DotNetAgentHarness.Tools/DotNetAgentHarness.Tools.csproj -- \
+  incident close nightly-routing-failure \
+  --owner release-manager \
+  --rationale "Regression remains green in nightly and release gates." \
+  --regression-case routing-reviewer-001
+```
+
+## Eval Artifacts and CI
+
+The eval runner can emit machine-readable artifacts that feed the incident workflow:
+
+```bash
+dotnet run --project src/DotNetAgentHarness.Evals/DotNetAgentHarness.Evals.csproj -- \
+  --cases tests/eval/cases/routing.yaml \
+  --artifact-id nightly-routing \
+  --gate nightly \
+  --policy-profile strict \
+  --prompt-evidence review-runtime-validation
+```
+
+Artifacts are written under:
+
+```text
+.dotnet-agent-harness/evidence/evals/
+```
+
+### CI Wrapper
+
+Use the CI wrapper to preserve the eval exit code while still publishing an artifact and optionally creating an
+incident:
+
+```bash
+DOTNET_AGENT_HARNESS_EVAL_GATE=nightly \
+DOTNET_AGENT_HARNESS_EVAL_POLICY_PROFILE=strict \
+DOTNET_AGENT_HARNESS_EVAL_ARTIFACT_ID=nightly-routing \
+DOTNET_AGENT_HARNESS_EVAL_PROMPT_EVIDENCE_ID=review-runtime-validation \
+DOTNET_AGENT_HARNESS_EVAL_CREATE_INCIDENT=true \
+DOTNET_AGENT_HARNESS_EVAL_INCIDENT_ID=nightly-routing-failure \
+DOTNET_AGENT_HARNESS_EVAL_INCIDENT_OWNER=ci-eval-bot \
+bash scripts/ci/run_evals.sh --cases tests/eval/cases/routing.yaml
+```
+
+Supported CI environment variables:
+
+- `DOTNET_AGENT_HARNESS_EVAL_DUMMY_MODE`
+- `DOTNET_AGENT_HARNESS_EVAL_TRIALS`
+- `DOTNET_AGENT_HARNESS_EVAL_GATE`
+- `DOTNET_AGENT_HARNESS_EVAL_POLICY_PROFILE`
+- `DOTNET_AGENT_HARNESS_EVAL_ARTIFACT_ID`
+- `DOTNET_AGENT_HARNESS_EVAL_PROMPT_EVIDENCE_ID`
+- `DOTNET_AGENT_HARNESS_EVAL_CREATE_INCIDENT`
+- `DOTNET_AGENT_HARNESS_EVAL_INCIDENT_OWNER`
+- `DOTNET_AGENT_HARNESS_EVAL_INCIDENT_SEVERITY`
+- `DOTNET_AGENT_HARNESS_EVAL_INCIDENT_ID`
+- `DOTNET_AGENT_HARNESS_EVAL_INCIDENT_NOTES`
+
+Behavior:
+
+- exit code `0`: all eval trials passed
+- exit code `1`: one or more eval trials failed; auto-incident creation can still run
+- exit code `2+`: configuration or runtime failure; no auto-incident should be assumed
+
+## MCP Integration
+
+The toolkit ships MCP definitions in `.rulesync/mcp.json`. Current inventory:
+
+- `context7`
+- `deepwiki`
+- `github`
+- `mcp-windbg`
+- `microsoftdocs-mcp`
+- `serena`
+
+Typical prerequisites:
+
+```bash
+# Node.js for npx-based MCP servers
+node --version
+npx --version
+
+# uv for Python-based MCP servers
+uv --version
+uvx --version
+```
+
+Validate the generated MCP configuration after `rulesync generate`:
+
+```bash
+jq empty .mcp.json && echo "MCP configuration is valid"
 jq -r '.mcpServers | keys[]' .mcp.json
 ```
 
-**Output:**
-
-```text
-serena
-context7
-microsoftdocs-mcp
-mcp-windbg
-deepwiki
-github-mcp
-docker-mcp
-```
-
-### Example 2: Use dotnet-mcp-integration Skill
+Set credentials when needed:
 
 ```bash
-# Validate MCP configuration
-jq empty .mcp.json
-
-# Get server details
-jq '.mcpServers.serena' .mcp.json
-
-# Check if HTTP servers are reachable
-curl -s https://mcp.deepwiki.com/mcp | head -1
+export GITHUB_TOKEN=your_github_personal_access_token
 ```
-
-### Example 3: Create New Skill
-
-```bash
-# Create skill directory
-mkdir -p .opencode/skill/my-skill
-
-# Copy template
-cp .opencode/skill/SKILL_TEMPLATE.md .opencode/skill/my-skill/SKILL.md
-
-# Edit the skill
-nano .opencode/skill/my-skill/SKILL.md
-```
-
-### Example 4: Update Marketplace
-
-```bash
-# Add skill to marketplace.json
-jq '.skills += [{"name": "my-skill", "description": "My skill", "category": "Custom"}]' .claude-plugin/marketplace.json
-```
-
-### Example 5: Troubleshoot MCP
-
-```bash
-# Check if server command exists
-which npx
-which uvx
-
-# Test HTTP endpoint
-curl -s -o /dev/null -w "%{http_code}" https://mcp.deepwiki.com/mcp
-
-# Verify JSON syntax
-jq empty .mcp.json
-```
-
----
-
-## Workflow Examples
-
-### Workflow 1: Add a New MCP Server
-
-**Scenario:** Adding a new MCP server for database operations
-
-```bash
-# Step 1: Install the MCP server
-npm install -g @modelcontextprotocol/server-postgres
-
-# Step 2: Add to .mcp.json
-jq '.mcpServers.postgres = {
-  "type": "stdio",
-  "command": "npx",
-  "args": ["-y", "@modelcontextprotocol/server-postgres"],
-  "env": {
-    "DATABASE_URL": "postgresql://localhost/mydb"
-  }
-}' .mcp.json > .mcp.json.tmp && mv .mcp.json.tmp .mcp.json
-
-# Step 3: Validate configuration
-jq empty .mcp.json
-
-# Step 4: Test connection
-# (In agent: use the postgres MCP server)
-```
-
-### Workflow 2: Debug MCP Connection Issues
-
-**Scenario:** MCP server not responding
-
-```bash
-# Step 1: Check if command exists
-which uvx || echo "uvx not found, installing..."
-
-# Step 2: Test with verbose output
-uvx --from git+https://github.com/oraios/serena serena --version
-
-# Step 3: Check for errors in output
-# Look for: module not found, permission denied, etc.
-
-# Step 4: Review error handling guide
-cat docs/MCP_ERROR_HANDLING.md
-```
-
-### Workflow 3: Create Complete Skill Package
-
-**Scenario:** Creating a skill with full documentation
-
-```bash
-# Step 1: Create skill directory
-mkdir -p .opencode/skill/dotnet-database
-
-# Step 2: Create SKILL.md from template
-cp .opencode/skill/SKILL_TEMPLATE.md .opencode/skill/dotnet-database/SKILL.md
-
-# Step 3: Edit frontmatter
-# Set name: dotnet-database
-# Set description: "Database operations for .NET projects"
-# Set allowed-tools: [Read, Write, Grep, Bash(*)]
-
-# Step 4: Add content
-# - Quick start with EF Core commands
-# - Connection string detection
-# - Migration workflows
-# - Troubleshooting common issues
-
-# Step 5: Update marketplace
-jq '.skills += [{
-  "name": "dotnet-database",
-  "description": "Database operations for .NET projects",
-  "category": "Data"
-}]' .claude-plugin/marketplace.json
-
-# Step 6: Test
-# Validate JSON: jq empty .claude-plugin/marketplace.json
-# Validate frontmatter: grep -A5 "^---" .opencode/skill/dotnet-database/SKILL.md
-```
-
----
 
 ## Troubleshooting
 
-### Common Issues
-
-| Issue                      | Solution                                                       |
-| -------------------------- | -------------------------------------------------------------- |
-| `command not found: npx`   | Install Node.js: `npm install -g npx`                          |
-| `uvx: command not found`   | Install uv: `curl -LsSf https://astral.sh/uv/install.sh \| sh` |
-| `MCP server timeout`       | Check network connection, increase timeout                     |
-| `401 Unauthorized`         | Verify GITHUB_TOKEN is set                                     |
-| `Schema validation failed` | Update MCP server to latest version                            |
-
-### Getting Help
-
-1. Check [MCP Error Handling Guide](MCP_ERROR_HANDLING.md)
-2. Review [David Fowler's dotnet-skillz](https://github.com/davidfowl/dotnet-skillz)
-3. Open an issue on [GitHub](https://github.com/rudironsoni/dotnet-agent-harness/issues)
-
----
+| Issue                                            | Action                                                                                                     |
+| ------------------------------------------------ | ---------------------------------------------------------------------------------------------------------- |
+| `Multiple root rulesync rules found`             | Ensure only one root overview rule exists in `.rulesync/rules/`.                                           |
+| `incident from-eval` cannot find prompt evidence | Pass `--prompt-evidence <id>` explicitly or ensure the eval artifact stored `PromptEvidenceId`.            |
+| CI eval fails with dummy mode                    | `CI=true` blocks dummy mode intentionally; set real provider credentials or run fixture mode locally only. |
+| Repo fills with runtime state                    | `.dotnet-agent-harness/` is ignored by Git and should remain repo-local.                                   |
+| MCP command missing                              | Install the required runtime (`node/npx`, `uv/uvx`) and re-run `rulesync generate`.                        |
 
 ## Next Steps
 
-- [ ] Explore existing skills in `.opencode/skill/`
-- [ ] Create your first custom skill
-- [ ] Share your skill with the community
-- [ ] Contribute to dotnet-agent-harness
-
-**Time to complete:** ~5 minutes for basic setup, ~30 minutes for first custom skill.
+- Use `prepare-message --write-evidence` before high-risk review or implementation tasks.
+- Feed saved prompt evidence ids into eval runs with `--prompt-evidence`.
+- Enable `DOTNET_AGENT_HARNESS_EVAL_CREATE_INCIDENT=true` in nightly or release validation once the incident flow is
+  part of your governance process.

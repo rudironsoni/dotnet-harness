@@ -25,7 +25,11 @@ public static class ManifestBuilder
         };
 
         var skillFolders = Directory.GetDirectories(skillsDir);
-        var skillNames = skillFolders.Select(Path.GetFileName).Where(n => !string.IsNullOrWhiteSpace(n)).ToHashSet(StringComparer.OrdinalIgnoreCase);
+        var skillNames = skillFolders
+            .Select(Path.GetFileName)
+            .Where(name => !string.IsNullOrWhiteSpace(name))
+            .Select(name => name!)
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
 
         foreach (var skillDir in skillFolders)
         {

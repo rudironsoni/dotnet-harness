@@ -1,0 +1,6 @@
+{
+  "id": "maui-mobile",
+  "displayName": "MAUI Mobile App",
+  "description": "Scaffold a .NET MAUI app with harness bootstrap files.",
+  "dotNetTemplate": "maui"
+}

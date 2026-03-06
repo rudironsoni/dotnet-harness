@@ -1,0 +1,6 @@
+{
+  "id": "web-api",
+  "displayName": "Web API",
+  "description": "Scaffold an ASP.NET Core Web API with tests and harness bootstrap files.",
+  "dotNetTemplate": "webapi"
+}

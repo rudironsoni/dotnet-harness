@@ -2,7 +2,7 @@
 
 > **The definitive .NET development companion for AI coding tools.**
 >
-> 147 specialized skills · 15 expert subagents · 20 powerful commands · Multi-platform distribution
+> 189 specialized skills · 15 expert subagents · 20 powerful commands · Multi-platform distribution
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Workflows](https://github.com/rudironsoni/dotnet-agent-harness/workflows/CI/badge.svg)](https://github.com/rudironsoni/dotnet-agent-harness/actions)
@@ -17,6 +17,7 @@
 - [Architecture & Components](#architecture--components)
 - [Installation](#installation)
 - [Usage](#usage)
+- [Maintainer Runtime](#maintainer-runtime)
 - [The Plugin Repository](#the-plugin-repository)
 - [Contributing](#contributing)
 - [License](#license)
@@ -73,10 +74,10 @@ efficient code editing:
 
 | Component       | Count | Description                                                     |
 | --------------- | ----- | --------------------------------------------------------------- |
-| **Skills**      | 147   | Self-contained guidance documents covering specific .NET topics |
+| **Skills**      | 189   | Self-contained guidance documents covering specific .NET topics |
 | **Subagents**   | 15    | Specialized AI agents with focused tool profiles                |
 | **Commands**    | 20    | Slash commands for common workflows                             |
-| **MCP Servers** | 5     | Model Context Protocol integrations                             |
+| **MCP Servers** | 6     | Model Context Protocol integrations                             |
 | **Hooks**       | 3     | Automated session management                                    |
 
 **Coverage Areas:**
@@ -139,7 +140,7 @@ Understanding the dotnet-agent-harness architecture helps you use it effectively
 ```text
 dotnet-agent-harness/
 ├── .rulesync/                    # Source of truth (you edit here)
-│   ├── skills/                   # 147 knowledge modules
+│   ├── skills/                   # 189 knowledge modules
 │   │   ├── dotnet-*/             # .NET-specific skills
 │   │   ├── wiki-*/               # Documentation skills
 │   │   └── harness-*/            # Toolkit meta-skills
@@ -155,6 +156,9 @@ dotnet-agent-harness/
 │   ├── hooks.json                # Session automation
 │   └── mcp.json                  # MCP server definitions
 │
+├── src/DotNetAgentHarness.Tools/ # Runtime CLI for analysis, prompts, incidents, validation
+├── src/DotNetAgentHarness.Evals/ # Eval runner and artifact emission
+├── .dotnet-agent-harness/        # Local evidence, eval artifacts, incident records (ignored)
 ├── docs/                         # VitePress documentation
 ├── packages/                     # NPM package sources
 └── scripts/                      # Build automation
@@ -223,12 +227,13 @@ tags: ['dotnet', 'skill', 'data/ef-core']
 
 **Command Categories**:
 
-| Command                         | Purpose                                       |
-| ------------------------------- | --------------------------------------------- |
-| `/dotnet-agent-harness:search`  | Find skills by keyword or semantic similarity |
-| `/dotnet-agent-harness:test`    | Run automated skill tests                     |
-| `/dotnet-agent-harness:profile` | Analyze local performance                     |
-| `/dotnet-agent-harness:graph`   | Generate dependency visualizations            |
+| Command                                 | Purpose                                       |
+| --------------------------------------- | --------------------------------------------- |
+| `/dotnet-agent-harness:search`          | Find skills by keyword or semantic similarity |
+| `/dotnet-agent-harness:prepare-message` | Assemble persona-aware prompt bundles         |
+| `/dotnet-agent-harness:compare-prompts` | Diff saved prompt evidence                    |
+| `/dotnet-agent-harness:incident`        | Track prompt and eval failures                |
+| `/dotnet-agent-harness:test`            | Run automated skill tests                     |
 
 #### Hooks (`.rulesync/hooks.json`)
 
@@ -261,8 +266,12 @@ tags: ['dotnet', 'skill', 'data/ef-core']
 - **Serena**: Semantic code analysis via LSP
 - **Context7**: Up-to-date library documentation
 - **Microsoft Learn**: Official Microsoft documentation
+- **WinDbg MCP**: Crash and dump analysis
+- **DeepWiki MCP**: Documentation retrieval and Q&A
 - **GitHub MCP**: Repository operations
-- **Docker MCP**: Container management
+
+MCP inventory (source: `.rulesync/mcp.json`): `context7`, `deepwiki`, `github`, `mcp-windbg`, `microsoftdocs-mcp`,
+`serena`.
 
 ---
 
@@ -355,7 +364,7 @@ docker run --rm -v $(pwd):/workspace \
 
 ### Finding Skills
 
-````bash
+```bash
 # Search by keyword
 /dotnet-agent-harness:search authentication
 
@@ -364,13 +373,86 @@ docker run --rm -v $(pwd):/workspace \
 
 # Semantic search
 /dotnet-agent-harness:search "how to handle JWT tokens"
+```
+
 ### Using Subagents
 
 ```text
 @dotnet-maui-specialist I need to implement platform-specific services for iOS and Android
 
 @dotnet-security-reviewer Can you review this API controller for OWASP compliance?
-````
+```
+
+### Preparing Agent Requests
+
+Use the runtime CLI when you need a deterministic, repository-aware prompt bundle before implementation, review, or
+planning:
+
+```bash
+dotnet run --project src/DotNetAgentHarness.Tools/DotNetAgentHarness.Tools.csproj -- \
+  prepare-message "Review the runtime validation path" \
+  --target src/DotNetAgentHarness.Tools/DotNetAgentHarness.Tools.csproj \
+  --platform codexcli \
+  --write-evidence \
+  --evidence-id review-runtime-validation \
+  --format prompt
+```
+
+This produces:
+
+- persona selection (`reviewer`, `architect`, `implementer`, `tester`)
+- target resolution against the repo profile
+- recommended skills and preferred subagent
+- a four-layer prompt bundle (`system`, `tool`, `skill`, `request`)
+- optional evidence under `.dotnet-agent-harness/evidence/prepared-messages/`
+
+### Comparing Prompt Bundles
+
+```bash
+dotnet run --project src/DotNetAgentHarness.Tools/DotNetAgentHarness.Tools.csproj -- \
+  compare-prompts review-runtime-validation review-runtime-validation-v2 --format json
+```
+
+Use this before merging persona or tool-policy changes so prompt regressions are visible at the section level.
+
+### Incident Tracking
+
+Record prompt failures directly from saved evidence:
+
+```bash
+dotnet run --project src/DotNetAgentHarness.Tools/DotNetAgentHarness.Tools.csproj -- \
+  incident add "Reviewer misrouted validation request" \
+  --prompt-evidence review-runtime-validation \
+  --severity high \
+  --owner platform-team
+```
+
+Create incidents automatically from eval artifacts:
+
+```bash
+dotnet run --project src/DotNetAgentHarness.Tools/DotNetAgentHarness.Tools.csproj -- \
+  incident from-eval nightly-routing \
+  --prompt-evidence review-runtime-validation \
+  --incident-id nightly-routing-failure \
+  --owner eval-bot
+```
+
+Close the loop only after the failure has a permanent regression case:
+
+```bash
+dotnet run --project src/DotNetAgentHarness.Tools/DotNetAgentHarness.Tools.csproj -- \
+  incident resolve nightly-routing-failure \
+  --owner platform-team \
+  --rationale "Added permanent regression coverage." \
+  --regression-case routing-reviewer-001 \
+  --regression-path tests/eval/cases/routing.yaml
+
+dotnet run --project src/DotNetAgentHarness.Tools/DotNetAgentHarness.Tools.csproj -- \
+  incident close nightly-routing-failure \
+  --owner release-manager \
+  --rationale "Regression remains green in nightly and release gates." \
+  --regression-case routing-reviewer-001
+```
 
 ### Running Tests
 
@@ -393,6 +475,85 @@ docker run --rm -v $(pwd):/workspace \
 
 # Compare with baseline
 /dotnet-agent-harness:profile --compare-with baseline.json
+```
+
+### Running Evals v2
+
+```bash
+# Deterministic local fixture mode (default safety mode)
+just eval
+
+# Real provider mode (requires EVAL_OPENAI_KEY)
+just eval-real
+
+# CI gate entrypoint (defaults: real mode + 3 trials)
+just ci-eval
+```
+
+Notes:
+
+- Dummy mode is intentionally blocked when `CI=true` to prevent false confidence in release gates.
+- If provider credentials are not available yet, keep fixture mode for local/dev validation (`just eval`) and use
+  `just build-eval` as a temporary CI signal until real-provider secrets are wired.
+- Eval artifacts can be written to `.dotnet-agent-harness/evidence/evals/` with `--artifact-id` or `--artifact-path`.
+
+### CI Incident Automation
+
+The CI wrapper preserves the eval exit code and can auto-create incidents when a case fails:
+
+```bash
+DOTNET_AGENT_HARNESS_EVAL_CREATE_INCIDENT=true \
+DOTNET_AGENT_HARNESS_EVAL_PROMPT_EVIDENCE_ID=review-runtime-validation \
+DOTNET_AGENT_HARNESS_EVAL_ARTIFACT_ID=nightly-routing \
+DOTNET_AGENT_HARNESS_EVAL_INCIDENT_ID=nightly-routing-failure \
+DOTNET_AGENT_HARNESS_EVAL_INCIDENT_OWNER=ci-eval-bot \
+bash scripts/ci/run_evals.sh --cases tests/eval/cases/routing.yaml
+```
+
+Supported CI environment variables:
+
+- `DOTNET_AGENT_HARNESS_EVAL_GATE`
+- `DOTNET_AGENT_HARNESS_EVAL_POLICY_PROFILE`
+- `DOTNET_AGENT_HARNESS_EVAL_ARTIFACT_ID`
+- `DOTNET_AGENT_HARNESS_EVAL_PROMPT_EVIDENCE_ID`
+- `DOTNET_AGENT_HARNESS_EVAL_CREATE_INCIDENT`
+- `DOTNET_AGENT_HARNESS_EVAL_INCIDENT_OWNER`
+- `DOTNET_AGENT_HARNESS_EVAL_INCIDENT_SEVERITY`
+- `DOTNET_AGENT_HARNESS_EVAL_INCIDENT_ID`
+- `DOTNET_AGENT_HARNESS_EVAL_INCIDENT_NOTES`
+
+`.dotnet-agent-harness/` is repo-local runtime state and is ignored by Git.
+
+---
+
+## Maintainer Runtime
+
+The repository now ships two runtime executables for maintainers and CI:
+
+```bash
+# Toolkit runtime
+dotnet build src/DotNetAgentHarness.Tools/DotNetAgentHarness.Tools.csproj
+
+# Eval runtime
+dotnet build src/DotNetAgentHarness.Evals/DotNetAgentHarness.Evals.csproj
+```
+
+Primary maintainer workflows:
+
+```bash
+# Analyze the current repo
+dotnet run --project src/DotNetAgentHarness.Tools/DotNetAgentHarness.Tools.csproj -- analyze --format json
+
+# Recommend relevant skills and subagents
+dotnet run --project src/DotNetAgentHarness.Tools/DotNetAgentHarness.Tools.csproj -- recommend --format json
+
+# Validate authored content and runtime checks
+dotnet run --project src/DotNetAgentHarness.Tools/DotNetAgentHarness.Tools.csproj -- validate --mode all --format json
+
+# Emit an eval artifact
+dotnet run --project src/DotNetAgentHarness.Evals/DotNetAgentHarness.Evals.csproj -- \
+  --cases tests/eval/cases/routing.yaml \
+  --artifact-id local-routing-smoke
 ```
 
 ---

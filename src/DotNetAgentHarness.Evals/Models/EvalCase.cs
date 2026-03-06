@@ -8,6 +8,9 @@ public class EvalCase
     public string Description { get; set; } = string.Empty;
     public string Prompt { get; set; } = string.Empty;
     public string ExpectedTrigger { get; set; } = string.Empty;
+    public int? TrialCount { get; set; }
+    public string FixtureResponse { get; set; } = string.Empty;
+    public string FixtureTrigger { get; set; } = string.Empty;
     public List<Assertion> Assertions { get; set; } = new();
 }
 

@@ -17,18 +17,30 @@ public static class AssertionRunner
     {
         return assertion.Type.ToLowerInvariant() switch
         {
-            "contains" => new AssertionResult
-            {
-                Passed = responseContent.Contains(assertion.Value, StringComparison.OrdinalIgnoreCase),
-                Message = $"Expected response to contain '{assertion.Value}'"
-            },
-            "not_contains" => new AssertionResult
-            {
-                Passed = !responseContent.Contains(assertion.Value, StringComparison.OrdinalIgnoreCase),
-                Message = $"Expected response to NOT contain '{assertion.Value}'"
-            },
+            "contains" => BuildContainsResult(responseContent, assertion.Value),
+            "not_contains" => BuildNotContainsResult(responseContent, assertion.Value),
             // Tier 2 (LLM Judge) implementation deferred for the full loop integration
             _ => throw new InvalidOperationException($"Assertion type '{assertion.Type}' not recognized.")
         };
+    }
+
+    private static AssertionResult BuildContainsResult(string responseContent, string expectedFragment)
+    {
+        var passed = responseContent.Contains(expectedFragment, StringComparison.OrdinalIgnoreCase);
+        var message = passed
+            ? $"Response contains '{expectedFragment}'."
+            : $"Expected response to contain '{expectedFragment}', but it was missing.";
+
+        return new AssertionResult { Passed = passed, Message = message };
+    }
+
+    private static AssertionResult BuildNotContainsResult(string responseContent, string forbiddenFragment)
+    {
+        var passed = !responseContent.Contains(forbiddenFragment, StringComparison.OrdinalIgnoreCase);
+        var message = passed
+            ? $"Response does not contain '{forbiddenFragment}'."
+            : $"Expected response to not contain '{forbiddenFragment}', but it was present.";
+
+        return new AssertionResult { Passed = passed, Message = message };
     }
 }
