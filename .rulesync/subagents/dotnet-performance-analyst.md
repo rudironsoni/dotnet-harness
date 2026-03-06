@@ -27,6 +27,10 @@ copilot:
   tools: ['read', 'search', 'execute', 'edit']
 codexcli:
   sandbox_mode: 'inherit'
+geminiclaude:
+  tools: ['read', 'search']
+antigravity:
+  description: 'Performance analysis specialist'
 ---
 
 # dotnet-performance-analyst
@@ -84,6 +88,34 @@ Always load these skills before analysis:
    - **Root cause:** Why this code path is slow or allocating
    - **Impact:** Estimated severity (critical path vs cold path, production vs micro-benchmark only)
    - **Remediation:** Specific optimization pattern with cross-reference to the relevant skill
+
+## Decision Tree
+
+```text
+High memory allocations reported?
+  YES -> Check for: string concatenation in loops, LINQ overhead,
+         unnecessary boxing, missing ArrayPool usage
+  NO -> Check CPU bottlenecks, async contention
+
+Slow startup time?
+  YES -> Check: DI container size, reflection usage, AOT opportunities
+  NO -> Check runtime performance: hot paths, cache misses
+
+Database query performance issues?
+  YES -> Check: N+1 queries, missing indexes, AsNoTracking,
+         query splitting, compiled queries
+  NO -> Check application-level processing
+
+Async/await usage?
+  Heavy async -> Check for: ConfigureAwait, Task.WhenAll opportunities,
+                          sync-over-async, thread pool starvation
+  NO -> Check synchronous code paths for blocking
+
+Collection types appropriate?
+  Large collections -> Check: List<T> vs Dictionary, IEnumerable vs IList,
+                      LINQ materialization points
+  NO -> Focus on algorithmic complexity
+```
 
 ## Trigger Lexicon
 

@@ -68,6 +68,28 @@ Always load these skills before analysis:
    - [skill:dotnet-observability] for OpenTelemetry integration beyond Agent Framework defaults
    - [skill:dotnet-secrets-management] for API key rotation and secrets handling
 
+## Decision Tree
+
+```text
+Agent type needed?
+  Chat bot -> IChatClient, OpenAI/Azure OpenAI integration
+  Autonomous agent -> Agent class, tool calling, planning
+  Workflow -> Agent workflow orchestration, state management
+
+AI service provider?
+  Azure OpenAI -> Managed identity, regional endpoints
+  OpenAI -> Direct API, key management
+  Local/Ollama -> Local deployment, privacy considerations
+
+Tool integration required?
+  YES -> IChatClient tool calling, Kernel functions
+  NO -> Simple prompt engineering, completions only
+
+Memory/persistence?
+  YES -> Vector stores, semantic memory, conversation history
+  NO -> Stateless interactions, context in prompts only
+```
+
 ## Trigger Lexicon
 
 This agent activates on Microsoft Agent Framework queries including: "agent framework", "microsoft agent", "ai agent",

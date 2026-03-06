@@ -25,8 +25,12 @@ opencode:
 copilot:
   tools: ['read', 'search', 'execute']
 codexcli:
-  short-description: '.NET specialist subagent for dotnet-architect'
-  sandbox_mode: inherit
+  short-description: '$1'
+  sandbox_mode: 'read-only'
+geminiclaude:
+  tools: ['read', 'search']
+antigravity:
+  description: '.NET architecture advisor'
 ---
 
 # dotnet-architect
@@ -92,6 +96,26 @@ Architecture guidance:
 - **SOLID application** -- Apply SRP at the class level (one reason to change), OCP via strategy and specification
   patterns (not switch statements), and DIP at layer boundaries (Infrastructure implements interfaces defined in
   Application). See [skill:dotnet-solid-principles] for detailed patterns.
+
+## Decision Tree
+
+```text
+Complex business logic and multiple external dependencies?
+  YES -> Clean Architecture (Domain/Application/Infrastructure/Web layers)
+  NO -> Vertical slices or minimal APIs for simple CRUD
+
+Need cross-platform UI (mobile + web + desktop)?
+  YES -> Consider MAUI, Uno Platform, or Blazor Hybrid
+  NO -> Blazor Server/WASM or traditional MVC/API
+
+Performance critical (startup, memory, AOT)?
+  YES -> Native AOT, structs, Span<T>, source generators
+  NO -> Standard patterns with readability priority
+
+Existing large codebase with controllers?
+  Keep controllers -> Gradual migration to minimal APIs
+  New project -> Start with minimal APIs (.NET 8+)
+```
 
 ## Trigger Lexicon
 

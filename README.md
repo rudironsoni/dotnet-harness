@@ -1,7 +1,10 @@
 # dotnet-agent-harness
 
-> **The definitive .NET development companion for AI coding tools.** 189 specialized skills · 15 expert subagents · 27
-> powerful commands
+> **The definitive .NET development companion for AI coding tools.**
+>
+> 189 specialized skills  
+> 15 expert subagents  
+> 27 powerful commands
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 

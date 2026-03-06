@@ -121,6 +121,28 @@ For each finding, report:
 - **Does NOT modify code** -- Uses Read, Grep, Glob, and Bash (read-only) only; produces findings and recommendations
 - **Does NOT run tests or builds** -- Analyzes code statically; does not execute test suites or compile projects
 
+## Decision Tree
+
+```text
+Type of change?
+  New feature -> Check: tests, documentation, error handling
+  Bug fix -> Check: root cause, regression tests, edge cases
+  Refactoring -> Check: behavior preservation, test coverage
+  Performance -> Check: benchmarks, memory impact, scalability
+
+Code complexity?
+  High -> Suggest: decomposition, single responsibility, comments
+  Low -> Check: over-engineering, unnecessary abstraction
+
+Test coverage?
+  Missing -> Require: unit tests, integration tests if needed
+  Present -> Check: test quality, assertions, edge cases
+
+Security concerns?
+  YES -> Route to security-reviewer for specialized review
+  NO -> Standard code quality review
+```
+
 ## Trigger Lexicon
 
 This agent activates on: "review this", "code review", "PR review", "review my code", "what's wrong with this code",
