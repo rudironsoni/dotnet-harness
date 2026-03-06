@@ -211,7 +211,7 @@ require_in_frontmatter "$WORK_DIR/.github/agents/dotnet-architect.md" \
   "execute" "Copilot execute tool for standard agent"
 
 require_content "$WORK_DIR/.codex/agents/dotnet-architect.toml" \
-  'sandbox_mode = "read-only"' "Codex CLI sandbox_mode read-only for architect"
+  'sandbox_mode = "inherit"' "Codex CLI sandbox_mode inherit for architect"
 
 # --- Full agent: docs-generator ---
 require_in_frontmatter "$WORK_DIR/.claude/agents/dotnet-docs-generator.md" \

@@ -26,7 +26,7 @@ copilot:
   tools: ['read', 'search', 'execute']
 codexcli:
   short-description: '$1'
-  sandbox_mode: 'read-only'
+  sandbox_mode: inherit
 geminiclaude:
   tools: ['read', 'search']
 antigravity:

@@ -2,9 +2,7 @@
 
 > **The definitive .NET development companion for AI coding tools.**
 >
-> 189 specialized skills  
-> 15 expert subagents  
-> 27 powerful commands
+> 189 specialized skills · 15 expert subagents · 27 powerful commands
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
@@ -75,7 +73,7 @@ After installation, use these commands:
 ## MCP Inventory
 
 MCP inventory (source: .rulesync/mcp.json): `context7`, `deepwiki`, `github`, `mcp-windbg`, `microsoftdocs-mcp`,
-`serena`
+`serena` `serena`
 
 | MCP Server          | Description                                  |
 | ------------------- | -------------------------------------------- |
