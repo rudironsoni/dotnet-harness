@@ -1,6 +1,9 @@
 ---
-description: Fast wiki generation (concise, rate-limit-friendly)
+name: deep-wiki-crisp
+description: '$1'
 targets: ['*']
+version: '0.0.1'
+author: 'dotnet-agent-harness'
 ---
 
 # /deep-wiki:crisp

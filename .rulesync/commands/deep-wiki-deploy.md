@@ -1,6 +1,9 @@
 ---
-description: Generate GitHub Actions workflow to deploy wiki
+name: deep-wiki-deploy
+description: '$1'
 targets: ['*']
+version: '0.0.1'
+author: 'dotnet-agent-harness'
 ---
 
 # /deep-wiki:deploy

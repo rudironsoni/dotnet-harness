@@ -1,6 +1,9 @@
 ---
-description: Generate hierarchical wiki structure as JSON
+name: deep-wiki-catalogue
+description: '$1'
 targets: ['*']
+version: '0.0.1'
+author: 'dotnet-agent-harness'
 ---
 
 # /deep-wiki:catalogue

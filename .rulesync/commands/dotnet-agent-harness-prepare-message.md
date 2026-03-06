@@ -1,7 +1,10 @@
 ---
+name: dotnet-agent-harness-prepare-message
 description:
-  'Assemble an enriched agent request from repository context, persona rules, recommended skills, and target resolution.'
+  'Assemble an enriched agent request from repository context, persona rules, recommended skills, and target resolution'
 targets: ['*']
+version: '0.0.1'
+author: 'dotnet-agent-harness'
 ---
 
 # /dotnet-agent-harness:prepare-message

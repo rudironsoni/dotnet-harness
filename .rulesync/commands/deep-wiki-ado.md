@@ -1,6 +1,9 @@
 ---
-description: Generate Node.js script to convert wiki to Azure DevOps Wiki format
+name: deep-wiki-ado
+description: '$1'
 targets: ['*']
+version: '0.0.1'
+author: 'dotnet-agent-harness'
 ---
 
 # /deep-wiki:ado

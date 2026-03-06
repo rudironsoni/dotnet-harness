@@ -1,6 +1,9 @@
 ---
-description: Ask questions about the repository
+name: deep-wiki-ask
+description: '$1'
 targets: ['*']
+version: '0.0.1'
+author: 'dotnet-agent-harness'
 ---
 
 # /deep-wiki:ask

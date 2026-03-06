@@ -1,6 +1,9 @@
 ---
-description: Generate single wiki page with dark-mode diagrams
+name: deep-wiki-page
+description: '$1'
 targets: ['*']
+version: '0.0.1'
+author: 'dotnet-agent-harness'
 ---
 
 # /deep-wiki:page

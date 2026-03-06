@@ -1,6 +1,9 @@
 ---
-description: 'Record a prompt-related incident and attach saved prepared-message evidence for regression tracking.'
+name: dotnet-agent-harness-incident
+description: '$1'
 targets: ['*']
+version: '0.0.1'
+author: 'dotnet-agent-harness'
 ---
 
 # /dotnet-agent-harness:incident

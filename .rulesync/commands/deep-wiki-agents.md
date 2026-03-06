@@ -1,6 +1,9 @@
 ---
-description: Generate AGENTS.md files for coding agent context
+name: deep-wiki-agents
+description: '$1'
 targets: ['*']
+version: '0.0.1'
+author: 'dotnet-agent-harness'
 ---
 
 # /deep-wiki:agents

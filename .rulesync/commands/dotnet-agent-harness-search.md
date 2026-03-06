@@ -1,6 +1,9 @@
 ---
-description: 'Search the toolkit catalog through the local runtime. Filter by kind, category, platform, and limit.'
+name: dotnet-agent-harness-search
+description: '$1'
 targets: ['*']
+version: '0.0.1'
+author: 'dotnet-agent-harness'
 ---
 
 # /dotnet-agent-harness:search

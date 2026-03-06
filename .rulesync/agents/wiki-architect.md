@@ -1,5 +1,26 @@
 ---
-description: Analyzes repos and generates structured catalogues
+name: wiki-architect
+description: 'Analyzes repos and generates structured catalogues'
+targets: ['*']
+tags: ['wiki', 'architecture', 'catalogue']
+version: '0.0.1'
+author: 'dotnet-agent-harness'
+claudecode:
+  model: inherit
+  allowed-tools: ['read', 'glob', 'grep', 'editFile', 'bash']
+opencode:
+  mode: agent
+  tools:
+    bash: true
+    read: true
+    edit: true
+    write: true
+copilot:
+  description: 'Wiki architect for repository analysis and catalogue generation'
+  tools: ['read', 'glob', 'grep', 'editFile', 'bash']
+codexcli:
+  short-description: 'Analyze repos and generate catalogues'
+  sandbox_mode: inherit
 ---
 
 # wiki-architect

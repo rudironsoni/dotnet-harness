@@ -1,6 +1,9 @@
 ---
-description: 'Compare two saved prepared-message prompt bundles by system, tool, skill, and request sections.'
+name: dotnet-agent-harness-compare-prompts
+description: 'Compare two saved prepared-message prompt bundles by system, tool, skill, and request sections'
 targets: ['*']
+version: '0.0.1'
+author: 'dotnet-agent-harness'
 ---
 
 # /dotnet-agent-harness:compare-prompts

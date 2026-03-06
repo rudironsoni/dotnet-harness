@@ -1,6 +1,9 @@
 ---
-description: 'Compare two toolkit catalog items through the local runtime.'
+name: dotnet-agent-harness-compare
+description: '$1'
 targets: ['*']
+version: '0.0.1'
+author: 'dotnet-agent-harness'
 ---
 
 # /dotnet-agent-harness:compare

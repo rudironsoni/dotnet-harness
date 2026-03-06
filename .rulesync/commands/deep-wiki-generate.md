@@ -1,6 +1,9 @@
 ---
-description: Generate complete wiki with pages and onboarding
+name: deep-wiki-generate
+description: '$1'
 targets: ['*']
+version: '0.0.1'
+author: 'dotnet-agent-harness'
 ---
 
 # /deep-wiki:generate

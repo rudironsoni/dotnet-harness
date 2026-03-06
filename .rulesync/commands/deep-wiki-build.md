@@ -1,6 +1,9 @@
 ---
-description: Package wiki as VitePress dark-theme site
+name: deep-wiki-build
+description: '$1'
 targets: ['*']
+version: '0.0.1'
+author: 'dotnet-agent-harness'
 ---
 
 # /deep-wiki:build

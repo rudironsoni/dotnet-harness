@@ -1,6 +1,9 @@
 ---
-description: 'Recommend platform-compatible skills, subagents, and commands through the local runtime.'
+name: dotnet-agent-harness-recommend
+description: '$1'
 targets: ['*']
+version: '0.0.1'
+author: 'dotnet-agent-harness'
 ---
 
 # /dotnet-agent-harness:recommend

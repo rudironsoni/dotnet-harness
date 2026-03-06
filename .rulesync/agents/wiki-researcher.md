@@ -1,5 +1,27 @@
 ---
-description: Deep research with evidence-based analysis
+name: wiki-researcher
+description: 'Deep research with evidence-based analysis'
+targets: ['*']
+tags: ['wiki', 'research', 'analysis']
+version: '0.0.1'
+author: 'dotnet-agent-harness'
+claudecode:
+  model: inherit
+  allowed-tools: ['read', 'glob', 'grep', 'editFile', 'bash', 'web_search']
+opencode:
+  mode: agent
+  tools:
+    bash: true
+    read: true
+    edit: true
+    write: true
+    search: true
+copilot:
+  description: 'Research specialist for deep evidence-based codebase investigation'
+  tools: ['read', 'glob', 'grep', 'editFile', 'bash', 'web_search']
+codexcli:
+  short-description: 'Deep research with evidence-based analysis'
+  sandbox_mode: inherit
 ---
 
 # wiki-researcher

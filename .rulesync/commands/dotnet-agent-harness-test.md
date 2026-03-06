@@ -1,6 +1,9 @@
 ---
-description: 'Run authored skill test cases through the local runtime.'
+name: dotnet-agent-harness-test
+description: '$1'
 targets: ['*']
+version: '0.0.1'
+author: 'dotnet-agent-harness'
 ---
 
 # /dotnet-agent-harness:test

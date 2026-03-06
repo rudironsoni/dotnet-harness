@@ -1,6 +1,9 @@
 ---
-description: 'Inspect .NET package references and compiled assembly metadata through the local runtime'
+name: dotnet-agent-harness-metadata
+description: '$1'
 targets: ['*']
+version: '0.0.1'
+author: 'dotnet-agent-harness'
 ---
 
 # /dotnet-agent-harness:metadata

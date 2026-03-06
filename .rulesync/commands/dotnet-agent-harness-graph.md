@@ -1,6 +1,9 @@
 ---
-description: 'Generate Mermaid or DOT dependency graphs for toolkit catalog items through the local runtime.'
+name: dotnet-agent-harness-graph
+description: '$1'
 targets: ['*']
+version: '0.0.1'
+author: 'dotnet-agent-harness'
 ---
 
 # /dotnet-agent-harness:graph

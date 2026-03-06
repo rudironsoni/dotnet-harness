@@ -1,6 +1,9 @@
 ---
-description: 'Inspect toolkit catalog stats or a specific catalog item through the local runtime.'
+name: dotnet-agent-harness-profile
+description: '$1'
 targets: ['*']
+version: '0.0.1'
+author: 'dotnet-agent-harness'
 ---
 
 # /dotnet-agent-harness:profile

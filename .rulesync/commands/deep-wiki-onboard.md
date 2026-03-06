@@ -1,6 +1,9 @@
 ---
-description: Generate audience-specific onboarding guides
+name: deep-wiki-onboard
+description: '$1'
 targets: ['*']
+version: '0.0.1'
+author: 'dotnet-agent-harness'
 ---
 
 # /deep-wiki:onboard
