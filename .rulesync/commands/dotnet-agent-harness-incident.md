@@ -7,15 +7,15 @@ targets: ['*']
 
 Create incident records that point to existing prompt evidence artifacts.
 
-## Usage
+## Execution Contract
 
 ```bash
-/dotnet-agent-harness:incident add <title> --prompt-evidence <evidence-id> [options]
-/dotnet-agent-harness:incident list [options]
-/dotnet-agent-harness:incident show <incident-id> [options]
-/dotnet-agent-harness:incident from-eval <artifact-path-or-id> [options]
-/dotnet-agent-harness:incident resolve <incident-id> --owner <name> --rationale <text> --regression-case <id> [options]
-/dotnet-agent-harness:incident close <incident-id> --owner <name> --rationale <text> --regression-case <id> [options]
+dotnet agent-harness incident add <title> --prompt-evidence <evidence-id> [options]
+dotnet agent-harness incident list [options]
+dotnet agent-harness incident show <incident-id> [options]
+dotnet agent-harness incident from-eval <artifact-path-or-id> [options]
+dotnet agent-harness incident resolve <incident-id> --owner <name> --rationale <text> --regression-case <id> [options]
+dotnet agent-harness incident close <incident-id> --owner <name> --rationale <text> --regression-case <id> [options]
 ```
 
 ## Options
@@ -59,3 +59,4 @@ Incident records are written to `.dotnet-agent-harness/incidents/<incident-id>.j
 - Pair with `compare-prompts` to diff the failing prompt against a later fixed version.
 - Use `incident list` and `incident show` to inspect saved incidents without opening JSON manually.
 - Use `incident resolve` or `incident close` only after the failure has a linked permanent regression case.
+- Always call the runtime command instead of writing incident JSON by hand.

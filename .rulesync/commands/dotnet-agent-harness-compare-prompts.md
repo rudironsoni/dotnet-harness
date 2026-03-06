@@ -7,16 +7,11 @@ targets: ['*']
 
 Compare prepared prompt evidence artifacts stored under `.dotnet-agent-harness/evidence/prepared-messages/`.
 
-## Usage
+## Execution Contract
 
 ```bash
-/dotnet-agent-harness:compare-prompts <left-evidence-id> <right-evidence-id> [options]
+dotnet agent-harness compare-prompts <left-evidence-id> <right-evidence-id> [--format text|json]
 ```
-
-## Options
-
-- `--format <text|json>`: Choose human-readable or machine-readable output
-- `--output <path>`: Save the comparison result
 
 ## Output
 
@@ -35,3 +30,4 @@ The comparison includes:
 
 - Compare prompt evidence ids produced by `prepare-message --write-evidence`.
 - Use this to review prompt regressions before changing personas, tool policy, or request shaping.
+- Execute the runtime command first, then summarize the diff rather than comparing prompt files manually.

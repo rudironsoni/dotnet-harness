@@ -138,7 +138,7 @@ public static class ManifestBuilder
     private static List<string> DetectPlatforms(Dictionary<string, object> frontmatter)
     {
         var platforms = new List<string>();
-        var known = new[] { "claudecode", "opencode", "copilot", "codexcli", "geminicli" };
+        var known = new[] { "claudecode", "opencode", "copilot", "codexcli", "geminicli", "antigravity" };
         foreach (var platform in known)
         {
             if (frontmatter.ContainsKey(platform))

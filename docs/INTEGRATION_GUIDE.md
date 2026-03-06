@@ -2,29 +2,56 @@
 
 This guide covers the maintained integration surfaces in this repository:
 
-1. RuleSync installation into a consumer repo
-2. Runtime CLI usage for maintainers and CI
+1. Runtime tool installation into a consumer repo
+2. RuleSync installation and generation for agent targets
 3. Prompt evidence, incident tracking, and eval artifact workflows
 4. MCP prerequisites and validation
 
 ## Quick Start
 
-### 1. Install the Toolkit into a Repo
+### 1. Install the Runtime Tool
 
 ```bash
-# Install rulesync
-curl -fsSL https://github.com/dyoshikawa/rulesync/releases/latest/download/install.sh | bash
-
-# Fetch the toolkit
-rulesync fetch rudironsoni/dotnet-agent-harness:.rulesync
-
-# Generate for all supported targets
-rulesync generate --targets "*" --features "*"
+# Local tool manifest (recommended)
+dotnet new tool-manifest
+dotnet tool install Rudironsoni.DotNetAgentHarness
 ```
 
-This creates generated platform folders such as `.claude/`, `.opencode/`, `.github/`, `.codex/`, and `.gemini/`.
+The installed command is available as `dotnet agent-harness`.
 
-### 2. Build the Runtime Executables
+### 2. Bootstrap the Repo for Supported Agent Targets
+
+```bash
+dotnet agent-harness bootstrap \
+  --targets claudecode,opencode,codexcli,geminicli,copilot,antigravity \
+  --run-rulesync
+```
+
+Bootstrap writes:
+
+- `.config/dotnet-tools.json`
+- `rulesync.jsonc`
+- `.dotnet-agent-harness/project-profile.json`
+- `.dotnet-agent-harness/recommendations.json`
+- `.dotnet-agent-harness/doctor-report.json`
+- `.dotnet-agent-harness/bootstrap-report.json`
+
+Expected generated target roots:
+
+- `claudecode` -> `.claude/`
+- `opencode` -> `.opencode/` and `AGENTS.md`
+- `codexcli` -> `.codex/` and `AGENTS.md`
+- `geminicli` -> `.gemini/` and `GEMINI.md`
+- `copilot` -> `.github/agents/`, `.github/instructions/`, `.github/prompts/`, `.github/skills/`
+- `antigravity` -> `.agent/`
+
+Generated `dotnet-agent-harness:*` command files are intended to call the local runtime directly:
+
+```bash
+dotnet agent-harness <subcommand> ...
+```
+
+### 3. Build the Runtime Executables
 
 The repository also ships two `.NET` runtimes used by maintainers and CI:
 
@@ -33,14 +60,11 @@ dotnet build src/DotNetAgentHarness.Tools/DotNetAgentHarness.Tools.csproj
 dotnet build src/DotNetAgentHarness.Evals/DotNetAgentHarness.Evals.csproj
 ```
 
-### 3. Run Repository Analysis
+### 4. Run Repository Analysis
 
 ```bash
-dotnet run --project src/DotNetAgentHarness.Tools/DotNetAgentHarness.Tools.csproj -- \
-  analyze --format json
-
-dotnet run --project src/DotNetAgentHarness.Tools/DotNetAgentHarness.Tools.csproj -- \
-  recommend --format json
+dotnet agent-harness analyze --format json
+dotnet agent-harness recommend --format json
 ```
 
 These commands build the repo profile that powers prompt preparation, validation, and recommendations.
@@ -51,10 +75,10 @@ Use `prepare-message` to build a deterministic, repository-aware prompt bundle b
 planning:
 
 ```bash
-dotnet run --project src/DotNetAgentHarness.Tools/DotNetAgentHarness.Tools.csproj -- \
+dotnet agent-harness \
   prepare-message "Review the runtime validation path" \
   --target src/DotNetAgentHarness.Tools/DotNetAgentHarness.Tools.csproj \
-  --platform codexcli \
+  --platform antigravity \
   --write-evidence \
   --evidence-id review-runtime-validation \
   --format json
@@ -79,7 +103,7 @@ Saved prompt artifacts live under:
 Compare two prompt bundles when reviewing changes to personas, tool policy, or request shaping:
 
 ```bash
-dotnet run --project src/DotNetAgentHarness.Tools/DotNetAgentHarness.Tools.csproj -- \
+dotnet agent-harness \
   compare-prompts review-runtime-validation review-runtime-validation-v2 --format json
 ```
 
@@ -94,7 +118,7 @@ Incidents link prompt evidence and eval failures to a durable record under:
 ### Create an Incident from Prompt Evidence
 
 ```bash
-dotnet run --project src/DotNetAgentHarness.Tools/DotNetAgentHarness.Tools.csproj -- \
+dotnet agent-harness \
   incident add "Reviewer misrouted validation request" \
   --prompt-evidence review-runtime-validation \
   --severity high \
@@ -104,7 +128,7 @@ dotnet run --project src/DotNetAgentHarness.Tools/DotNetAgentHarness.Tools.cspro
 ### Create an Incident from an Eval Artifact
 
 ```bash
-dotnet run --project src/DotNetAgentHarness.Tools/DotNetAgentHarness.Tools.csproj -- \
+dotnet agent-harness \
   incident from-eval nightly-routing \
   --prompt-evidence review-runtime-validation \
   --incident-id nightly-routing-failure \
@@ -114,8 +138,8 @@ dotnet run --project src/DotNetAgentHarness.Tools/DotNetAgentHarness.Tools.cspro
 ### Inspect Saved Incidents
 
 ```bash
-dotnet run --project src/DotNetAgentHarness.Tools/DotNetAgentHarness.Tools.csproj -- incident list
-dotnet run --project src/DotNetAgentHarness.Tools/DotNetAgentHarness.Tools.csproj -- incident show nightly-routing-failure
+dotnet agent-harness incident list
+dotnet agent-harness incident show nightly-routing-failure
 ```
 
 ### Resolve and Close Incidents
@@ -123,14 +147,14 @@ dotnet run --project src/DotNetAgentHarness.Tools/DotNetAgentHarness.Tools.cspro
 Do not resolve or close an incident without a linked permanent regression case.
 
 ```bash
-dotnet run --project src/DotNetAgentHarness.Tools/DotNetAgentHarness.Tools.csproj -- \
+dotnet agent-harness \
   incident resolve nightly-routing-failure \
   --owner platform-team \
   --rationale "Added permanent regression coverage." \
   --regression-case routing-reviewer-001 \
   --regression-path tests/eval/cases/routing.yaml
 
-dotnet run --project src/DotNetAgentHarness.Tools/DotNetAgentHarness.Tools.csproj -- \
+dotnet agent-harness \
   incident close nightly-routing-failure \
   --owner release-manager \
   --rationale "Regression remains green in nightly and release gates." \
@@ -191,6 +215,19 @@ Behavior:
 - exit code `0`: all eval trials passed
 - exit code `1`: one or more eval trials failed; auto-incident creation can still run
 - exit code `2+`: configuration or runtime failure; no auto-incident should be assumed
+
+## Tool Publishing
+
+Maintainers publish the runtime tool with
+[publish-dotnet-tool.yml](/home/rrj/src/github/rudironsoni/dotnet-harness-toolkit/.github/workflows/publish-dotnet-tool.yml).
+
+That workflow:
+
+1. packs `Rudironsoni.DotNetAgentHarness` using the semver tag version
+2. smoke-installs the packed tool in a temporary repo
+3. publishes to GitHub Packages
+4. smoke-installs from GitHub Packages
+5. optionally publishes to NuGet.org when `NUGET_API_KEY` is configured
 
 ## MCP Integration
 

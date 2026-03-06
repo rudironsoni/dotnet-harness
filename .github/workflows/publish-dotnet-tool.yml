@@ -1,0 +1,236 @@
+name: Publish .NET Tool
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Semver package version to publish (omit leading v)"
+        required: false
+        type: string
+      publish_nuget:
+        description: "Also publish to NuGet.org when NUGET_API_KEY is configured"
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+  packages: write
+
+concurrency:
+  group: publish-dotnet-tool-${{ github.ref_name || github.run_id }}
+  cancel-in-progress: false
+
+env:
+  PACKAGE_ID: Rudironsoni.DotNetAgentHarness
+  TOOL_COMMAND: dotnet-agent-harness
+
+jobs:
+  pack-and-smoke:
+    name: Pack and smoke install
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.meta.outputs.version }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+          include-prerelease: true
+
+      - name: Resolve package version
+        id: meta
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          version_input="${{ inputs.version }}"
+          if [[ -n "${version_input}" ]]; then
+            version="${version_input#v}"
+          elif [[ "${GITHUB_REF_TYPE}" == "tag" ]]; then
+            version="${GITHUB_REF_NAME#v}"
+          else
+            version="0.0.${GITHUB_RUN_NUMBER}"
+          fi
+
+          echo "version=${version}" >> "${GITHUB_OUTPUT}"
+          echo "Resolved package version: ${version}"
+
+      - name: Build runtime
+        run: dotnet build src/DotNetAgentHarness.Tools/DotNetAgentHarness.Tools.csproj -c Release
+
+      - name: Run runtime tests
+        run: dotnet test tests/DotNetAgentHarness.Tools.Tests/DotNetAgentHarness.Tools.Tests.csproj -c Release
+
+      - name: Pack tool package
+        run: |
+          dotnet pack src/DotNetAgentHarness.Tools/DotNetAgentHarness.Tools.csproj \
+            -c Release \
+            -o artifacts/packages \
+            -p:Version=${{ steps.meta.outputs.version }} \
+            -p:PackageVersion=${{ steps.meta.outputs.version }}
+
+      - name: Smoke install from local package
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          tmpdir="$(mktemp -d)"
+          trap 'rm -rf "${tmpdir}"' EXIT
+
+          pushd "${tmpdir}" >/dev/null
+          dotnet new classlib -n SmokeHarness >/dev/null
+          cd SmokeHarness
+          dotnet new tool-manifest >/dev/null
+          dotnet tool install "${PACKAGE_ID}" \
+            --add-source "${GITHUB_WORKSPACE}/artifacts/packages" \
+            --version "${{ steps.meta.outputs.version }}" \
+            --ignore-failed-sources >/dev/null
+          dotnet agent-harness bootstrap \
+            --targets claudecode,opencode,codexcli,geminicli,copilot,antigravity \
+            --format json > bootstrap.json
+          python3 - <<'PY'
+          import json
+          with open("bootstrap.json", "r", encoding="utf-8") as fh:
+              data = json.load(fh)
+          assert data["ToolCommandName"] == "dotnet-agent-harness"
+          assert any(target["Id"] == "antigravity" for target in data["Targets"])
+          PY
+          test -f .config/dotnet-tools.json
+          test -f rulesync.jsonc
+          test -f .dotnet-agent-harness/bootstrap-report.json
+          popd >/dev/null
+
+      - name: Upload package artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dotnet-tool-package
+          path: artifacts/packages/*.nupkg
+
+  publish-github-packages:
+    name: Publish to GitHub Packages
+    needs: pack-and-smoke
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Download package artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dotnet-tool-package
+          path: artifacts/packages
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+          include-prerelease: true
+
+      - name: Publish package to GitHub Packages
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          dotnet nuget add source \
+            --username "${{ github.repository_owner }}" \
+            --password "${GITHUB_TOKEN}" \
+            --store-password-in-clear-text \
+            --name github \
+            "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
+
+          dotnet nuget push artifacts/packages/*.nupkg \
+            --source github \
+            --skip-duplicate
+
+  smoke-github-packages:
+    name: Smoke install from GitHub Packages
+    needs: [pack-and-smoke, publish-github-packages]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
+    steps:
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+          include-prerelease: true
+
+      - name: Add GitHub Packages source
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          dotnet nuget add source \
+            --username "${{ github.repository_owner }}" \
+            --password "${GITHUB_TOKEN}" \
+            --store-password-in-clear-text \
+            --name github \
+            "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
+
+      - name: Smoke install published package
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          tmpdir="$(mktemp -d)"
+          trap 'rm -rf "${tmpdir}"' EXIT
+          pushd "${tmpdir}" >/dev/null
+          dotnet new classlib -n PublishedSmoke >/dev/null
+          cd PublishedSmoke
+          dotnet new tool-manifest >/dev/null
+
+          for attempt in 1 2 3 4 5; do
+            if dotnet tool install "${PACKAGE_ID}" \
+              --add-source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" \
+              --version "${{ needs.pack-and-smoke.outputs.version }}" \
+              --ignore-failed-sources >/dev/null 2>&1; then
+              break
+            fi
+            if [[ "${attempt}" -eq 5 ]]; then
+              echo "Failed to install ${PACKAGE_ID} from GitHub Packages after retries." >&2
+              exit 1
+            fi
+            sleep 15
+          done
+
+          dotnet agent-harness help > help.txt
+          grep -q "bootstrap" help.txt
+          grep -q "antigravity" help.txt
+          popd >/dev/null
+
+  publish-nuget:
+    name: Publish to NuGet.org
+    needs: pack-and-smoke
+    if: ${{ secrets.NUGET_API_KEY != '' && (github.event_name == 'push' || inputs.publish_nuget) }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download package artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dotnet-tool-package
+          path: artifacts/packages
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+          include-prerelease: true
+
+      - name: Publish package to NuGet.org
+        env:
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+        run: |
+          dotnet nuget push artifacts/packages/*.nupkg \
+            --source "https://api.nuget.org/v3/index.json" \
+            --api-key "${NUGET_API_KEY}" \
+            --skip-duplicate

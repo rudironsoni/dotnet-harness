@@ -107,6 +107,7 @@ internal static class ToolkitTestContent
 
     private static void WriteCommands(TestRepositoryBuilder repo)
     {
+        repo.WriteFile(".rulesync/commands/dotnet-agent-harness-bootstrap.md", Command("Bootstrap the local runtime and RuleSync targets"));
         repo.WriteFile(".rulesync/commands/dotnet-agent-harness-prepare-message.md", Command("Prepare a prompt bundle"));
         repo.WriteFile(".rulesync/commands/dotnet-agent-harness-search.md", Command("Search toolkit content"));
         repo.WriteFile(".rulesync/commands/dotnet-agent-harness-compare-prompts.md", Command("Compare prompt bundles"));

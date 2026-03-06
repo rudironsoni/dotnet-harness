@@ -1,72 +1,29 @@
 ---
-description: 'Test skills against defined test cases. Validate skill logic, output format, and cross-references.'
+description: 'Run authored skill test cases through the local runtime.'
 targets: ['*']
 ---
 
 # /dotnet-agent-harness:test
 
-Validate skill functionality with unit tests.
+Run the local skill-test harness instead of interpreting `test-cases/` manually.
 
-## Usage
+## Execution Contract
 
-```bash
-/dotnet-agent-harness:test <skill-name> [options]
-```
-
-## Parameters
-
-- `skill-name`: Name of skill to test (or `all` for all skills)
-- `--verbose`: Show detailed test output
-- `--format`: Output format (`text`, `json`, `junit`)
-- `--fail-fast`: Stop on first failure
-
-## Examples
+Run:
 
 ```bash
-# Test a specific skill
-/dotnet-agent-harness:test dotnet-csharp-coding-standards
-
-# Run all tests with JSON output
-/dotnet-agent-harness:test all --format json
-
-# Test with detailed output
-/dotnet-agent-harness:test dotnet-efcore-patterns --verbose
-
-# Test for CI/CD
-/dotnet-agent-harness:test all --format junit --fail-fast
+dotnet agent-harness test [skill-name|all] [--format text|json|junit] [--filter value] [--fail-fast] [--output path]
 ```
 
-## Test Cases
+## Notes
 
-Skills can include test cases in `test-cases/`:
+- `all` runs the entire authored skill suite
+- `--format junit` is intended for CI systems
+- `--filter` narrows test selection to matching case names
+- `--fail-fast` stops on the first failing check
 
-```yaml
-# .rulesync/skills/dotnet-example/test-cases/001-basic.yml
-name: 'Basic validation'
-input:
-  query: 'How should I name private fields?'
-expected_output_contains:
-  - '_camelCase'
-  - 'private fields'
-validation:
-  - pattern: "_\\w+"
-    description: 'Should suggest underscore prefix'
+## Example
+
+```bash
+dotnet agent-harness test dotnet-agent-harness-test-framework --format json
 ```
-
-## Output
-
-```text
-Testing dotnet-csharp-coding-standards...
-✓ Frontmatter validation
-✓ Cross-reference check
-✓ Test case 1: Basic validation
-✓ Test case 2: Edge cases
-
-3 passed, 0 failed
-```
-
-## Exit Codes
-
-- `0`: All tests passed
-- `1`: One or more tests failed
-- `2`: Invalid skill name or configuration error

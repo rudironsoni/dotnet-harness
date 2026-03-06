@@ -19,9 +19,15 @@ public static class PromptBundleRenderer
             "claudecode" => PromptPlatforms.ClaudeCode,
             "opencode" => PromptPlatforms.OpenCode,
             "open-code" => PromptPlatforms.OpenCode,
+            "gemini" => PromptPlatforms.GeminiCli,
+            "geminicli" => PromptPlatforms.GeminiCli,
             "copilot" => PromptPlatforms.Copilot,
             "github-copilot" => PromptPlatforms.Copilot,
-            _ => throw new ArgumentException($"Unsupported prompt platform '{platform}'. Supported values: generic, codexcli, claudecode, opencode, copilot.")
+            "github-copilot-cli" => PromptPlatforms.Copilot,
+            "copilotcli" => PromptPlatforms.Copilot,
+            "antigravity" => PromptPlatforms.Antigravity,
+            "google-antigravity" => PromptPlatforms.Antigravity,
+            _ => throw new ArgumentException($"Unsupported prompt platform '{platform}'. Supported values: generic, codexcli, claudecode, opencode, geminicli, copilot, antigravity.")
         };
     }
 
@@ -62,12 +68,26 @@ public static class PromptBundleRenderer
                 bundle.ToolLayer,
                 "LOADED SKILLS",
                 bundle.SkillLayer),
+            PromptPlatforms.GeminiCli => CombineSections(
+                "SYSTEM INSTRUCTIONS",
+                bundle.SystemLayer,
+                "TOOL CONTRACT",
+                bundle.ToolLayer,
+                "REPOSITORY SKILLS",
+                bundle.SkillLayer),
             PromptPlatforms.Copilot => CombineSections(
                 "INSTRUCTIONS",
                 bundle.SystemLayer,
                 "OPERATING CONSTRAINTS",
                 bundle.ToolLayer,
                 "CONTEXT SKILLS",
+                bundle.SkillLayer),
+            PromptPlatforms.Antigravity => CombineSections(
+                "MISSION",
+                bundle.SystemLayer,
+                "EXECUTION TOOLS",
+                bundle.ToolLayer,
+                "HARNESS SKILLS",
                 bundle.SkillLayer),
             _ => CombineSections(
                 "SYSTEM",
@@ -82,7 +102,9 @@ public static class PromptBundleRenderer
         {
             PromptPlatforms.ClaudeCode => CombineSections("TASK", bundle.RequestLayer),
             PromptPlatforms.OpenCode => CombineSections("TASK BRIEF", bundle.RequestLayer),
+            PromptPlatforms.GeminiCli => CombineSections("USER REQUEST", bundle.RequestLayer),
             PromptPlatforms.Copilot => CombineSections("USER TASK", bundle.RequestLayer),
+            PromptPlatforms.Antigravity => CombineSections("WORKFLOW", bundle.RequestLayer),
             _ => CombineSections("REQUEST", bundle.RequestLayer)
         };
 

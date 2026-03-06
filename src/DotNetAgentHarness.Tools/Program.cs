@@ -33,6 +33,8 @@ public static class Program
                 "lint-frontmatter" => RunLintFrontmatter(repoRoot),
                 "build-manifest" => RunBuildManifest(repoRoot, cliArgs),
                 "build-catalog" => RunBuildCatalog(repoRoot, cliArgs),
+                "bootstrap" => RunBootstrap(repoRoot, cliArgs),
+                "install-agent" => RunBootstrap(repoRoot, cliArgs),
                 "analyze" => RunAnalyze(repoRoot, cliArgs),
                 "recommend" => RunRecommend(repoRoot, cliArgs),
                 "init" => RunInit(repoRoot, cliArgs),
@@ -41,6 +43,7 @@ public static class Program
                 "search" => RunSearch(repoRoot, cliArgs),
                 "profile" => RunProfile(repoRoot, cliArgs),
                 "compare" => RunCompare(repoRoot, cliArgs),
+                "graph" => RunGraph(repoRoot, cliArgs),
                 "compare-prompts" => RunComparePrompts(repoRoot, cliArgs),
                 "prepare-message" => RunPrepareMessage(repoRoot, cliArgs),
                 "incident" => RunIncident(repoRoot, cliArgs),
@@ -87,6 +90,25 @@ public static class Program
         File.WriteAllText(outputPath, JsonSerializer.Serialize(catalog, JsonOptions));
         Console.WriteLine($"Catalog written to {outputPath}");
         return 0;
+    }
+
+    private static int RunBootstrap(string repoRoot, CliArguments cliArgs)
+    {
+        var report = BootstrapEngine.Bootstrap(repoRoot, new BootstrapOptions
+        {
+            Targets = SplitCsv(cliArgs.GetOption("--targets")),
+            Features = SplitCsv(cliArgs.GetOption("--features")),
+            SourceRepository = cliArgs.GetOption("--source") ?? ToolkitRuntimeMetadata.RuleSyncSourceRepository,
+            SourcePath = cliArgs.GetOption("--source-path") ?? ToolkitRuntimeMetadata.RuleSyncSourcePath,
+            ConfigPath = cliArgs.GetOption("--config") ?? "rulesync.jsonc",
+            Force = cliArgs.HasFlag("--force"),
+            RunRuleSync = cliArgs.HasFlag("--run-rulesync"),
+            WriteState = !cliArgs.HasFlag("--no-save"),
+            SkillLimit = cliArgs.GetIntOption("--limit", 6),
+            ToolVersion = cliArgs.GetOption("--tool-version")
+        });
+
+        return WriteOutput(report, cliArgs, textWriter: WriteBootstrapSummary, failureExitCode: report.Passed ? 0 : 1);
     }
 
     private static int RunLintFrontmatter(string repoRoot)
@@ -265,6 +287,38 @@ public static class Program
             Console.WriteLine($"Only {comparison.Left.Id}: {string.Join(", ", comparison.UniqueToLeft)}");
             Console.WriteLine($"Only {comparison.Right.Id}: {string.Join(", ", comparison.UniqueToRight)}");
         });
+    }
+
+    private static int RunGraph(string repoRoot, CliArguments cliArgs)
+    {
+        var format = (cliArgs.GetOption("--format") ?? "mermaid").ToLowerInvariant();
+        var report = GraphEngine.Build(repoRoot, new GraphOptions
+        {
+            ItemId = cliArgs.GetOption("--item") ?? cliArgs.GetOption("--skill"),
+            Category = cliArgs.GetOption("--category"),
+            Kind = cliArgs.GetOption("--kind") ?? CatalogKinds.Skill,
+            Depth = cliArgs.GetIntOption("--depth", 3),
+            Format = format == "json" ? "mermaid" : format
+        });
+
+        if (format == "json")
+        {
+            return WriteOutput(report, cliArgs, textWriter: WriteGraphSummary);
+        }
+
+        var outputPath = cliArgs.GetOption("--output");
+        if (!string.IsNullOrWhiteSpace(outputPath))
+        {
+            EnsureParentDirectory(outputPath);
+            File.WriteAllText(outputPath, report.RenderedGraph);
+            Console.WriteLine(outputPath);
+        }
+        else
+        {
+            Console.WriteLine(report.RenderedGraph);
+        }
+
+        return 0;
     }
 
     private static int RunPrepareMessage(string repoRoot, CliArguments cliArgs)
@@ -544,6 +598,69 @@ public static class Program
         Console.WriteLine($"CI: {string.Join(", ", profile.CiProviders)}");
     }
 
+    private static void WriteBootstrapSummary(BootstrapReport report)
+    {
+        Console.WriteLine($"Repo: {report.RepoRoot}");
+        Console.WriteLine($"Tool: {report.ToolPackageId} ({report.ToolCommandName} {report.ToolVersion})");
+        Console.WriteLine($"Targets: {string.Join(", ", report.Targets.Select(target => target.Id))}");
+        Console.WriteLine($"Features: {string.Join(", ", report.Features)}");
+        Console.WriteLine($"Tool manifest: [{report.ToolManifest.Status}] {report.ToolManifest.Path}");
+        Console.WriteLine($"RuleSync config: [{report.RuleSyncConfig.Status}] {report.RuleSyncConfig.Path}");
+        Console.WriteLine($"RuleSync available: {(report.RuleSyncAvailable ? "yes" : "no")}");
+        Console.WriteLine($"RuleSync generation: {report.RuleSyncGenerationStatus}");
+        Console.WriteLine();
+
+        foreach (var target in report.Targets)
+        {
+            Console.WriteLine($"{target.Id}: {string.Join(", ", target.OutputPaths)}");
+        }
+
+        if (report.Commands.Count > 0)
+        {
+            Console.WriteLine();
+            Console.WriteLine("Commands:");
+            foreach (var command in report.Commands)
+            {
+                Console.WriteLine($"  {(command.Passed ? "PASS" : "FAIL")} {command.Command} (exit {command.ExitCode})");
+            }
+        }
+
+        if (report.StateFiles.Count > 0)
+        {
+            Console.WriteLine();
+            Console.WriteLine("State files:");
+            foreach (var file in report.StateFiles)
+            {
+                Console.WriteLine($"  [{file.Status}] {file.Path}");
+            }
+        }
+
+        Console.WriteLine();
+        WriteProfileSummary(report.Init.Profile);
+        Console.WriteLine();
+        WriteDoctorSummary(report.Init.Doctor);
+
+        if (report.Warnings.Count > 0)
+        {
+            Console.WriteLine();
+            Console.WriteLine("Warnings:");
+            foreach (var warning in report.Warnings)
+            {
+                Console.WriteLine($"  {warning}");
+            }
+        }
+
+        if (report.NextSteps.Count > 0)
+        {
+            Console.WriteLine();
+            Console.WriteLine("Next steps:");
+            foreach (var step in report.NextSteps)
+            {
+                Console.WriteLine($"  {step}");
+            }
+        }
+    }
+
     private static void WriteRecommendationSummary(RecommendationBundle bundle)
     {
         Console.WriteLine($"Repo kind: {bundle.Profile.DominantProjectKind}");
@@ -695,6 +812,37 @@ public static class Program
         foreach (var line in report.RenderedPrompt.CompositeText.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries))
         {
             Console.WriteLine($"  {line}");
+        }
+    }
+
+    private static void WriteGraphSummary(GraphReport report)
+    {
+        Console.WriteLine($"Graph kind: {report.Kind}");
+        Console.WriteLine($"Depth: {report.Depth}");
+        if (!string.IsNullOrWhiteSpace(report.RootId))
+        {
+            Console.WriteLine($"Root: {report.RootId}");
+        }
+
+        if (!string.IsNullOrWhiteSpace(report.Category))
+        {
+            Console.WriteLine($"Category: {report.Category}");
+        }
+
+        Console.WriteLine($"Nodes: {report.Nodes.Count}");
+        Console.WriteLine($"Edges: {report.Edges.Count}");
+        if (report.Orphans.Count > 0)
+        {
+            Console.WriteLine($"Orphans: {string.Join(", ", report.Orphans)}");
+        }
+
+        if (report.Hubs.Count > 0)
+        {
+            Console.WriteLine("Hubs:");
+            foreach (var hub in report.Hubs)
+            {
+                Console.WriteLine($"  {hub.Id} degree={hub.Degree} incoming={hub.Incoming} outgoing={hub.Outgoing}");
+            }
         }
     }
 
@@ -873,6 +1021,18 @@ public static class Program
         return chars.Length == 0 ? "Sample" : new string(chars);
     }
 
+    private static List<string> SplitCsv(string? raw)
+    {
+        if (string.IsNullOrWhiteSpace(raw))
+        {
+            return [];
+        }
+
+        return raw.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .Where(value => !string.IsNullOrWhiteSpace(value))
+            .ToList();
+    }
+
     private static void PrintUsage()
     {
         Console.WriteLine("dotnet-agent-harness tools");
@@ -880,6 +1040,8 @@ public static class Program
         Console.WriteLine("  lint-frontmatter");
         Console.WriteLine("  build-manifest [--output path]");
         Console.WriteLine("  build-catalog [--output path]");
+        Console.WriteLine("  bootstrap [--targets claudecode,opencode,codexcli,geminicli,copilot,antigravity] [--features *] [--source owner/repo] [--source-path .rulesync] [--config path] [--tool-version x.y.z] [--run-rulesync] [--force] [--no-save] [--format text|json]");
+        Console.WriteLine("  install-agent [same options as bootstrap]");
         Console.WriteLine("  analyze [--format text|json] [--write-state]");
         Console.WriteLine("  recommend [--format text|json] [--limit N] [--profile path] [--write-state]");
         Console.WriteLine("  init [--format text|json] [--limit N] [--no-save]");
@@ -888,8 +1050,9 @@ public static class Program
         Console.WriteLine("  search <query> [--kind skill|subagent|command|persona] [--category value] [--platform value] [--limit N]");
         Console.WriteLine("  profile [catalog-item-id] [--format text|json]");
         Console.WriteLine("  compare <left-id> <right-id> [--format text|json]");
+        Console.WriteLine("  graph [--item id|--skill id] [--kind skill|subagent|command|persona] [--category value] [--depth N] [--format mermaid|dot|json] [--output path]");
         Console.WriteLine("  compare-prompts <left-evidence-id> <right-evidence-id> [--format text|json]");
-        Console.WriteLine("  prepare-message <request> [--persona id] [--target path] [--platform generic|codexcli|claudecode|opencode|copilot] [--limit N] [--write-evidence] [--evidence-id id] [--format text|json|prompt]");
+        Console.WriteLine("  prepare-message <request> [--persona id] [--target path] [--platform generic|codexcli|claudecode|opencode|geminicli|copilot|antigravity] [--limit N] [--write-evidence] [--evidence-id id] [--format text|json|prompt]");
         Console.WriteLine("  incident add <title> --prompt-evidence id [--incident-id id] [--severity low|medium|high|critical] [--owner name] [--notes text] [--format text|json]");
         Console.WriteLine("  incident list [--format text|json]");
         Console.WriteLine("  incident show <incident-id> [--format text|json]");

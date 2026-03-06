@@ -23,6 +23,7 @@ public class RecommendationEngineTests
         repo.WriteFile(".rulesync/skills/dotnet-data-access-strategy/SKILL.md", Skill("dotnet-data-access-strategy", "Data access tradeoffs"));
         repo.WriteFile(".rulesync/subagents/dotnet-architect.md", Agent("dotnet-architect", "Architecture agent"));
         repo.WriteFile(".rulesync/subagents/dotnet-aspnetcore-specialist.md", Agent("dotnet-aspnetcore-specialist", "ASP.NET specialist"));
+        repo.WriteFile(".rulesync/commands/dotnet-agent-harness-bootstrap.md", Command("Bootstrap repository"));
         repo.WriteFile(".rulesync/commands/init-project.md", Command("Initialize repository"));
         repo.WriteFile(".rulesync/commands/dotnet-agent-harness-search.md", Command("Search skills"));
 
@@ -41,7 +42,7 @@ public class RecommendationEngineTests
         Assert.Contains(bundle.Skills, item => item.Id == "dotnet-minimal-apis");
         Assert.Contains(bundle.Skills, item => item.Id == "dotnet-efcore-patterns");
         Assert.Contains(bundle.Subagents, item => item.Id == "dotnet-architect");
-        Assert.Contains(bundle.Commands, item => item.Id == "init-project");
+        Assert.Contains(bundle.Commands, item => item.Id == "dotnet-agent-harness-bootstrap");
     }
 
     private static string Skill(string name, string description)

@@ -104,7 +104,9 @@ public static class PromptPlatforms
     public const string CodexCli = "codexcli";
     public const string ClaudeCode = "claudecode";
     public const string OpenCode = "opencode";
+    public const string GeminiCli = "geminicli";
     public const string Copilot = "copilot";
+    public const string Antigravity = "antigravity";
 }
 
 public sealed class PreparedMessageEvidence

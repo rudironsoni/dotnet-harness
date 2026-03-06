@@ -23,7 +23,15 @@ Compatible targets include Claude Code, GitHub Copilot CLI, OpenCode, Codex CLI,
 
 ## Recommended install
 
-For full toolkit installation in a project:
+Prefer the local runtime tool when this repository is installed into another .NET codebase:
+
+```bash
+dotnet new tool-manifest
+dotnet tool install Rudironsoni.DotNetAgentHarness
+dotnet agent-harness bootstrap --targets claudecode,opencode,codexcli,geminicli,copilot,antigravity --run-rulesync
+```
+
+RuleSync-only installation still works:
 
 ````bash
 
@@ -58,6 +66,9 @@ rulesync install && rulesync generate --targets "*" --features "*"
 
 If RuleSync reports `Multiple root rulesync rules found`, ensure only one root overview rule exists in
 `.rulesync/rules/`.
+
+If `dotnet-agent-harness:*` commands are available, prefer executing the local runtime command (`dotnet agent-harness ...`)
+instead of manually reproducing catalog, prompt, incident, or graph logic from source files.
 
 ## Contributing
 

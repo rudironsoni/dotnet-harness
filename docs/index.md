@@ -50,14 +50,14 @@ features:
 ## Quick Start
 
 ```bash
-# Install rulesync
-curl -fsSL https://github.com/dyoshikawa/rulesync/releases/latest/download/install.sh | bash
+# Install the runtime tool
+dotnet new tool-manifest
+dotnet tool install Rudironsoni.DotNetAgentHarness
 
-# Fetch the toolkit
-rulesync fetch rudironsoni/dotnet-agent-harness:.rulesync
-
-# Generate for your platform
-rulesync generate --targets "*" --features "*"
+# Bootstrap agent targets in the repo
+dotnet agent-harness bootstrap \
+  --targets claudecode,opencode,codexcli,geminicli,copilot,antigravity \
+  --run-rulesync
 ```
 
 ## Maintainer Runtime
@@ -67,8 +67,11 @@ rulesync generate --targets "*" --features "*"
 dotnet build src/DotNetAgentHarness.Tools/DotNetAgentHarness.Tools.csproj
 dotnet build src/DotNetAgentHarness.Evals/DotNetAgentHarness.Evals.csproj
 
+# Pack the runtime as a .NET tool
+dotnet pack src/DotNetAgentHarness.Tools/DotNetAgentHarness.Tools.csproj
+
 # Prepare a repository-aware prompt bundle
-dotnet run --project src/DotNetAgentHarness.Tools/DotNetAgentHarness.Tools.csproj -- \
+dotnet agent-harness \
   prepare-message "Review the validation pipeline" \
   --target src/DotNetAgentHarness.Tools/DotNetAgentHarness.Tools.csproj \
   --platform codexcli \
@@ -76,7 +79,7 @@ dotnet run --project src/DotNetAgentHarness.Tools/DotNetAgentHarness.Tools.cspro
   --evidence-id review-validation
 
 # Diff prompt bundles or capture incidents
-dotnet run --project src/DotNetAgentHarness.Tools/DotNetAgentHarness.Tools.csproj -- \
+dotnet agent-harness \
   compare-prompts review-validation review-validation-v2
 ```
 
@@ -91,6 +94,7 @@ dotnet run --project src/DotNetAgentHarness.Tools/DotNetAgentHarness.Tools.cspro
 | GitHub Copilot | ✅ Fully Supported | All agents         |
 | Codex CLI      | ✅ Fully Supported | All agents         |
 | Gemini CLI     | ✅ Fully Supported | All agents         |
+| Antigravity    | ✅ Fully Supported | All agents         |
 
 </div>
 
@@ -111,24 +115,37 @@ graph TB
         OPENCODE[.opencode/]
         COPILOT[.github/]
         CODEX[.codex/]
+        GEMINI[.gemini/]
+        ANTIGRAVITY[.agent/]
     end
 
     SKILLS --> CLAUDE
     SKILLS --> OPENCODE
     SKILLS --> COPILOT
     SKILLS --> CODEX
+    SKILLS --> GEMINI
+    SKILLS --> ANTIGRAVITY
     SUBAGENTS --> CLAUDE
     SUBAGENTS --> OPENCODE
     COMMANDS --> CLAUDE
     COMMANDS --> OPENCODE
     RUNTIME --> CODEX
     RUNTIME --> COPILOT
+    RUNTIME --> GEMINI
+    RUNTIME --> ANTIGRAVITY
 ```
 
 ## Latest Enhancements
 
 ### Runtime and Governance
 
+- **Installable runtime**: `DotNetAgentHarness.Tools` now packs as a `.NET tool` with command `dotnet agent-harness`.
+- **Bootstrap flow**: `bootstrap` writes the local tool manifest, `rulesync.jsonc`, repo state, and can generate all
+  supported target outputs.
+- **Runtime-backed commands**: generated `dotnet-agent-harness:*` command files are expected to call the local runtime
+  instead of duplicating logic in prompt text.
+- **Release workflow**: GitHub Actions now packs, smoke-installs, and publishes the tool package to GitHub Packages,
+  with optional NuGet.org publication.
 - **Prompt assembly**: `prepare-message` builds persona-aware prompt bundles from repo analysis, skills, and target
   resolution.
 - **Prompt evidence**: prepared-message reports and rendered prompts can be persisted under

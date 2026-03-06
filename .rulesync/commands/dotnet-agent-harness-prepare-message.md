@@ -8,17 +8,18 @@ targets: ['*']
 
 Prepare a repository-aware agent request bundle before implementation, review, or planning.
 
-## Usage
+## Execution Contract
 
 ```bash
-/dotnet-agent-harness:prepare-message <request> [options]
+dotnet agent-harness prepare-message <request> [options]
 ```
 
 ## Options
 
 - `--persona <id>`: Force a specific persona (`architect`, `reviewer`, `implementer`, `tester`)
 - `--target <path>`: Resolve the request against a specific project or solution
-- `--platform <id>`: Render the bundle for `generic`, `codexcli`, `claudecode`, `opencode`, or `copilot`
+- `--platform <id>`: Render the bundle for `generic`, `codexcli`, `claudecode`, `opencode`, `geminicli`, `copilot`, or
+  `antigravity`
 - `--limit <n>`: Limit the number of recommended skills included in the bundle
 - `--write-evidence`: Persist the full prepared-message report and rendered prompt under
   `.dotnet-agent-harness/evidence/prepared-messages/`
@@ -44,8 +45,11 @@ The prepared bundle includes:
 
 ## Notes
 
+- Execute the runtime command first. Do not manually reconstruct personas, risk signals, or prompt layers from source
+  files when the tool is available.
 - Use this before implementation when the user request is vague or spans multiple projects.
 - Use this before review to force findings-first behavior via the `reviewer` persona.
 - Use this before architecture work to bind the request to repository shape and constraints.
+- Use `--platform geminicli` for Gemini CLI output and `--platform antigravity` for Antigravity workflow output.
 - Persona `requestDirectives` are applied to the request layer so the rendered prompt carries persona-specific task
   framing.

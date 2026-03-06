@@ -91,7 +91,7 @@
           "type": "array",
           "items": {
             "type": "string",
-            "enum": ["claudecode", "opencode", "copilot", "codexcli", "geminicli"]
+            "enum": ["claudecode", "opencode", "copilot", "codexcli", "geminicli", "antigravity"]
           },
           "description": "Supported AI platforms"
         }

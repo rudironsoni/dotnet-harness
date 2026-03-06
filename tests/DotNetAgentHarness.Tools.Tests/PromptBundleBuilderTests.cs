@@ -94,6 +94,42 @@ public class PromptBundleBuilderTests
         Assert.Contains("Unsupported prompt platform", exception.Message);
     }
 
+    [Fact]
+    public void Prepare_RendersGeminiAndAntigravityPlatforms()
+    {
+        using var repo = new TestRepositoryBuilder();
+        WritePersonas(repo);
+        WriteFoundationSkills(repo);
+        repo.WriteFile("src/App/App.csproj", """
+            <Project Sdk="Microsoft.NET.Sdk.Web">
+              <PropertyGroup>
+                <TargetFramework>net10.0</TargetFramework>
+              </PropertyGroup>
+            </Project>
+            """);
+
+        var gemini = PromptBundleBuilder.Prepare(repo.Root, "Review this API service for async bugs", new PromptAssemblyOptions
+        {
+            PersonaId = "reviewer",
+            TargetPath = "src/App/App.csproj",
+            Platform = "gemini"
+        });
+        var antigravity = PromptBundleBuilder.Prepare(repo.Root, "Implement a safer API change", new PromptAssemblyOptions
+        {
+            PersonaId = "implementer",
+            TargetPath = "src/App/App.csproj",
+            Platform = PromptPlatforms.Antigravity
+        });
+
+        Assert.Equal(PromptPlatforms.GeminiCli, gemini.RenderedPrompt.Platform);
+        Assert.Contains("SYSTEM INSTRUCTIONS", gemini.RenderedPrompt.CompositeText);
+        Assert.Contains("USER REQUEST", gemini.RenderedPrompt.CompositeText);
+
+        Assert.Equal(PromptPlatforms.Antigravity, antigravity.RenderedPrompt.Platform);
+        Assert.Contains("MISSION", antigravity.RenderedPrompt.CompositeText);
+        Assert.Contains("WORKFLOW", antigravity.RenderedPrompt.CompositeText);
+    }
+
     private static void WritePersonas(TestRepositoryBuilder repo)
     {
         repo.WriteFile(".rulesync/personas/architect.json", """

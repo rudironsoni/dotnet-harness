@@ -87,6 +87,7 @@ async function buildManifest() {
         if (frontmatter.copilot) platforms.push('copilot');
         if (frontmatter.codexcli) platforms.push('codexcli');
         if (frontmatter.geminicli) platforms.push('geminicli');
+        if (frontmatter.antigravity) platforms.push('antigravity');
 
         skills[skillName] = {
           name: frontmatter.name || skillName,

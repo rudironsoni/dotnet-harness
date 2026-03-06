@@ -4,9 +4,26 @@
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>dotnet-agent-harness</ToolCommandName>
+    <PackageId>Rudironsoni.DotNetAgentHarness</PackageId>
+    <Description>Runtime harness for .NET agent bootstrapping, prompt assembly, validation, incidents, and eval workflows.</Description>
+    <Authors>Rudironsoni</Authors>
+    <Company>Rudironsoni</Company>
+    <RepositoryUrl>https://github.com/rudironsoni/dotnet-agent-harness</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>dotnet;tool;agents;ai;rulesync;harness</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageProjectUrl>https://github.com/rudironsoni/dotnet-agent-harness</PackageProjectUrl>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="YamlDotNet" Version="16.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="../../README.md" Pack="true" PackagePath="" />
   </ItemGroup>
 </Project>
