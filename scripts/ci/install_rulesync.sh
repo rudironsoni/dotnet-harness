@@ -2,11 +2,12 @@
 set -euo pipefail
 
 RULESYNC_VERSION="7.10.0"
-BASE_URL="https://github.com/dyoshikawa/rulesync/releases/download/v${RULESYNC_VERSION}"
 
 if [[ $# -ge 1 && -n "${1}" && "${1}" != "latest" ]]; then
   RULESYNC_VERSION="${1}"
 fi
+
+BASE_URL="https://github.com/dyoshikawa/rulesync/releases/download/v${RULESYNC_VERSION}"
 
 OS=$(uname -s | tr '[:upper:]' '[:lower:]')
 ARCH=$(uname -m)
@@ -39,7 +40,7 @@ else
 fi
 
 echo "Installing RuleSync ${RULESYNC_VERSION} (${ASSET})..."
-USER_ID=$(id -u) || true
+USER_ID=$(id -u)
 if [[ "${USER_ID}" -ne 0 ]]; then
   sudo curl -fsSL "${BASE_URL}/${ASSET}" -o "${DEST}"
   sudo chmod +x "${DEST}"

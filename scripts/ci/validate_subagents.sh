@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC2154,SC2249,SC2250,SC2310
 # Validates subagent frontmatter against the conventions defined in
 # .rulesync/rules/10-conventions.md:
 #   - Required/banned top-level fields
@@ -28,7 +29,36 @@ err() {
 
 extract_frontmatter() {
   local file="$1"
-  sed -n '2,/^---$/p' "$file" | sed '$d'
+  awk '
+    NR == 1 {
+      if ($0 != "---") {
+        missing_opening = 1
+        exit
+      }
+      in_frontmatter = 1
+      next
+    }
+
+    in_frontmatter {
+      if ($0 == "---") {
+        found_closing = 1
+        in_frontmatter = 0
+        next
+      }
+
+      print
+    }
+
+    END {
+      if (missing_opening) {
+        exit 2
+      }
+
+      if (!found_closing) {
+        exit 3
+      }
+    }
+  ' "$file"
 }
 
 yq_val() {
@@ -42,10 +72,24 @@ validate_subagent() {
   local basename
   basename="$(basename "$file")"
   local fm
-  fm="$(extract_frontmatter "$file")"
+  local extract_rc=0
+  fm="$(extract_frontmatter "$file")" || extract_rc=$?
+  if [[ "$extract_rc" -ne 0 ]]; then
+    case "$extract_rc" in
+      2) err "$basename" "Missing opening frontmatter delimiter ('---' on first line)" ;;
+      3) err "$basename" "Missing closing frontmatter delimiter ('---')" ;;
+      *) err "$basename" "Failed to extract YAML frontmatter" ;;
+    esac
+    return
+  fi
 
   if [[ -z "$fm" ]]; then
     err "$basename" "No YAML frontmatter found"
+    return
+  fi
+
+  if ! printf '%s' "$fm" | yq -e '.' >/dev/null 2>&1; then
+    err "$basename" "Invalid YAML frontmatter (yq parse failed)"
     return
   fi
 
@@ -78,10 +122,13 @@ validate_subagent() {
 
   # ---- Claude Code validation ----
   local cc_tools
+  local cc_tool_list=""
   cc_tools="$(yq_val "$fm" '.claudecode."allowed-tools"')"
   if [[ "$cc_tools" != "null" ]]; then
-    local cc_tool_list
-    cc_tool_list="$(printf '%s' "$fm" | yq -r '.claudecode."allowed-tools"[]' 2>/dev/null)" || true
+    if ! cc_tool_list="$(printf '%s' "$fm" | yq -r '(.claudecode."allowed-tools" // [])[]')"; then
+      err "$basename" "claudecode.allowed-tools could not be parsed as a list"
+      cc_tool_list=""
+    fi
     if [[ -n "$cc_tool_list" ]]; then
       while IFS= read -r tool; do
         [[ -z "$tool" ]] && continue
@@ -116,10 +163,13 @@ validate_subagent() {
 
   # ---- Copilot validation ----
   local cp_tools
+  local cp_tool_list=""
   cp_tools="$(yq_val "$fm" '.copilot.tools')"
   if [[ "$cp_tools" != "null" ]]; then
-    local cp_tool_list
-    cp_tool_list="$(printf '%s' "$fm" | yq -r '.copilot.tools[]' 2>/dev/null)" || true
+    if ! cp_tool_list="$(printf '%s' "$fm" | yq -r '(.copilot.tools // [])[]')"; then
+      err "$basename" "copilot.tools could not be parsed as a list"
+      cp_tool_list=""
+    fi
     if [[ -n "$cp_tool_list" ]]; then
       while IFS= read -r tool; do
         [[ -z "$tool" ]] && continue
@@ -156,9 +206,9 @@ validate_subagent() {
   # Check Claude Code tools match the profile
   if [[ "$cc_tools" != "null" && "$profile" != "unknown" ]]; then
     local has_cc_bash has_cc_edit has_cc_write
-    has_cc_bash="$(printf '%s' "$fm" | yq -r '.claudecode."allowed-tools"[] | select(. == "Bash")' 2>/dev/null)" || true
-    has_cc_edit="$(printf '%s' "$fm" | yq -r '.claudecode."allowed-tools"[] | select(. == "Edit")' 2>/dev/null)" || true
-    has_cc_write="$(printf '%s' "$fm" | yq -r '.claudecode."allowed-tools"[] | select(. == "Write")' 2>/dev/null)" || true
+    has_cc_bash="$(printf '%s\n' "$cc_tool_list" | grep -Fx 'Bash' || true)"
+    has_cc_edit="$(printf '%s\n' "$cc_tool_list" | grep -Fx 'Edit' || true)"
+    has_cc_write="$(printf '%s\n' "$cc_tool_list" | grep -Fx 'Write' || true)"
 
     case "$profile" in
       read-only)
@@ -182,8 +232,8 @@ validate_subagent() {
   # Check Copilot tools match the profile
   if [[ "$cp_tools" != "null" && "$profile" != "unknown" ]]; then
     local has_cp_execute has_cp_edit
-    has_cp_execute="$(printf '%s' "$fm" | yq -r '.copilot.tools[] | select(. == "execute")' 2>/dev/null)" || true
-    has_cp_edit="$(printf '%s' "$fm" | yq -r '.copilot.tools[] | select(. == "edit")' 2>/dev/null)" || true
+    has_cp_execute="$(printf '%s\n' "$cp_tool_list" | grep -Fx 'execute' || true)"
+    has_cp_edit="$(printf '%s\n' "$cp_tool_list" | grep -Fx 'edit' || true)"
 
     case "$profile" in
       read-only)

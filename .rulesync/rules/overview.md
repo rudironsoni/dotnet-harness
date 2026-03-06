@@ -15,8 +15,8 @@ Comprehensive .NET development guidance for modern C#, ASP.NET Core, MAUI, Blazo
 
 This toolkit provides:
 
-- 131 skills
-- 14 specialist agents/subagents
+- 189 skills
+- 15 specialist agents/subagents
 - shared RuleSync rules, commands, hooks, and MCP config
 
 Compatible targets include Claude Code, GitHub Copilot CLI, OpenCode, Codex CLI, Gemini CLI, and Antigravity.

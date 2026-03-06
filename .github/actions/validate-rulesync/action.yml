@@ -4,6 +4,12 @@ description: Validate RuleSync generation outputs and determinism
 runs:
   using: composite
   steps:
+    - name: Validate documentation contract
+      shell: bash
+      run: |
+        echo "Validating capability metadata documentation contract..."
+        bash "$GITHUB_WORKSPACE/scripts/ci/validate_doc_contract.sh"
+
     - name: Validate subagent frontmatter
       shell: bash
       run: |
@@ -125,7 +131,11 @@ runs:
 
         pushd "$WORK_DIR" >/dev/null
         echo "Running rulesync install"
-        run_rulesync install --frozen --silent || run_rulesync install
+        if ! run_rulesync install --frozen --silent; then
+          echo "::warning::rulesync install --frozen failed; retrying without --frozen"
+          echo "Frozen install failed (lockfile mismatch or dependency resolution issue). Retrying with non-frozen install."
+          run_rulesync install
+        fi
 
         echo "Running rulesync generate"
         run_rulesync generate --silent

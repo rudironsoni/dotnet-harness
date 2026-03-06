@@ -22,9 +22,13 @@ setup:
 
 # --- Evaluation (DotNetAgentHarness.Evals) ---
 
-# Run the evaluation harness (requires EVAL_OPENAI_KEY and EVAL_ANTHROPIC_KEY)
+# Run the evaluation harness in deterministic fixture mode
 eval:
-    dotnet run --project src/DotNetAgentHarness.Evals/DotNetAgentHarness.Evals.csproj
+    dotnet run --project src/DotNetAgentHarness.Evals/DotNetAgentHarness.Evals.csproj -- --dummy-mode true
+
+# Run the evaluation harness against a real provider (requires EVAL_OPENAI_KEY)
+eval-real:
+    dotnet run --project src/DotNetAgentHarness.Evals/DotNetAgentHarness.Evals.csproj -- --real-mode
 
 # Run the evaluation harness and update the baseline
 eval-update-baseline:
@@ -33,6 +37,10 @@ eval-update-baseline:
 # Build the evaluation harness
 build-eval:
     dotnet build src/DotNetAgentHarness.Evals/DotNetAgentHarness.Evals.csproj
+
+# CI-oriented eval entrypoint (defaults to real mode, 3 trials)
+ci-eval:
+    bash scripts/ci/run_evals.sh
 
 # Run tests for the evaluation harness
 test-eval:
@@ -48,12 +56,16 @@ validate-subagents:
 validate-rulesync:
     bash scripts/ci/validate_rulesync.sh
 
+# Validate documentation capability contract
+validate-doc-contract:
+    bash scripts/ci/validate_doc_contract.sh
+
 # Generate rulesync artifacts
 generate:
     rulesync generate
 
 # Run CI rulesync checks
-ci-rulesync: lint validate-subagents validate-rulesync
+ci-rulesync: lint validate-subagents validate-doc-contract validate-rulesync
 
 # --- Linting & Formatting ---
 
@@ -71,7 +83,7 @@ lint-spell:
     @which codespell > /dev/null && codespell -q 3 --skip="./.git,./.opencode,./.claude,./.gemini,./.codex,./.agent,./.vscode,./dist,./node_modules,./packages" || echo "Skipping lint-spell (codespell not installed)"
 
 lint-shell:
-    shellcheck scripts/**/*.sh || true
+    @which shellcheck > /dev/null && shellcheck scripts/**/*.sh || echo "Skipping lint-shell (shellcheck not installed)"
 
 format:
     dotnet csharpier src/

@@ -68,7 +68,7 @@ runs:
       shell: bash
       run: |
         if [ -f "rulesync.jsonc" ] || [ -f "rulesync.local.jsonc" ]; then
-          rulesync install || true
+          rulesync install
         fi
 
     - name: Generate files
@@ -123,4 +123,4 @@ runs:
       if: ${{ inputs.validate-only != 'true' }}
       shell: bash
       run: |
-        dotnet run --project src/DotNetAgentHarness.Tools -- build-manifest || true
+        dotnet run --project src/DotNetAgentHarness.Tools -- build-manifest
