@@ -1,0 +1,38 @@
+# Test runner Dockerfile - extends base image for testing
+FROM ghcr.io/rudironsoni/dotnet-agent-harness-test-base:latest
+
+# Switch to root to install test dependencies
+USER root
+
+# Install additional test utilities
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3 \
+    python3-pip \
+    tree \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy test scripts
+COPY scripts/docker/ /workspace/scripts/docker/
+COPY scripts/lib/ /workspace/scripts/lib/
+
+# Make scripts executable
+RUN chmod +x /workspace/scripts/docker/*.sh
+
+# Switch back to non-root user
+USER rulesync
+
+# Set working directory
+WORKDIR /workspace
+
+# Volume for test results
+VOLUME ["/test-results"]
+
+# Entrypoint runs the test suite
+ENTRYPOINT ["/workspace/scripts/docker/test.sh"]
+
+# Default CMD (can be overridden)
+CMD ["--output", "/test-results"]
+
+# Labels
+LABEL org.opencontainers.image.title="dotnet-agent-harness-test-runner"
+LABEL org.opencontainers.image.description="Test runner for RuleSync validation"
