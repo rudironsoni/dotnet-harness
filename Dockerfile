@@ -1,64 +1,48 @@
-# Dockerfile for dotnet-agent-harness toolkit
-# Multi-stage build for optimal size
+# Dockerfile for dotnet-agent-harness toolkit testing infrastructure
+# Base image with latest RuleSync (unpinned - always gets latest)
 
-FROM mcr.microsoft.com/dotnet/sdk:10.0-preview-alpine AS builder
+FROM ubuntu:22.04 AS base
 
-# Install build dependencies
-RUN apk add --no-cache git curl bash
+# Prevent interactive prompts during package installation
+ENV DEBIAN_FRONTEND=noninteractive
 
-# Install rulesync globally
-RUN curl -fsSL https://github.com/dyoshikawa/rulesync/releases/latest/download/rulesync-linux-x64 -o /usr/local/bin/rulesync && \
-    chmod +x /usr/local/bin/rulesync
-
-# Set working directory
-WORKDIR /app
-
-# Copy source
-COPY . .
-
-# Build the project
-RUN dotnet build src/DotNetAgentHarness.Tools/DotNetAgentHarness.Tools.csproj -c Release
-
-# Production stage
-FROM mcr.microsoft.com/dotnet/runtime:10.0-preview-alpine AS production
-
-# Install runtime dependencies
-RUN apk add --no-cache \
+# Install base dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    ca-certificates \
     git \
-    bash \
     jq \
-    curl
+    shellcheck \
+    bc \
+    && rm -rf /var/lib/apt/lists/*
 
-# Install rulesync globally (system-wide)
-RUN curl -fsSL https://github.com/dyoshikawa/rulesync/releases/latest/download/rulesync-linux-x64 -o /usr/local/bin/rulesync && \
-    chmod +x /usr/local/bin/rulesync
+# Install latest RuleSync (always fetches latest release, no version pinning)
+RUN curl -fsSL https://github.com/dyoshikawa/rulesync/releases/latest/download/rulesync-linux-x64 -o /usr/local/bin/rulesync \
+    && chmod +x /usr/local/bin/rulesync
 
-# Create non-root user
-RUN addgroup -g 1001 -S dotnet && \
-    adduser -S dotnet -u 1001
+# Copy entrypoint script for version checking
+COPY scripts/docker/entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+# Create non-root user for security
+RUN groupadd -g 1001 rulesync \
+    && useradd -u 1001 -g rulesync -m -s /bin/bash rulesync
 
 # Set working directory
-WORKDIR /app
+WORKDIR /workspace
 
-# Copy built artifacts from builder
-COPY --from=builder /app/src/DotNetAgentHarness.Tools/bin/Release/net10.0 /app/bin
-COPY --chown=dotnet:dotnet . .
-
-# Switch to non-root user
-USER dotnet
-
-# Expose port for potential web server
-EXPOSE 3000
-
-# Health check
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+# Health check to verify RuleSync is available
+HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
     CMD rulesync --version || exit 1
 
-# Default command - rulesync is installed system-wide
+# Use entrypoint for version logging and command execution
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+
+# Default command shows version
 CMD ["rulesync", "--version"]
 
-# Labels
+# Labels for image metadata
 LABEL org.opencontainers.image.title="dotnet-agent-harness"
-LABEL org.opencontainers.image.description="Comprehensive .NET development guidance toolkit"
+LABEL org.opencontainers.image.description="RuleSync-first testing infrastructure for dotnet-agent-harness"
 LABEL org.opencontainers.image.source="https://github.com/rudironsoni/dotnet-agent-harness"
 LABEL org.opencontainers.image.licenses="MIT"

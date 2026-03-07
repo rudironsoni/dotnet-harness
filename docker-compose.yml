@@ -1,0 +1,143 @@
+# Docker Compose configuration for multi-target RuleSync testing
+# Supports parallel testing across all 7 AI agent targets
+
+version: "3.8"
+
+services:
+  # Base service - builds the foundation image
+  base:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ghcr.io/rudironsoni/dotnet-agent-harness:latest
+    pull_policy: always
+    command: ["rulesync", "--version"]
+
+  # Target: Claude Code
+  claudecode:
+    extends:
+      service: base
+    volumes:
+      - .:/workspace:ro
+      - generated-claudecode:/generated
+    command: >
+      sh -c "
+        echo '=== Testing Claude Code Target ===' &&
+        rulesync --version &&
+        rulesync generate --targets claudecode --output /generated/claudecode --silent &&
+        echo 'Claude Code generation completed successfully'
+      "
+
+  # Target: OpenCode
+  opencode:
+    extends:
+      service: base
+    volumes:
+      - .:/workspace:ro
+      - generated-opencode:/generated
+    command: >
+      sh -c "
+        echo '=== Testing OpenCode Target ===' &&
+        rulesync --version &&
+        rulesync generate --targets opencode --output /generated/opencode --silent &&
+        echo 'OpenCode generation completed successfully'
+      "
+
+  # Target: GitHub Copilot
+  copilot:
+    extends:
+      service: base
+    volumes:
+      - .:/workspace:ro
+      - generated-copilot:/generated
+    command: >
+      sh -c "
+        echo '=== Testing Copilot Target ===' &&
+        rulesync --version &&
+        rulesync generate --targets copilot --output /generated/copilot --silent &&
+        echo 'Copilot generation completed successfully'
+      "
+
+  # Target: Gemini CLI
+  geminicli:
+    extends:
+      service: base
+    volumes:
+      - .:/workspace:ro
+      - generated-geminicli:/generated
+    command: >
+      sh -c "
+        echo '=== Testing Gemini CLI Target ===' &&
+        rulesync --version &&
+        rulesync generate --targets geminicli --output /generated/geminicli --silent &&
+        echo 'Gemini CLI generation completed successfully'
+      "
+
+  # Target: Codex CLI
+  codexcli:
+    extends:
+      service: base
+    volumes:
+      - .:/workspace:ro
+      - generated-codexcli:/generated
+    command: >
+      sh -c "
+        echo '=== Testing Codex CLI Target ===' &&
+        rulesync --version &&
+        rulesync generate --targets codexcli --output /generated/codexcli --silent &&
+        echo 'Codex CLI generation completed successfully'
+      "
+
+  # Target: Antigravity
+  antigravity:
+    extends:
+      service: base
+    volumes:
+      - .:/workspace:ro
+      - generated-antigravity:/generated
+    command: >
+      sh -c "
+        echo '=== Testing Antigravity Target ===' &&
+        rulesync --version &&
+        rulesync generate --targets antigravity --output /generated/antigravity --silent &&
+        echo 'Antigravity generation completed successfully'
+      "
+
+  # Target: Factory Droid
+  factorydroid:
+    extends:
+      service: base
+    volumes:
+      - .:/workspace:ro
+      - generated-factorydroid:/generated
+    command: >
+      sh -c "
+        echo '=== Testing Factory Droid Target ===' &&
+        rulesync --version &&
+        rulesync generate --targets factorydroid --output /generated/factorydroid --silent &&
+        echo 'Factory Droid generation completed successfully'
+      "
+
+  # Test runner - runs all validation tests
+  test-runner:
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+    depends_on:
+      - base
+    volumes:
+      - .:/workspace:ro
+      - test-results:/test-results
+    environment:
+      - TEST_OUTPUT_DIR=/test-results
+    command: ["/workspace/scripts/docker/test.sh"]
+
+volumes:
+  generated-claudecode:
+  generated-opencode:
+  generated-copilot:
+  generated-geminicli:
+  generated-codexcli:
+  generated-antigravity:
+  generated-factorydroid:
+  test-results:
