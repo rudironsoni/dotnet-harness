@@ -8,6 +8,7 @@
     "geminicli",
     "codexcli",
     "antigravity",
+    "agentsmd"
   ],
   "features": ["*"],
   "baseDirs": ["."],

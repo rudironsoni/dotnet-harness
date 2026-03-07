@@ -5,12 +5,10 @@ license: MIT
 targets: ['*']
 category: security
 subcategory: owasp
-complexity: advanced
 tags:
   - security
   - dotnet
   - skill
-  - advanced
   - owasp
   - xss
   - injection

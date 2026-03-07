@@ -3,16 +3,14 @@ name: dotnet-roslyn-analyzers
 description: 'Authors Roslyn analyzers. DiagnosticAnalyzer, CodeFixProvider, CodeRefactoring, multi-version.'
 license: MIT
 targets: ['*']
-category: tooling
+category: developer-experience
 subcategory: analyzers
-complexity: advanced
 tags:
   - dotnet
   - roslyn
   - analyzers
   - codefix
   - refactoring
-  - advanced
 version: '1.0.0'
 author: 'dotnet-agent-harness'
 related_skills:

@@ -3,14 +3,12 @@ name: dotnet-blazor-patterns
 description: Architects Blazor apps. Hosting models, render modes, routing, streaming, prerender.
 license: MIT
 targets: ['*']
-category: platforms
+category: ui-frameworks
 subcategory: blazor
-complexity: intermediate
 tags:
   - platforms
   - dotnet
   - skill
-  - intermediate
   - blazor
   - web
 version: '1.0.0'

@@ -5,12 +5,10 @@ license: MIT
 targets: ['*']
 category: fundamentals
 subcategory: language-patterns
-complexity: intermediate
 tags:
   - csharp
   - dotnet
   - skill
-  - intermediate
   - language-patterns
   - async
 version: '1.0.0'

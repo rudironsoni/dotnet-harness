@@ -1,9 +1,11 @@
 ---
 name: dotnet-advisor
+category: developer-experience
+subcategory: analyzers
 description: Routes .NET/C# work to domain skills. Loads coding-standards for code paths.
 license: MIT
 targets: ['*']
-tags: ['foundation', 'dotnet', 'skill']
+tags: [foundation, dotnet, skill]
 version: '0.0.1'
 author: 'dotnet-agent-harness'
 invocable: true

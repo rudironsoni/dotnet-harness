@@ -5,12 +5,10 @@ license: MIT
 targets: ['*']
 category: testing
 subcategory: frameworks
-complexity: intermediate
 tags:
   - testing
   - dotnet
   - skill
-  - intermediate
   - xunit
   - frameworks
 version: '1.0.0'

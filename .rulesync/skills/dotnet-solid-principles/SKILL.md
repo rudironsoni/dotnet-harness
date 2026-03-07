@@ -5,11 +5,9 @@ license: MIT
 targets: ['*']
 category: fundamentals
 subcategory: design-principles
-complexity: intermediate
 tags:
   - dotnet
   - skill
-  - intermediate
   - solid
   - dry
   - design-principles

@@ -5,12 +5,10 @@ license: MIT
 targets: ['*']
 category: performance
 subcategory: aot
-complexity: advanced
 tags:
   - performance
   - dotnet
   - skill
-  - advanced
   - aot
   - native
 version: '1.0.0'

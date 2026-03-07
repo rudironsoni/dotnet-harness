@@ -7,13 +7,11 @@ license: MIT
 targets: ['*']
 category: performance
 subcategory: overview
-complexity: advanced
 tags:
   - dotnet
   - performance
   - optimization
   - overview
-  - advanced
 version: '1.0.0'
 author: 'dotnet-agent-harness'
 related_skills:

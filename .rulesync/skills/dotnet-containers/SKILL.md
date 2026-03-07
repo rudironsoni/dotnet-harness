@@ -3,14 +3,12 @@ name: dotnet-containers
 description: Containerizes .NET apps. Multi-stage Dockerfiles, SDK container publish (.NET 8+), rootless.
 license: MIT
 targets: ['*']
-category: devops
+category: operations
 subcategory: containers
-complexity: intermediate
 tags:
   - devops
   - dotnet
   - skill
-  - intermediate
   - containers
   - docker
 version: '1.0.0'

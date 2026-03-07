@@ -7,13 +7,11 @@ license: MIT
 targets: ['*']
 category: architecture
 subcategory: overview
-complexity: intermediate
 tags:
   - dotnet
   - architecture
   - patterns
   - overview
-  - intermediate
 version: '1.0.0'
 author: 'dotnet-agent-harness'
 related_skills:

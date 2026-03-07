@@ -4,13 +4,11 @@ description: Builds gRPC services. Proto definition, code-gen, ASP.NET Core host
 license: MIT
 targets: ['*']
 category: web
-subcategory: api-design
-complexity: intermediate
+subcategory: minimal-apis
 tags:
   - web
   - dotnet
   - skill
-  - intermediate
   - grpc
   - api
 version: '1.0.0'

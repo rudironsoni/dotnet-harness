@@ -23,9 +23,19 @@ The taxonomy provides:
 | **data** | DAT | Data access, EF Core, caching, messaging | ~15 |
 | **performance** | PERF | Optimization, benchmarking, profiling | ~10 |
 | **security** | SEC | Security, OWASP, cryptography, auth | ~10 |
-| **devops** | DEV | CI/CD, containers, deployment, automation | ~20 |
-| **platforms** | PLAT | UI frameworks: MAUI, WPF, WinUI, Uno | ~20 |
-| **tooling** | TOOL | CLI, analyzers, MSBuild, NuGet, docs | ~15 |
+| **operations** | OPS | CI/CD, containers, deployment, automation | ~20 |
+| **ui-frameworks** | UI | UI frameworks: MAUI, WPF, WinUI, Uno | ~20 |
+| **developer-experience** | DX | CLI, analyzers, MSBuild, NuGet, docs | ~15 |
+
+---
+
+## Category Naming Rules
+
+1. **Use lowercase with hyphens**: All category names use kebab-case (e.g., `developer-experience`, `ui-frameworks`)
+2. **Be descriptive but concise**: Category names should clearly indicate scope in 2-3 words maximum
+3. **Avoid abbreviations**: Except for widely understood terms (e.g., `ui` is acceptable in `ui-frameworks`)
+4. **Group by intent, not technology**: Categories reflect purpose, not specific tools (e.g., `operations` not `devops-tools`)
+5. **Maintain stable identifiers**: Category codes (FND, TST, etc.) remain constant even if display names change
 
 ---
 
@@ -105,7 +115,7 @@ The taxonomy provides:
 | auth | AUTH | Identity, OIDC, passkeys | dotnet-api-security |
 | secrets | SECR | Secret management, rotation | dotnet-secrets-management |
 
-### devops (DEV)
+### operations (OPS)
 
 | Subcategory | Code | Description | Examples |
 |-------------|------|-------------|----------|
@@ -116,7 +126,7 @@ The taxonomy provides:
 | release | REL | Versioning, changelogs, releases | dotnet-release-management |
 | ci-cd | CICD | General CI/CD patterns | dotnet-add-ci |
 
-### platforms (PLAT)
+### ui-frameworks (UI)
 
 | Subcategory | Code | Description | Examples |
 |-------------|------|-------------|----------|
@@ -127,7 +137,7 @@ The taxonomy provides:
 | winforms | WIN | WinForms modernization | dotnet-winforms-basics |
 | blazor | BLA | Blazor web assembly/server | dotnet-blazor-patterns |
 
-### tooling (TOOL)
+### developer-experience (DX)
 
 | Subcategory | Code | Description | Examples |
 |-------------|------|-------------|----------|
@@ -206,13 +216,11 @@ description: Clear, concise description
 license: MIT
 targets: ['*']
 category: fundamentals          # Top-level category
+subcategory: coding-standards   # Specific subcategory
 tags:                           # Array of tags
   - csharp
   - dotnet
   - skill
-  - intermediate                 # Complexity
-subcategory: coding-standards   # Specific subcategory
-complexity: intermediate         # beginner | intermediate | advanced
 version: '1.0.0'
 author: 'Author Name'
 related_skills:                  # Comma-separated or array
@@ -228,9 +236,48 @@ related_skills:                  # Comma-separated or array
 |-------|----------|--------|
 | `category` | Yes | One of 10 top-level categories |
 | `subcategory` | Yes | Valid subcategory for the category |
-| `complexity` | Yes | beginner, intermediate, advanced |
-| `tags` | Yes | Array including complexity + domain |
+| `complexity` | No | beginner, intermediate, advanced (optional) |
+| `tags` | Yes | Array of relevant tags |
 | `related_skills` | Recommended | Related skill names |
+
+### Standard Frontmatter Fields
+
+All skills should include these standard fields for consistency:
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `name` | string | Yes | Unique skill identifier (kebab-case) |
+| `description` | string | Yes | One-line description of skill purpose |
+| `license` | string | Yes | License identifier (e.g., MIT, Apache-2.0) |
+| `targets` | array | Yes | Compatible platforms (`['*']` for all) |
+| `category` | string | Yes | Top-level category from taxonomy |
+| `subcategory` | string | Yes | Subcategory within the parent category |
+| `complexity` | string | Yes | Skill difficulty level |
+| `tags` | array | Yes | Classification tags |
+| `version` | string | Recommended | Semantic version of the skill |
+| `author` | string | Recommended | Skill author or maintainer |
+| `related_skills` | array | Recommended | Cross-references to related skills |
+| `last_updated` | string | Optional | ISO 8601 date of last modification |
+| `deprecated` | boolean | Optional | Whether skill is deprecated |
+| `replaces` | string | Optional | Name of skill this replaces |
+
+### Platform-Specific Blocks
+
+Skills may include platform-specific configuration blocks:
+
+```yaml
+---
+# ... standard fields
+claudecode:
+  min_version: '0.40.0'
+  features: ['skills', 'commands']
+opencode:
+  min_version: '0.25.0'
+  requires_mcp: false
+codexcli:
+  sandbox_compatible: true
+---
+```
 
 ---
 
@@ -247,7 +294,7 @@ High-level navigation skills that reference all skills in a category:
 | `dotnet-security` | Security and hardening | All SEC skills |
 | `dotnet-web` | Web development (optional) | All WEB skills |
 | `dotnet-data` | Data access and storage (optional) | All DAT skills |
-| `dotnet-devops` | CI/CD and deployment (optional) | All DEV skills |
+| `dotnet-operations` | CI/CD and deployment (optional) | All OPS skills |
 
 ---
 
@@ -317,9 +364,9 @@ complexity: advanced
 - DAT = data
 - PERF = performance
 - SEC = security
-- DEV = devops
-- PLAT = platforms
-- TOOL = tooling
+- OPS = operations
+- UI = ui-frameworks
+- DX = developer-experience
 
 ### Complexity Distribution Goal
 - ~30% beginner

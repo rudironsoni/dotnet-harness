@@ -5,12 +5,10 @@ license: MIT
 targets: ['*']
 category: web
 subcategory: minimal-apis
-complexity: intermediate
 tags:
   - web
   - dotnet
   - skill
-  - intermediate
   - minimal-apis
   - api
 version: '1.0.0'

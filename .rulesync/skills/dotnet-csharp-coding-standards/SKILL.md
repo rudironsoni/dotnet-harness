@@ -5,12 +5,10 @@ license: MIT
 targets: ['*']
 category: fundamentals
 subcategory: coding-standards
-complexity: beginner
 tags:
   - csharp
   - dotnet
   - skill
-  - beginner
   - coding-standards
   - naming
 version: '1.0.0'

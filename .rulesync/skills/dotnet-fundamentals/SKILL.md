@@ -7,13 +7,11 @@ license: MIT
 targets: ['*']
 category: fundamentals
 subcategory: overview
-complexity: beginner
 tags:
   - csharp
   - dotnet
   - fundamentals
   - overview
-  - beginner
 version: '1.0.0'
 author: 'dotnet-agent-harness'
 related_skills:

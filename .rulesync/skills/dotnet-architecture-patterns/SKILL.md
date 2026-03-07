@@ -5,12 +5,10 @@ license: MIT
 targets: ['*']
 category: architecture
 subcategory: patterns
-complexity: intermediate
 tags:
   - architecture
   - dotnet
   - skill
-  - intermediate
   - patterns
   - vertical-slices
 version: '1.0.0'

@@ -3,14 +3,12 @@ name: dotnet-scaffold-project
 description: Creates a new .NET project. Generates solution with CPM, analyzers, editorconfig, SourceLink.
 license: MIT
 targets: ['*']
-category: tooling
+category: developer-experience
 subcategory: project
-complexity: beginner
 tags:
   - tooling
   - dotnet
   - skill
-  - beginner
   - project
   - scaffolding
 version: '1.0.0'

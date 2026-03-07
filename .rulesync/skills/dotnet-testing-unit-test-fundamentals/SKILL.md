@@ -7,11 +7,9 @@ license: MIT
 targets: ['*']
 category: testing
 subcategory: fundamentals
-complexity: beginner
 tags:
   - dotnet
   - testing
-  - beginner
   - fundamentals
   - unit-test
   - xunit

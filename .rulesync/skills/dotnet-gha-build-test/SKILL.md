@@ -3,14 +3,12 @@ name: dotnet-gha-build-test
 description: Configures GitHub Actions .NET build/test -- setup-dotnet, NuGet cache, reporting.
 license: MIT
 targets: ['*']
-category: devops
-subcategory: github-actions
-complexity: intermediate
+category: operations
+subcategory: ci-cd
 tags:
   - devops
   - dotnet
   - skill
-  - intermediate
   - github-actions
   - ci-cd
 version: '1.0.0'

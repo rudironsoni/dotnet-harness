@@ -7,13 +7,11 @@ license: MIT
 targets: ['*']
 category: security
 subcategory: overview
-complexity: advanced
 tags:
   - dotnet
   - security
   - owasp
   - overview
-  - advanced
 version: '1.0.0'
 author: 'dotnet-agent-harness'
 related_skills:

@@ -5,12 +5,10 @@ license: MIT
 targets: ['*']
 category: testing
 subcategory: integration
-complexity: advanced
 tags:
   - testing
   - dotnet
   - skill
-  - advanced
   - integration
   - testcontainers
 version: '1.0.0'

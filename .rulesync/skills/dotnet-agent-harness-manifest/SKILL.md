@@ -1,11 +1,10 @@
 ---
 name: dotnet-agent-harness-manifest
-description:
-  'Skill manifest management for dotnet-agent-harness. Tracks skill dependencies, conflicts, version compatibility, and
-  provides validation and resolution tools. Triggers on: skill manifest, dependency resolution, skill compatibility,
-  version conflicts, build manifest, validate dependencies.'
+category: developer-experience
+subcategory: cli
+description: 'Skill manifest management for dotnet-agent-harness. Tracks skill dependencies, conflicts, version compatibility, and provides validation and resolution tools. Triggers on: skill manifest, dependency resolution, skill compatibility, version conflicts, build manifest, validate dependencies.'
 targets: ['*']
-tags: ['dotnet', 'skill', 'dotnet-agent-harness', 'manifest', 'dependencies']
+tags: [dotnet, skill, dotnet-agent-harness, manifest, dependencies]
 version: '0.0.1'
 author: 'dotnet-agent-harness'
 claudecode:

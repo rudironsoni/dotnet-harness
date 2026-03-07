@@ -5,12 +5,10 @@ license: MIT
 targets: ['*']
 category: data
 subcategory: ef-core
-complexity: intermediate
 tags:
   - data
   - dotnet
   - skill
-  - intermediate
   - ef-core
   - database
 version: '1.0.0'

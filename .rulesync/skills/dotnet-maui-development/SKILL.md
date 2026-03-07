@@ -3,14 +3,12 @@ name: dotnet-maui-development
 description: Builds .NET MAUI mobile apps. Project structure, XAML/MVVM, platform services, caveats.
 license: MIT
 targets: ['*']
-category: platforms
+category: ui-frameworks
 subcategory: maui
-complexity: intermediate
 tags:
   - platforms
   - dotnet
   - skill
-  - intermediate
   - maui
   - mobile
 version: '1.0.0'

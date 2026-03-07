@@ -2,6 +2,11 @@
 
 Complete index of all 189+ skills in dotnet-agent-harness, organized for discoverability and routing.
 
+> **Migration Note:** Category names were renamed in this version. Old → New mappings:
+> - `devops` → `operations`
+> - `platforms` → `ui-frameworks`
+> - `tooling` → `developer-experience`
+
 ---
 
 ## Quick Navigation
@@ -15,7 +20,7 @@ Complete index of all 189+ skills in dotnet-agent-harness, organized for discove
 
 ## By Category
 
-### fundamentals (25 skills)
+### fundamentals (22 skills)
 
 Core C# and .NET language/runtime skills.
 
@@ -35,9 +40,6 @@ Core C# and .NET language/runtime skills.
 | dotnet-solid-principles | design-principles | intermediate | SOLID and DRY principles |
 | dotnet-validation-patterns | configuration | intermediate | DataAnnotations, IValidatableObject |
 | dotnet-input-validation | configuration | intermediate | .NET 10 AddValidation, FluentValidation |
-| dotnet-version-detection | tooling | beginner | Detect TFM/SDK from project files |
-| dotnet-editorconfig | tooling | intermediate | Author .editorconfig rules, style enforcement |
-| dotnet-solution-navigation | tooling | beginner | Entry points, .sln/.slnx, dependency graphs |
 | dotnet-file-io | fundamentals | intermediate | FileStream, RandomAccess, FileSystemWatcher |
 | dotnet-gc-memory | fundamentals | advanced | GC modes, LOH/POH, Gen0/1/2 |
 | dotnet-channels | fundamentals | advanced | Channel<T>, bounded/unbounded, backpressure |
@@ -47,7 +49,7 @@ Core C# and .NET language/runtime skills.
 | dotnet-native-interop | fundamentals | advanced | P/Invoke, LibraryImport, marshalling |
 | dotnet-aot-architecture | fundamentals | advanced | AOT-first design, source generators |
 
-### testing (35 skills)
+### testing (40 skills)
 
 Testing methodology, frameworks, and specialized testing scenarios.
 
@@ -143,7 +145,7 @@ ASP.NET Core, web frameworks, and API development.
 | dotnet-realtime-communication | web | advanced | SignalR, SSE, gRPC streaming |
 | dotnet-10-csharp-14 | web | intermediate | .NET 10/C# 14 minimal APIs |
 
-### data (15 skills)
+### data (12 skills)
 
 Data access, EF Core, caching, and messaging.
 
@@ -162,7 +164,7 @@ Data access, EF Core, caching, and messaging.
 | dotnet-input-validation | validation | intermediate | Request validation |
 | dotnet-validation-patterns | validation | intermediate | Model validation |
 
-### performance (10 skills)
+### performance (12 skills)
 
 Performance optimization and measurement.
 
@@ -177,12 +179,11 @@ Performance optimization and measurement.
 | dotnet-aot-wasm | aot | advanced | Blazor/Uno WASM AOT |
 | dotnet-linq-optimization | patterns | intermediate | IQueryable vs IEnumerable |
 | dotnet-csharp-type-design-performance | patterns | advanced | Struct design, sealed classes |
-| dotnet-build-optimization | tooling | intermediate | Binary logs, parallel builds |
 | dotnet-ci-benchmarking | benchmarking | advanced | CI performance gating |
 | dotnet-maui-aot | aot | advanced | MAUI iOS/Catalyst optimization |
 | dotnet-trimming | aot | intermediate | Trimming annotations |
 
-### security (10 skills)
+### security (6 skills)
 
 Security, authentication, and hardening.
 
@@ -195,7 +196,7 @@ Security, authentication, and hardening.
 | dotnet-blazor-auth | auth | intermediate | Blazor auth flows |
 | dotnet-input-validation | validation | intermediate | Validation patterns |
 
-### devops (20 skills)
+### operations (26 skills)
 
 CI/CD, containers, deployment, and automation.
 
@@ -228,7 +229,7 @@ CI/CD, containers, deployment, and automation.
 | dotnet-artifacts-output | ci-cd | intermediate | UseArtifactsOutput layout |
 | dotnet-project-structure | ci-cd | beginner | Solution layout, CPM |
 
-### platforms (20 skills)
+### ui-frameworks (20 skills)
 
 UI frameworks for mobile and desktop.
 
@@ -255,7 +256,7 @@ UI frameworks for mobile and desktop.
 | dotnet-terminal-gui | platforms | intermediate | Terminal.Gui v2 apps |
 | dotnet-spectre-console | platforms | intermediate | Rich console output |
 
-### tooling (15 skills)
+### developer-experience (32 skills)
 
 CLI tools, analyzers, MSBuild, and documentation.
 
@@ -276,14 +277,15 @@ CLI tools, analyzers, MSBuild, and documentation.
 | dotnet-scaffold-project | project | beginner | Create .NET solution |
 | dotnet-version-detection | project | beginner | Detect TFM/SDK |
 | dotnet-version-upgrade | project | intermediate | TFM upgrade paths |
+| dotnet-solution-navigation | project | beginner | Entry points, .sln/.slnx, dependency graphs |
 | dotnet-csproj-reading | project | intermediate | Read SDK-style csproj |
 | dotnet-xml-docs | docs | intermediate | XML documentation tags |
 | dotnet-api-docs | docs | intermediate | DocFX, documentation |
 | dotnet-documentation-strategy | docs | intermediate | Documentation tooling decisions |
-| dotnet-editorconfig | tooling | intermediate | EditorConfig rules |
-| dotnet-tool-management | tooling | beginner | Global/local .NET tools |
-| dotnet-file-based-apps | tooling | intermediate | .NET 10 file-based apps |
-| dotnet-mermaid-diagrams | tooling | intermediate | Mermaid for .NET |
+| dotnet-editorconfig | developer-experience | intermediate | EditorConfig rules |
+| dotnet-tool-management | developer-experience | beginner | Global/local .NET tools |
+| dotnet-file-based-apps | developer-experience | intermediate | .NET 10 file-based apps |
+| dotnet-mermaid-diagrams | developer-experience | intermediate | Mermaid for .NET |
 | dotnet-serena-code-navigation | serena | intermediate | Serena MCP navigation |
 | dotnet-serena-refactoring | serena | intermediate | Symbol-level refactoring |
 | dotnet-serena-analysis-patterns | serena | intermediate | Architecture validation |
@@ -316,17 +318,17 @@ Entry-level skills for developers new to .NET.
 | dotnet-solution-navigation | fundamentals | Solution structure |
 | dotnet-version-detection | fundamentals | TFM detection |
 | dotnet-add-testing | testing | Scaffold test project |
-| dotnet-winforms-basics | platforms | WinForms modernization |
-| dotnet-ui-chooser | platforms | Framework selection |
-| dotnet-scaffold-project | tooling | Create solution |
-| dotnet-project-structure | tooling | Solution layout |
-| dotnet-project-analysis | tooling | Solution analysis |
-| dotnet-tool-management | tooling | .NET tools |
-| dotnet-roslyn-analyzers | tooling | Create analyzers |
-| dotnet-editorconfig | tooling | EditorConfig |
-| dotnet-github-docs | devops | GitHub documentation |
-| dotnet-release-management | devops | Versioning |
-| dotnet-version-detection | devops | Detect versions |
+| dotnet-winforms-basics | ui-frameworks | WinForms modernization |
+| dotnet-ui-chooser | ui-frameworks | Framework selection |
+| dotnet-scaffold-project | developer-experience | Create solution |
+| dotnet-project-structure | developer-experience | Solution layout |
+| dotnet-project-analysis | developer-experience | Solution analysis |
+| dotnet-tool-management | developer-experience | .NET tools |
+| dotnet-roslyn-analyzers | developer-experience | Create analyzers |
+| dotnet-editorconfig | developer-experience | EditorConfig |
+| dotnet-github-docs | operations | GitHub documentation |
+| dotnet-release-management | operations | Versioning |
+| dotnet-version-detection | operations | Detect versions |
 
 ### Intermediate (95 skills)
 
@@ -347,49 +349,49 @@ Complete A-Z listing of all skills with category assignment.
 
 | # | Skill Name | Category | Subcategory | Complexity |
 |---|------------|----------|-------------|------------|
-| 1 | agentic-eval | tooling | analyzers | intermediate |
-| 2 | ai-prompt-engineering-safety-review | tooling | analyzers | advanced |
-| 3 | deep-research | tooling | analyzers | intermediate |
-| 4 | deep-wiki | tooling | docs | intermediate |
+| 1 | agentic-eval | developer-experience | analyzers | intermediate |
+| 2 | ai-prompt-engineering-safety-review | developer-experience | analyzers | advanced |
+| 3 | deep-research | developer-experience | analyzers | intermediate |
+| 4 | deep-wiki | developer-experience | docs | intermediate |
 | 5 | dotnet-10-csharp-14 | fundamentals | language-patterns | intermediate |
-| 6 | dotnet-add-analyzers | tooling | analyzers | intermediate |
-| 7 | dotnet-add-ci | devops | ci-cd | intermediate |
+| 6 | dotnet-add-analyzers | developer-experience | analyzers | intermediate |
+| 7 | dotnet-add-ci | operations | ci-cd | intermediate |
 | 8 | dotnet-add-testing | testing | frameworks | beginner |
-| 9 | dotnet-ado-build-test | devops | azure-devops | intermediate |
-| 10 | dotnet-ado-patterns | devops | azure-devops | intermediate |
-| 11 | dotnet-ado-publish | devops | azure-devops | intermediate |
-| 12 | dotnet-ado-unique | devops | azure-devops | intermediate |
-| 13 | dotnet-advisor | tooling | analyzers | intermediate |
+| 9 | dotnet-ado-build-test | operations | azure-devops | intermediate |
+| 10 | dotnet-ado-patterns | operations | azure-devops | intermediate |
+| 11 | dotnet-ado-publish | operations | azure-devops | intermediate |
+| 12 | dotnet-ado-unique | operations | azure-devops | intermediate |
+| 13 | dotnet-advisor | developer-experience | analyzers | intermediate |
 | 14 | dotnet-agent-gotchas | fundamentals | diagnostics | intermediate |
-| 15 | dotnet-agent-harness-hooks | tooling | rulesync | intermediate |
-| 16 | dotnet-agent-harness-manifest | tooling | rulesync | intermediate |
-| 17 | dotnet-agent-harness-offline | tooling | rulesync | intermediate |
-| 18 | dotnet-agent-harness-recommender | tooling | rulesync | intermediate |
-| 19 | dotnet-agent-harness-test-framework | tooling | rulesync | advanced |
+| 15 | dotnet-agent-harness-hooks | developer-experience | rulesync | intermediate |
+| 16 | dotnet-agent-harness-manifest | developer-experience | rulesync | intermediate |
+| 17 | dotnet-agent-harness-offline | developer-experience | rulesync | intermediate |
+| 18 | dotnet-agent-harness-recommender | developer-experience | rulesync | intermediate |
+| 19 | dotnet-agent-harness-test-framework | developer-experience | rulesync | advanced |
 | 20 | dotnet-api-design | web | api-design | advanced |
 | 21 | dotnet-api-docs | web | docs | intermediate |
 | 22 | dotnet-api-security | web | security | advanced |
-| 23 | dotnet-api-surface-validation | devops | ci-cd | advanced |
+| 23 | dotnet-api-surface-validation | operations | ci-cd | advanced |
 | 24 | dotnet-api-versioning | web | api-design | intermediate |
 | 25 | dotnet-aot-architecture | fundamentals | aot | advanced |
-| 26 | dotnet-aot-wasm | platforms | aot | advanced |
+| 26 | dotnet-aot-wasm | ui-frameworks | aot | advanced |
 | 27 | dotnet-architecture-patterns | architecture | patterns | intermediate |
-| 28 | dotnet-artifacts-output | devops | ci-cd | intermediate |
+| 28 | dotnet-artifacts-output | operations | ci-cd | intermediate |
 | 29 | dotnet-aspire-patterns | architecture | patterns | advanced |
 | 30 | dotnet-background-services | architecture | patterns | intermediate |
 | 31 | dotnet-benchmarkdotnet | performance | benchmarking | intermediate |
-| 32 | dotnet-blazor-auth | platforms | blazor | intermediate |
-| 33 | dotnet-blazor-components | platforms | blazor | intermediate |
-| 34 | dotnet-blazor-patterns | platforms | blazor | intermediate |
+| 32 | dotnet-blazor-auth | ui-frameworks | blazor | intermediate |
+| 33 | dotnet-blazor-components | ui-frameworks | blazor | intermediate |
+| 34 | dotnet-blazor-patterns | ui-frameworks | blazor | intermediate |
 | 35 | dotnet-blazor-testing | testing | testing | intermediate |
-| 36 | dotnet-build-analysis | devops | ci-cd | intermediate |
-| 37 | dotnet-build-optimization | devops | ci-cd | intermediate |
+| 36 | dotnet-build-analysis | operations | ci-cd | intermediate |
+| 37 | dotnet-build-optimization | operations | ci-cd | intermediate |
 | 38 | dotnet-channels | fundamentals | messaging | advanced |
 | 39 | dotnet-ci-benchmarking | performance | benchmarking | advanced |
-| 40 | dotnet-cli-architecture | tooling | cli | intermediate |
-| 41 | dotnet-cli-distribution | tooling | cli | intermediate |
-| 42 | dotnet-cli-packaging | tooling | cli | intermediate |
-| 43 | dotnet-cli-release-pipeline | tooling | cli | advanced |
+| 40 | dotnet-cli-architecture | developer-experience | cli | intermediate |
+| 41 | dotnet-cli-distribution | developer-experience | cli | intermediate |
+| 42 | dotnet-cli-packaging | developer-experience | cli | intermediate |
+| 43 | dotnet-cli-release-pipeline | developer-experience | cli | advanced |
 | 44 | dotnet-container-deployment | web | deployment | advanced |
 | 45 | dotnet-containers | web | containers | intermediate |
 | 46 | dotnet-cryptography | security | crypto | advanced |
@@ -408,64 +410,64 @@ Complete A-Z listing of all skills with category assignment.
 | 59 | dotnet-domain-modeling | architecture | domain-modeling | advanced |
 | 60 | dotnet-efcore-architecture | data | ef-core | advanced |
 | 61 | dotnet-efcore-patterns | data | ef-core | intermediate |
-| 62 | dotnet-editorconfig | tooling | tooling | intermediate |
+| 62 | dotnet-editorconfig | developer-experience | tooling | intermediate |
 | 63 | dotnet-file-based-apps | fundamentals | language-patterns | intermediate |
 | 64 | dotnet-file-io | fundamentals | fundamentals | intermediate |
-| 65 | dotnet-gha-build-test | devops | github-actions | intermediate |
-| 66 | dotnet-gha-deploy | devops | github-actions | intermediate |
-| 67 | dotnet-gha-patterns | devops | github-actions | intermediate |
-| 68 | dotnet-gha-publish | devops | github-actions | intermediate |
-| 69 | dotnet-github-docs | devops | release | beginner |
-| 70 | dotnet-github-releases | devops | release | intermediate |
+| 65 | dotnet-gha-build-test | operations | github-actions | intermediate |
+| 66 | dotnet-gha-deploy | operations | github-actions | intermediate |
+| 67 | dotnet-gha-patterns | operations | github-actions | intermediate |
+| 68 | dotnet-gha-publish | operations | github-actions | intermediate |
+| 69 | dotnet-github-docs | operations | release | beginner |
+| 70 | dotnet-github-releases | operations | release | intermediate |
 | 71 | dotnet-grpc | web | patterns | intermediate |
 | 72 | dotnet-gc-memory | fundamentals | memory | advanced |
 | 73 | dotnet-http-client | web | web | intermediate |
 | 74 | dotnet-input-validation | web | validation | intermediate |
 | 75 | dotnet-integration-testing | testing | integration | advanced |
 | 76 | dotnet-io-pipelines | fundamentals | fundamentals | advanced |
-| 77 | dotnet-library-api-compat | devops | ci-cd | advanced |
+| 77 | dotnet-library-api-compat | operations | ci-cd | advanced |
 | 78 | dotnet-linq-optimization | fundamentals | patterns | intermediate |
 | 79 | dotnet-localization | fundamentals | configuration | intermediate |
-| 80 | dotnet-maui-aot | platforms | maui | advanced |
-| 81 | dotnet-maui-development | platforms | maui | intermediate |
+| 80 | dotnet-maui-aot | ui-frameworks | maui | advanced |
+| 81 | dotnet-maui-development | ui-frameworks | maui | intermediate |
 | 82 | dotnet-maui-testing | testing | testing | advanced |
 | 83 | dotnet-mer | web | patterns | intermediate |
 | 84 | dotnet-messaging-patterns | architecture | messaging | advanced |
-| 85 | dotnet-mermaid-diagrams | tooling | tooling | intermediate |
-| 86 | dotnet-microsoft-agent-framework | tooling | analyzers | advanced |
+| 85 | dotnet-mermaid-diagrams | developer-experience | tooling | intermediate |
+| 86 | dotnet-microsoft-agent-framework | developer-experience | analyzers | advanced |
 | 87 | dotnet-middleware-patterns | web | minimal-apis | intermediate |
 | 88 | dotnet-minimal-apis | web | minimal-apis | intermediate |
 | 89 | dotnet-modernize | fundamentals | diagnostics | intermediate |
-| 90 | dotnet-msbuild-authoring | tooling | msbuild | advanced |
-| 91 | dotnet-msbuild-tasks | tooling | msbuild | advanced |
-| 92 | dotnet-msix | platforms | platforms | intermediate |
+| 90 | dotnet-msbuild-authoring | developer-experience | msbuild | advanced |
+| 91 | dotnet-msbuild-tasks | developer-experience | msbuild | advanced |
+| 92 | dotnet-msix | ui-frameworks | platforms | intermediate |
 | 93 | dotnet-multi-targeting | fundamentals | aot | intermediate |
 | 94 | dotnet-native-aot | performance | aot | advanced |
 | 95 | dotnet-native-interop | fundamentals | fundamentals | advanced |
-| 96 | dotnet-nuget-authoring | tooling | nuget | intermediate |
+| 96 | dotnet-nuget-authoring | developer-experience | nuget | intermediate |
 | 97 | dotnet-observability | architecture | patterns | intermediate |
 | 98 | dotnet-openapi | web | api-design | intermediate |
 | 99 | dotnet-performance-patterns | performance | patterns | advanced |
 | 100 | dotnet-playwright | testing | testing | intermediate |
 | 101 | dotnet-profiling | performance | profiling | advanced |
-| 102 | dotnet-project-analysis | tooling | project | beginner |
-| 103 | dotnet-project-structure | tooling | project | beginner |
-| 104 | dotnet-release-management | devops | release | intermediate |
+| 102 | dotnet-project-analysis | developer-experience | project | beginner |
+| 103 | dotnet-project-structure | developer-experience | project | beginner |
+| 104 | dotnet-release-management | operations | release | intermediate |
 | 105 | dotnet-resilience | architecture | resilience | intermediate |
-| 106 | dotnet-roslyn-analyzers | tooling | analyzers | advanced |
+| 106 | dotnet-roslyn-analyzers | developer-experience | analyzers | advanced |
 | 107 | dotnet-security-owasp | security | owasp | advanced |
-| 108 | dotnet-serena-analysis-patterns | tooling | serena | intermediate |
-| 109 | dotnet-serena-code-navigation | tooling | serena | intermediate |
-| 110 | dotnet-serena-refactoring | tooling | serena | intermediate |
+| 108 | dotnet-serena-analysis-patterns | developer-experience | serena | intermediate |
+| 109 | dotnet-serena-code-navigation | developer-experience | serena | intermediate |
+| 110 | dotnet-serena-refactoring | developer-experience | serena | intermediate |
 | 111 | dotnet-serialization | fundamentals | serialization | intermediate |
 | 112 | dotnet-service-communication | architecture | patterns | intermediate |
 | 113 | dotnet-snapshot-testing | testing | testing | intermediate |
 | 114 | dotnet-solid-principles | fundamentals | design-principles | intermediate |
 | 115 | dotnet-solution-navigation | fundamentals | tooling | beginner |
-| 116 | dotnet-spectre-console | platforms | platforms | intermediate |
+| 116 | dotnet-spectre-console | ui-frameworks | platforms | intermediate |
 | 117 | dotnet-structured-logging | architecture | patterns | intermediate |
-| 118 | dotnet-system-commandline | tooling | cli | intermediate |
-| 119 | dotnet-terminal-gui | platforms | platforms | intermediate |
+| 118 | dotnet-system-commandline | developer-experience | cli | intermediate |
+| 119 | dotnet-terminal-gui | ui-frameworks | platforms | intermediate |
 | 120 | dotnet-test-quality | testing | coverage | advanced |
 | 121 | dotnet-testing | testing | overview | beginner |
 | 122 | dotnet-testing-advanced | testing | overview | intermediate |
@@ -501,38 +503,38 @@ Complete A-Z listing of all skills with category assignment.
 | 152 | dotnet-testing-unit-test-fundamentals | testing | fundamentals | beginner |
 | 153 | dotnet-testing-xunit-project-setup | testing | fundamentals | beginner |
 | 154 | dotnet-trimming | performance | aot | intermediate |
-| 155 | dotnet-ui-chooser | platforms | platforms | beginner |
+| 155 | dotnet-ui-chooser | ui-frameworks | platforms | beginner |
 | 156 | dotnet-ui-testing-core | testing | testing | intermediate |
-| 157 | dotnet-uno-mcp | platforms | uno | intermediate |
-| 158 | dotnet-uno-platform | platforms | uno | intermediate |
-| 159 | dotnet-uno-targets | platforms | uno | intermediate |
+| 157 | dotnet-uno-mcp | ui-frameworks | uno | intermediate |
+| 158 | dotnet-uno-platform | ui-frameworks | uno | intermediate |
+| 159 | dotnet-uno-targets | ui-frameworks | uno | intermediate |
 | 160 | dotnet-uno-testing | testing | testing | advanced |
 | 161 | dotnet-validation-patterns | fundamentals | configuration | intermediate |
 | 162 | dotnet-version-detection | fundamentals | tooling | beginner |
-| 163 | dotnet-version-upgrade | tooling | project | intermediate |
-| 164 | dotnet-windbg-debugging | tooling | analyzers | advanced |
-| 165 | dotnet-winforms-basics | platforms | winforms | beginner |
-| 166 | dotnet-winui | platforms | winui | intermediate |
-| 167 | dotnet-wpf-migration | platforms | wpf | intermediate |
-| 168 | dotnet-wpf-modern | platforms | wpf | intermediate |
-| 169 | dotnet-xml-docs | tooling | docs | intermediate |
+| 163 | dotnet-version-upgrade | developer-experience | project | intermediate |
+| 164 | dotnet-windbg-debugging | developer-experience | analyzers | advanced |
+| 165 | dotnet-winforms-basics | ui-frameworks | winforms | beginner |
+| 166 | dotnet-winui | ui-frameworks | winui | intermediate |
+| 167 | dotnet-wpf-migration | ui-frameworks | wpf | intermediate |
+| 168 | dotnet-wpf-modern | ui-frameworks | wpf | intermediate |
+| 169 | dotnet-xml-docs | developer-experience | docs | intermediate |
 | 170 | dotnet-xunit | testing | frameworks | intermediate |
-| 171 | github | tooling | analyzers | intermediate |
-| 172 | mcp-discovery | tooling | analyzers | intermediate |
-| 173 | mcp-health | tooling | analyzers | intermediate |
-| 174 | microsoft-learn-mcp | tooling | analyzers | intermediate |
-| 175 | rulesync | tooling | rulesync | intermediate |
-| 176 | serena | tooling | serena | intermediate |
-| 177 | wiki-ado-convert | tooling | docs | intermediate |
-| 178 | wiki-agents-md | tooling | docs | intermediate |
-| 179 | wiki-architect | tooling | docs | intermediate |
-| 180 | wiki-changelog | tooling | docs | intermediate |
-| 181 | wiki-llms-txt | tooling | docs | intermediate |
-| 182 | wiki-onboarding | tooling | docs | intermediate |
-| 183 | wiki-page-writer | tooling | docs | intermediate |
-| 184 | wiki-qa | tooling | docs | intermediate |
-| 185 | wiki-researcher | tooling | docs | intermediate |
-| 186 | wiki-vitepress | tooling | docs | intermediate |
+| 171 | github | developer-experience | analyzers | intermediate |
+| 172 | mcp-discovery | developer-experience | analyzers | intermediate |
+| 173 | mcp-health | developer-experience | analyzers | intermediate |
+| 174 | microsoft-learn-mcp | developer-experience | analyzers | intermediate |
+| 175 | rulesync | developer-experience | rulesync | intermediate |
+| 176 | serena | developer-experience | serena | intermediate |
+| 177 | wiki-ado-convert | developer-experience | docs | intermediate |
+| 178 | wiki-agents-md | developer-experience | docs | intermediate |
+| 179 | wiki-architect | developer-experience | docs | intermediate |
+| 180 | wiki-changelog | developer-experience | docs | intermediate |
+| 181 | wiki-llms-txt | developer-experience | docs | intermediate |
+| 182 | wiki-onboarding | developer-experience | docs | intermediate |
+| 183 | wiki-page-writer | developer-experience | docs | intermediate |
+| 184 | wiki-qa | developer-experience | docs | intermediate |
+| 185 | wiki-researcher | developer-experience | docs | intermediate |
+| 186 | wiki-vitepress | developer-experience | docs | intermediate |
 
 </details>
 
@@ -574,6 +576,7 @@ High-level navigation skills for category discovery:
 | Date | Change | Author |
 |------|--------|--------|
 | 2026-03-07 | Initial taxonomy with 189 skills | dotnet-agent-harness |
+| 2026-03-07 | Renamed categories: devops→operations, platforms→ui-frameworks, tooling→developer-experience | dotnet-agent-harness |
 
 ---
 

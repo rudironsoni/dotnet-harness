@@ -5,12 +5,10 @@ license: MIT
 targets: ['*']
 category: performance
 subcategory: patterns
-complexity: advanced
 tags:
   - performance
   - dotnet
   - skill
-  - advanced
   - patterns
   - span
   - memory

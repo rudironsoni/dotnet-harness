@@ -4,13 +4,11 @@ description: Registers and resolves services with MS DI. Keyed services, scopes,
 license: MIT
 targets: ['*']
 category: fundamentals
-subcategory: dependency-injection
-complexity: intermediate
+subcategory: di-and-services
 tags:
   - csharp
   - dotnet
   - skill
-  - intermediate
   - dependency-injection
   - di
 version: '1.0.0'
