@@ -162,14 +162,14 @@ validate_path() {
     local path="$1"
     # Check if path is writable
     if [[ ! -d "${path}" ]]; then
-        log_info "Creating directory: $path"
+        log_info "Creating directory: ${path}"
         if ! mkdir -p "${path}"; then
-            log_error "Failed to create directory: $path"
+            log_error "Failed to create directory: ${path}"
             exit 1
         fi
     fi
     if [[ ! -w "${path}" ]]; then
-        log_error "Directory is not writable: $path"
+        log_error "Directory is not writable: ${path}"
         exit 1
     fi
 }
@@ -231,8 +231,8 @@ make_executable() {
 
 parse_args() {
     SOURCE="${DEFAULT_SOURCE}"
-    TARGETS="$DEFAULT_TARGETS"
-    INSTALL_PATH="$DEFAULT_PATH"
+    TARGETS="${DEFAULT_TARGETS}"
+    INSTALL_PATH="${DEFAULT_PATH}"
 
     while [[ $# -gt 0 ]]; do
         case "$1" in
@@ -330,14 +330,14 @@ run_rulesync_fetch() {
 
     # Run rulesync fetch
     log_info "Fetching from ${fetch_spec}..."
-    if ! rulesync fetch "$fetch_spec"; then
+    if ! rulesync fetch "${fetch_spec}"; then
         log_error "rulesync fetch failed"
         fetch_exit_code=1
     fi
 
-    cd "$original_dir"
+    cd "${original_dir}"
 
-    if [[ $fetch_exit_code -ne 0 ]]; then
+    if [[ ${fetch_exit_code} -ne 0 ]]; then
         exit 1
     fi
 
@@ -361,16 +361,16 @@ run_rulesync_generate() {
     # Verify .rulesync exists
     if [[ ! -d ".rulesync" ]]; then
         log_error ".rulesync directory not found after fetch"
-        cd "$original_dir"
+        cd "${original_dir}"
         exit 1
     fi
 
     # Check if rulesync.jsonc exists and has delete: true
     rulesync_jsonc_path=".rulesync/rulesync.jsonc"
     delete_from_config=""
-    if [[ -f "$rulesync_jsonc_path" ]]; then
+    if [[ -f "${rulesync_jsonc_path}" ]]; then
         # Strip C-style comments (// and /* */) and check for delete: true
-        delete_from_config=$(sed 's|//.*$||g; :a; s|/\*[^*]*\*\+/||g; ta' "$rulesync_jsonc_path" | grep -oP '"delete"\s*:\s*\K(true|false)' || true)
+        delete_from_config=$(sed 's|//.*$||g; :a; s|/\*[^*]*\*\+/||g; ta' "${rulesync_jsonc_path}" | grep -oP '"delete"\s*:\s*\K(true|false)' || true)
     fi
 
     # Define files/directories created by each target
@@ -390,9 +390,9 @@ run_rulesync_generate() {
     IFS=',' read -ra target_array <<< "${TARGETS}"
     for target in "${target_array[@]}"; do
         # Trim whitespace
-        target=$(echo "$target" | xargs)
-        if [[ -n "${target_files[$target]:-}" ]]; then
-            local file="${target_files[$target]}"
+        target=$(echo "${target}" | xargs)
+        if [[ -n "${target_files[${target}]:-}" ]]; then
+            local file="${target_files[${target}]}"
             if [[ -e "${file}" ]]; then
                 existing_files+=("${file}")
             fi
@@ -406,7 +406,7 @@ run_rulesync_generate() {
             log_warning "  - ${file}"
         done
         read -r -p "Remove existing generated files before regenerating? [y/N] " response || true
-        if [[ "$response" =~ ^[Yy]$ ]]; then
+        if [[ "${response}" =~ ^[Yy]$ ]]; then
             log_info "Removing existing generated files..."
             for file in "${existing_files[@]}"; do
                 rm -rf "${file}"
@@ -418,7 +418,7 @@ run_rulesync_generate() {
     fi
 
     # Run rulesync generate - use config file when delete: true is set
-    if [[ "$delete_from_config" == "true" ]]; then
+    if [[ "${delete_from_config}" == "true" ]]; then
         log_info "Found delete: true in rulesync.jsonc. Using config file settings..."
         if ! rulesync generate; then
             log_error "rulesync generate failed"
@@ -432,9 +432,9 @@ run_rulesync_generate() {
         fi
     fi
 
-    cd "$original_dir"
+    cd "${original_dir}"
 
-    if [[ $generate_exit_code -ne 0 ]]; then
+    if [[ ${generate_exit_code} -ne 0 ]]; then
         exit 1
     fi
 
@@ -467,9 +467,9 @@ download_hooks() {
         fi
     done
 
-    cd "$original_dir"
+    cd "${original_dir}"
 
-    if [[ $download_failed -ne 0 ]]; then
+    if [[ ${download_failed} -ne 0 ]]; then
         log_error "One or more hook scripts failed to download"
         exit 1
     fi
@@ -498,7 +498,7 @@ make_hooks_executable() {
         fi
     done
 
-    cd "$original_dir"
+    cd "${original_dir}"
 
     log_success "All hook scripts made executable"
 }
