@@ -2,7 +2,7 @@
 
 > **The definitive .NET development companion for AI coding tools.**
 >
-> 189 specialized skills · 15 expert subagents · 27 powerful commands
+> 193 specialized skills · 18 expert subagents · 28 powerful commands
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
@@ -43,9 +43,9 @@ After installation, use these commands:
 
 | Component       | Count | Description                                            |
 | --------------- | ----- | ------------------------------------------------------ |
-| **Skills**      | 189   | Self-contained guidance documents for .NET topics      |
-| **Subagents**   | 15    | Specialized AI agents for specific domains             |
-| **Commands**    | 27    | CLI commands for common workflows                      |
+| **Skills**      | 193   | Self-contained guidance documents for .NET topics      |
+| **Subagents**   | 18    | Specialized AI agents for specific domains             |
+| **Commands**    | 28    | CLI commands for common workflows                      |
 | **MCP Servers** | 6     | Model Context Protocol servers for AI tool integration |
 
 **Coverage Areas:**
@@ -63,17 +63,16 @@ After installation, use these commands:
 
 ```text
 .rulesync/
-├── skills/        # 189 knowledge modules
-├── subagents/     # 15 specialized agents
-├── commands/      # 27 slash commands
+├── skills/        # 193 knowledge modules
+├── subagents/     # 18 specialized agents
+├── commands/      # 28 slash commands
 ├── agents/        # 3 primary agents
 └── mcp.json       # MCP server definitions
 ```
 
 ## MCP Inventory
 
-MCP inventory (source: .rulesync/mcp.json): `context7`, `deepwiki`, `github`, `mcp-windbg`, `microsoftdocs-mcp`,
-`serena`
+MCP inventory (source: .rulesync/mcp.json): `context7`, `deepwiki`, `github`, `mcp-windbg`, `microsoftdocs-mcp`, `serena`
 
 | MCP Server          | Description                                  |
 | ------------------- | -------------------------------------------- |

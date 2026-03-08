@@ -1,38 +1,101 @@
-# Test runner Dockerfile - extends base image for testing
-FROM ghcr.io/rudironsoni/dotnet-agent-harness-test-base:latest
+# Dockerfile for RuleSync test runner
+# Provides a consistent, isolated environment for testing RuleSync generation
 
-# Switch to root to install test dependencies
-USER root
+ARG RULESYNC_VERSION=7.10.0
 
-# Install additional test utilities
+# ============================================================================
+# Stage 1: Base image with dependencies
+# ============================================================================
+FROM node:20-slim AS base
+
+# Install system dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    ca-certificates \
+    git \
+    bash \
+    jq \
     python3 \
     python3-pip \
-    tree \
+    python3-venv \
+    shellcheck \
+    file \
+    unzip \
     && rm -rf /var/lib/apt/lists/*
 
+# Install yq (YAML processor)
+RUN curl -fsSL https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -o /usr/local/bin/yq \
+    && chmod +x /usr/local/bin/yq
+
+# Create non-root user for security
+RUN useradd -m -u 1001 -s /bin/bash rulesync
+
+# ============================================================================
+# Stage 2: RuleSync installation
+# ============================================================================
+FROM base AS rulesync
+
+ARG RULESYNC_VERSION
+ENV RULESYNC_VERSION=${RULESYNC_VERSION}
+
+# Detect architecture and install appropriate RuleSync binary
+RUN ARCH=$(dpkg --print-architecture) && \
+    case "${ARCH}" in \
+        amd64) RULESYNC_ARCH="x64" ;; \
+        arm64) RULESYNC_ARCH="arm64" ;; \
+        *) echo "Unsupported architecture: ${ARCH}" && exit 1 ;; \
+    esac && \
+    echo "Installing RuleSync ${RULESYNC_VERSION} for linux-${RULESYNC_ARCH}" && \
+    curl -fsSL "https://github.com/dyoshikawa/rulesync/releases/download/v${RULESYNC_VERSION}/rulesync-linux-${RULESYNC_ARCH}" -o /usr/local/bin/rulesync && \
+    chmod +x /usr/local/bin/rulesync
+
+# Verify installation
+RUN rulesync --version
+
+# ============================================================================
+# Stage 3: Test runner image with scripts
+# ============================================================================
+FROM base AS test-runner
+
+ARG RULESYNC_VERSION
+ENV RULESYNC_VERSION=${RULESYNC_VERSION}
+ENV PATH="/usr/local/bin:${PATH}"
+ENV CI=true
+
+# Copy RuleSync binary from previous stage
+COPY --from=rulesync /usr/local/bin/rulesync /usr/local/bin/rulesync
+
+# Create test script directory
+RUN mkdir -p /usr/local/lib/rulesync-tests /usr/local/bin
+
+# Copy test entrypoint script
+COPY --chmod=755 docker/test-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+
 # Copy test scripts
-COPY scripts/docker/ /workspace/scripts/docker/
-COPY scripts/lib/ /workspace/scripts/lib/
+COPY --chmod=755 docker/test-scripts/ /usr/local/lib/rulesync-tests/
 
-# Make scripts executable
-RUN chmod +x /workspace/scripts/docker/*.sh
+# Set up symlinks for test commands
+RUN ln -s /usr/local/lib/rulesync-tests/validate-target.sh /usr/local/bin/validate-target && \
+    ln -s /usr/local/lib/rulesync-tests/validate-all.sh /usr/local/bin/validate-all && \
+    ln -s /usr/local/lib/rulesync-tests/check-determinism.sh /usr/local/bin/check-determinism && \
+    ln -s /usr/local/lib/rulesync-tests/validate-doc-contract.sh /usr/local/bin/validate-doc-contract
 
-# Switch back to non-root user
-USER rulesync
-
-# Set working directory
+# Create workspace directory
 WORKDIR /workspace
 
-# Volume for test results
-VOLUME ["/test-results"]
+# Switch to non-root user
+USER rulesync
 
-# Entrypoint runs the test suite
-ENTRYPOINT ["/workspace/scripts/docker/test.sh"]
+# Health check
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+    CMD rulesync --version || exit 1
 
-# Default CMD (can be overridden)
-CMD ["--output", "/test-results"]
+# Default entrypoint
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
+CMD ["--help"]
 
 # Labels
-LABEL org.opencontainers.image.title="dotnet-agent-harness-test-runner"
-LABEL org.opencontainers.image.description="Test runner for RuleSync validation"
+LABEL org.opencontainers.image.title="rulesync-test-runner"
+LABEL org.opencontainers.image.description="Test runner for RuleSync-first .NET agent harness"
+LABEL org.opencontainers.image.version="${RULESYNC_VERSION}"
+LABEL org.opencontainers.image.source="https://github.com/rudironsoni/dotnet-agent-harness"

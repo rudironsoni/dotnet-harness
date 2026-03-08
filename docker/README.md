@@ -1,273 +1,294 @@
-# Docker Testing Infrastructure
+# Docker Testing for RuleSync-first .NET Agent Harness
 
-Docker-first testing infrastructure for the RuleSync-first .NET agent harness toolkit.
+This directory contains Docker-based testing infrastructure for the RuleSync-first .NET agent harness toolkit.
 
 ## Overview
 
-This infrastructure provides:
+The Docker testing infrastructure provides:
 
-- **Base Image**: Ubuntu 22.04 with latest RuleSync installed (unpinned)
-- **Multi-Target Testing**: Parallel testing across 7 AI agent targets
-- **Validation Suite**: Comprehensive validation of skills, commands, and subagents
-- **CI/CD Integration**: GitHub Actions workflow for automated testing
+- **Isolation**: Each of the 7 targets runs in its own container
+- **Reproducibility**: Pinned RuleSync versions ensure consistent results
+- **Efficiency**: Volume mounts and caching for fast iteration
+- **Simplicity**: Single command to run all tests
+- **CI/CD Ready**: Integrated with GitHub Actions
 
 ## Quick Start
 
-### Run All Tests Locally
+### Prerequisites
+
+- Docker Engine 24.0+
+- Docker Compose 2.20+
+- 4GB+ available RAM for parallel testing
+
+### Run All Tests
 
 ```bash
-# Build the base image
-docker-compose build base
+# Build images and run complete test suite
+docker-compose up validate
 
-# Run the full test suite
-docker-compose run --rm test-runner
-
-# Or run tests with custom output directory
-docker-compose run --rm test-runner --output /custom/output
+# Or run in detached mode
+docker-compose up -d validate
 ```
 
-### Test Single Target
+### Test Individual Target
 
 ```bash
-# Test a specific target
-docker-compose run --rm claudecode
-docker-compose run --rm opencode
-docker-compose run --rm copilot
-docker-compose run --rm geminicli
-docker-compose run --rm codexcli
-docker-compose run --rm antigravity
-docker-compose run --rm factorydroid
+# Test Claude Code target
+docker-compose up claudecode
+
+# Test OpenCode target
+docker-compose up opencode
+
+# Test GitHub Copilot target
+docker-compose up copilot
 ```
 
-### Run Validation Only
+## Available Services
 
-```bash
-# Run validation suite
-docker-compose run --rm base /workspace/scripts/docker/validate-all.sh
+### Individual Target Services
+
+| Service | Description |
+|---------|-------------|
+| `claudecode` | Test Claude Code target generation |
+| `opencode` | Test OpenCode target generation |
+| `copilot` | Test GitHub Copilot target generation |
+| `geminicli` | Test Gemini CLI target generation |
+| `codexcli` | Test Codex CLI target generation |
+| `factorydroid` | Test Factory Droid target generation |
+| `antigravity` | Test Antigravity target generation |
+
+### Multi-Target Services
+
+| Service | Description |
+|---------|-------------|
+| `all-targets` | Test all 7 targets sequentially |
+| `skills-test` | Test only skills generation |
+| `commands-test` | Test only commands generation |
+| `subagents-test` | Test only subagents generation |
+
+### Validation Services
+
+| Service | Description |
+|---------|-------------|
+| `validate` | Full validation suite (same as CI) |
+| `determinism-check` | Verify deterministic generation |
+| `doc-contract` | Validate documentation contract |
+
+### Utility Services
+
+| Service | Description |
+|---------|-------------|
+| `shell` | Interactive shell for debugging |
+| `rulesync-cli` | Run RuleSync CLI interactively |
+
+## Volume Mounts
+
+The following directories are mounted for efficient testing:
+
+```yaml
+volumes:
+  # Source code (live editing)
+  - .:/workspace:cached
+
+  # NPM cache (persistent)
+  - rulesync-npm-cache:/root/.npm
+
+  # RuleSync cache (persistent)
+  - rulesync-install-cache:/root/.cache/rulesync
+
+  # NuGet cache (for .NET builds)
+  - nuget-cache:/root/.nuget/packages
 ```
 
-## Available Commands
+## Environment Variables
 
-### Master Test Script
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `TARGET` | - | Single target to test |
+| `RULESYNC_TARGETS` | - | Comma-separated list of targets |
+| `RULESYNC_FEATURES` | `*` | Features to generate (skills,commands,subagents) |
+| `RULESYNC_VERSION` | `7.10.0` | RuleSync version to install |
+| `CI` | `true` | CI mode for consistent output |
+
+## Test Commands
+
+### Validate Single Target
 
 ```bash
-docker-compose run --rm test-runner [options]
-
-Options:
-  --output <dir>     Output directory for test results (default: /test-results)
-  --verbose          Enable verbose output
-  --target <name>    Test specific target only
+docker-compose run claudecode validate-target
 ```
 
-### Direct Docker Usage
+### Validate All Targets
 
 ```bash
-# Run with base image directly
-docker run --rm \
-  -v $(pwd):/workspace:ro \
-  ghcr.io/rudironsoni/dotnet-agent-harness-test-base:latest \
-  rulesync --version
-
-# Run validation
-docker run --rm \
-  -v $(pwd):/workspace:ro \
-  ghcr.io/rudironsoni/dotnet-agent-harness-test-base:latest \
-  /workspace/scripts/docker/validate-all.sh
-
-# Run specific target generation
-docker run --rm \
-  -v $(pwd):/workspace:ro \
-  -v $(pwd)/generated:/generated \
-  ghcr.io/rudironsoni/dotnet-agent-harness-test-base:latest \
-  sh -c "rulesync generate --targets claudecode --output /generated"
+docker-compose run validate
 ```
 
-## Debugging
-
-### Check RuleSync Version
+### Check Determinism
 
 ```bash
-docker-compose run --rm base rulesync --version
+docker-compose run determinism-check
 ```
 
-### Inspect Generated Output
+### Test Skills Only
 
 ```bash
-# Generate output for a target
-docker-compose run --rm claudecode
-
-# The output is stored in a Docker volume
-# To inspect it:
-docker run --rm -v generated-claudecode:/generated alpine ls -la /generated
+docker-compose run skills-test
 ```
 
-### Shell Access
+### Interactive Shell
 
 ```bash
-# Get a shell in the base container
-docker-compose run --rm base bash
-
-# As non-root user
-docker-compose run --rm base bash -c "su - rulesync"
+docker-compose run shell
 ```
 
-### View Test Logs
+## Custom RuleSync Version
+
+Test with a specific RuleSync version:
 
 ```bash
-# Run tests and save logs
-docker-compose run --rm test-runner --verbose
+# Build with specific version
+docker-compose build --build-arg RULESYNC_VERSION=7.9.0
 
-# Or check individual test logs
-docker run --rm -v test-results:/test-results alpine cat /test-results/json-validation.log
+# Or set via environment
+docker-compose build --build-arg RULESYNC_VERSION=7.9.0 all-targets
 ```
 
 ## CI/CD Integration
 
 ### GitHub Actions
 
-The workflow `.github/workflows/docker-test.yml` runs on:
+The workflow `.github/workflows/docker-test.yml` runs automatically on PRs:
 
-- Push to `main` or `develop` branches
-- Pull requests to `main`
-- Manual trigger (`workflow_dispatch`)
+```yaml
+on:
+  pull_request:
+    paths:
+      - '.rulesync/**'
+      - 'rulesync.jsonc'
+```
 
-Jobs:
+### Manual Trigger
 
-1. **build-base**: Builds and pushes base image to GHCR
-2. **test-matrix**: Runs tests for each of 7 targets in parallel
-3. **validate**: Runs full validation suite
-4. **test-suite**: Runs comprehensive test suite
-5. **summary**: Aggregates results
+You can manually trigger the workflow with custom parameters:
 
-### Artifacts
+1. Go to **Actions** → **Docker Test**
+2. Click **Run workflow**
+3. Specify RuleSync version and targets
 
-- Generated output for each target
-- Test results (JSON format)
-- Validation reports
+### Local CI Simulation
 
-## Architecture
+Simulate CI locally:
 
-### Images
-
-| Image | Purpose | Base |
-|-------|---------|------|
-| `test-base` | Foundation with RuleSync | ubuntu:22.04 |
-| `test-runner` | Test execution | test-base |
-
-### Volumes
-
-| Volume | Purpose |
-|--------|---------|
-| `generated-*` | Target-specific generated output |
-| `test-results` | Test results and logs |
-
-### Services
-
-- **base**: Foundation image with RuleSync
-- **test-runner**: Runs validation and test suites
-- **{target}**: Individual target testing (7 services)
-
-## Validation Checks
-
-The `validate-all.sh` script verifies:
-
-1. **Skill Count**: Exactly 189 skills
-2. **Command Count**: Exactly 27 commands
-3. **Subagent Count**: Exactly 15 subagents
-4. **JSON Validity**: All JSON files are valid
-5. **Hook Scripts**: All hooks are executable and pass shellcheck
-6. **Skill Structure**: All skills have SKILL.md with frontmatter
-7. **Configuration**: rulesync.jsonc has all 7 targets and required fields
-
-## Test Results Format
-
-Results are output as JSON:
-
-```json
-{
-  "testRun": {
-    "startTime": "2024-01-01T00:00:00Z",
-    "duration": 45.123,
-    "rulesyncVersion": "1.2.3"
-  },
-  "summary": {
-    "total": 10,
-    "passed": 10,
-    "failed": 0,
-    "successRate": 100.00
-  },
-  "tests": [
-    {
-      "name": "json-validation",
-      "status": "PASSED",
-      "duration": 0.523
-    }
-  ]
-}
+```bash
+# Run the exact same commands as CI
+docker-compose run -e CI=true validate
+docker-compose run -e CI=true determinism-check
+docker-compose run -e CI=true doc-contract
 ```
 
 ## Troubleshooting
 
-### RuleSync Not Found
+### Permission Issues
+
+If you encounter permission errors:
 
 ```bash
-# Verify installation
-docker-compose run --rm base which rulesync
-docker-compose run --rm base rulesync --version
+# Fix ownership
+sudo chown -R $(id -u):$(id -g) .
+
+# Or run with user mapping
+docker-compose run --user $(id -u):$(id -g) shell
 ```
 
-### Permission Errors
+### Cache Issues
 
-The base image runs as non-root user `rulesync` (UID 1001) for security.
-
-```bash
-# Check permissions
-docker-compose run --rm base id
-```
-
-### Volume Mount Issues
+Clear caches and rebuild:
 
 ```bash
-# Ensure proper permissions
-chmod -R +r .rulesync/
-
-# Or use ACL (Linux)
-setfacl -R -m u:1001:rX .rulesync/
+docker-compose down -v
+docker-compose build --no-cache
+docker-compose up validate
 ```
 
 ### Network Issues
 
+If services can't communicate:
+
 ```bash
-# Test network connectivity
-docker-compose run --rm base curl -I https://github.com
+# Recreate network
+docker-compose down
+docker network prune -f
+docker-compose up validate
+```
+
+### Slow Builds
+
+Enable BuildKit for faster builds:
+
+```bash
+export DOCKER_BUILDKIT=1
+export COMPOSE_DOCKER_CLI_BUILD=1
+docker-compose build
+```
+
+## Architecture
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                      Docker Compose                            │
+├─────────────────────────────────────────────────────────────────┤
+│ ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐             │
+│ │claudecode│ │ opencode │ │  copilot │ │geminicli │  ...        │
+│ └────┬─────┘ └────┬─────┘ └────┬─────┘ └────┬─────┘             │
+│      │            │            │            │                  │
+│      └────────────┴────────────┴────────────┘                  │
+│                         │                                       │
+│              ┌──────────┴──────────┐                              │
+│              │   Test Runner      │                              │
+│              │   (Dockerfile.test)│                              │
+│              │   - RuleSync       │                              │
+│              │   - Node.js 20     │                              │
+│              │   - Python 3       │                              │
+│              │   - jq, yq, etc.   │                              │
+│              └──────────┬──────────┘                              │
+│                         │                                       │
+│              ┌──────────┴──────────┐                              │
+│              │   Volume Mounts     │                              │
+│              │   - Source code    │                              │
+│              │   - NPM cache      │                              │
+│              │   - NuGet cache    │                              │
+│              └────────────────────┘                              │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
 ## Development
 
-### Updating RuleSync
+### Adding New Test Scripts
 
-RuleSync is installed from the latest release (unpinned). To update:
+1. Create script in `docker/test-scripts/`
+2. Make it executable: `chmod +x docker/test-scripts/my-script.sh`
+3. Add symlink in `Dockerfile.test`
+4. Update `docker/test-entrypoint.sh` to route the command
+
+### Modifying the Base Image
+
+Edit `Dockerfile.test` and rebuild:
 
 ```bash
-# Rebuild the base image
-docker-compose build --no-cache base
+docker-compose build --no-cache
 ```
 
-### Adding New Tests
+## Contributing
 
-1. Add test functions to `scripts/docker/test.sh`
-2. Register tests in the main execution section
-3. Update this documentation
+When contributing Docker-related changes:
 
-### Adding New Targets
+1. Test locally: `docker-compose up validate`
+2. Check all targets: `docker-compose run validate-all`
+3. Verify determinism: `docker-compose run determinism-check`
 
-1. Add target to `rulesync.jsonc`
-2. Add service to `docker-compose.yml`
-3. Update GitHub Actions matrix
-4. Update validation checks
+## References
 
-## Related Documentation
-
-- [RuleSync Documentation](.rulesync/skills/rulesync/SKILL.md)
-- [Project README](../README.md)
-- [CI/CD Scripts](../scripts/ci/)
+- [Docker Compose Documentation](https://docs.docker.com/compose/)
+- [RuleSync Documentation](https://github.com/dyoshikawa/rulesync)
+- [GitHub Actions Documentation](https://docs.github.com/actions)

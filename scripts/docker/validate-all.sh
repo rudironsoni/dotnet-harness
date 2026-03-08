@@ -5,9 +5,9 @@
 set -euo pipefail
 
 # Configuration - expected counts
-readonly EXPECTED_SKILL_COUNT=189
+readonly EXPECTED_SKILL_COUNT=193
 readonly EXPECTED_COMMAND_COUNT=27
-readonly EXPECTED_SUBAGENT_COUNT=15
+readonly EXPECTED_SUBAGENT_COUNT=18
 
 # Error tracking
 ERRORS=0
@@ -47,7 +47,7 @@ echo "=========================================="
 # 1. Validate skill count
 echo ""
 echo "--- Skill Count Validation ---"
-SKILL_COUNT=$(find skills -maxdepth 1 -type d | grep -v "^skills$" | wc -l)
+SKILL_COUNT=$(find skills -mindepth 1 -maxdepth 1 -type d ! -name ".*" | wc -l)
 log_info "Found $SKILL_COUNT skills (expected: $EXPECTED_SKILL_COUNT)"
 
 if [[ "$SKILL_COUNT" -eq "$EXPECTED_SKILL_COUNT" ]]; then

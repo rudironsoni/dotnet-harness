@@ -1,4 +1,7 @@
-name: Docker Test Matrix
+name: Docker Test
+
+# Docker-based testing for RuleSync-first .NET agent harness
+# Provides isolated, reproducible testing across all 7 targets
 
 on:
   push:
@@ -6,34 +9,48 @@ on:
     paths:
       - '.rulesync/**'
       - 'rulesync.jsonc'
-      - 'Dockerfile'
       - 'docker-compose.yml'
-      - 'scripts/docker/**'
+      - 'Dockerfile*'
+      - 'docker/**'
+      - '.github/workflows/docker-test.yml'
   pull_request:
-    branches: [main]
     paths:
       - '.rulesync/**'
       - 'rulesync.jsonc'
-      - 'Dockerfile'
       - 'docker-compose.yml'
-      - 'scripts/docker/**'
+      - 'Dockerfile*'
+      - 'docker/**'
+      - '.github/workflows/docker-test.yml'
   workflow_dispatch:
+    inputs:
+      rulesync_version:
+        description: 'RuleSync version to test'
+        required: false
+        default: '7.10.0'
+        type: string
+      targets:
+        description: 'Targets to test (comma-separated or "all")'
+        required: false
+        default: 'all'
+        type: string
 
 env:
-  REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}-test-base
+  RULESYNC_VERSION: ${{ inputs.rulesync_version || '7.10.0' }}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  # Build and push base image
-  build-base:
+  # ============================================================================
+  # Build and cache Docker images
+  # ============================================================================
+  build-images:
+    name: Build Docker Images
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
-    outputs:
-      image-tag: ${{ steps.meta.outputs.tags }}
-      image-digest: ${{ steps.build.outputs.digest }}
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -41,44 +58,37 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Log in to Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Extract metadata
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          tags: |
-            type=ref,event=branch
-            type=ref,event=pr
-            type=sha,prefix={{branch}}-
-            type=raw,value=latest,enable={{is_default_branch}}
-
-      - name: Build and push base image
-        id: build
+      - name: Build test runner image
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: ./Dockerfile
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          file: ./Dockerfile.test
+          push: false
+          load: true
+          tags: rulesync-test-runner:latest
+          build-args: |
+            RULESYNC_VERSION=${{ env.RULESYNC_VERSION }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name: Log RuleSync version
+      - name: Export test runner image
         run: |
-          docker run --rm ${{ steps.meta.outputs.tags }} rulesync --version
+          docker save rulesync-test-runner:latest | gzip > /tmp/rulesync-test-runner.tar.gz
 
-  # Run matrix tests across all 7 targets
-  test-matrix:
+      - name: Upload test runner image
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-runner-image
+          path: /tmp/rulesync-test-runner.tar.gz
+          retention-days: 1
+
+  # ============================================================================
+  # Individual target tests (parallel)
+  # ============================================================================
+  test-target:
+    name: Test Target - ${{ matrix.target }}
+    needs: build-images
     runs-on: ubuntu-latest
-    needs: build-base
     strategy:
       fail-fast: false
       matrix:
@@ -88,153 +98,202 @@ jobs:
           - copilot
           - geminicli
           - codexcli
-          - antigravity
           - factorydroid
-
+          - antigravity
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Log in to Container Registry
-        uses: docker/login-action@v3
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v3
+
+      - name: Download test runner image
+        uses: actions/download-artifact@v4
         with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          name: test-runner-image
+          path: /tmp
 
-      - name: Pull base image
+      - name: Load test runner image
         run: |
-          docker pull ${{ needs.build-base.outputs.image-tag }}
+          docker load < /tmp/rulesync-test-runner.tar.gz
 
-      - name: Test target - ${{ matrix.target }}
+      - name: Test target generation
         run: |
-          echo "Testing target: ${{ matrix.target }}"
           docker run --rm \
-            -v "${{ github.workspace }}:/workspace:ro" \
-            -v "test-results-${{ matrix.target }}:/generated" \
-            ${{ needs.build-base.outputs.image-tag }} \
-            sh -c "
-              echo '=== RuleSync Version ===' &&
-              rulesync --version &&
-              echo '=== Testing ${{ matrix.target }} ===' &&
-              rulesync generate --targets ${{ matrix.target }} --output /generated --silent &&
-              echo '=== Verifying output ===' &&
-              ls -la /generated/ &&
-              echo 'Target ${{ matrix.target }} completed successfully'
-            "
+            -v "${{ github.workspace }}:/workspace" \
+            -e TARGET=${{ matrix.target }} \
+            -e RULESYNC_TARGETS=${{ matrix.target }} \
+            -e CI=true \
+            rulesync-test-runner:latest \
+            validate-target
 
-      - name: Upload target artifacts
+      - name: Upload generated outputs
         uses: actions/upload-artifact@v4
+        if: failure()
         with:
-          name: generated-${{ matrix.target }}
-          path: /tmp/generated-${{ matrix.target }}
-          retention-days: 1
+          name: generated-outputs-${{ matrix.target }}
+          path: |
+            .agent/
+            .claude/
+            .codex/
+            .gemini/
+            .opencode/
+            AGENTS.md
+            CLAUDE.md
+            GEMINI.md
+          if-no-files-found: ignore
 
-  # Run full validation suite
-  validate:
+  # ============================================================================
+  # Determinism check
+  # ============================================================================
+  determinism:
+    name: Determinism Check
+    needs: build-images
     runs-on: ubuntu-latest
-    needs: build-base
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Log in to Container Registry
-        uses: docker/login-action@v3
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v3
+
+      - name: Download test runner image
+        uses: actions/download-artifact@v4
         with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          name: test-runner-image
+          path: /tmp
 
-      - name: Pull base image
+      - name: Load test runner image
         run: |
-          docker pull ${{ needs.build-base.outputs.image-tag }}
+          docker load < /tmp/rulesync-test-runner.tar.gz
 
-      - name: Run validation suite
+      - name: Run determinism check
         run: |
           docker run --rm \
-            -v "${{ github.workspace }}:/workspace:ro" \
-            -v "${{ github.workspace }}/test-results:/test-results" \
-            ${{ needs.build-base.outputs.image-tag }} \
-            /workspace/scripts/docker/validate-all.sh
+            -v "${{ github.workspace }}:/workspace" \
+            -e CI=true \
+            rulesync-test-runner:latest \
+            check-determinism
 
-      - name: Upload validation results
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: validation-results
-          path: test-results/
-          retention-days: 7
-
-  # Run full test suite
-  test-suite:
+  # ============================================================================
+  # Documentation contract validation
+  # ============================================================================
+  doc-contract:
+    name: Documentation Contract
+    needs: build-images
     runs-on: ubuntu-latest
-    needs: build-base
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Log in to Container Registry
-        uses: docker/login-action@v3
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v3
+
+      - name: Download test runner image
+        uses: actions/download-artifact@v4
         with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          name: test-runner-image
+          path: /tmp
 
-      - name: Build test runner image
+      - name: Load test runner image
         run: |
-          docker build -f Dockerfile.test -t test-runner:latest .
+          docker load < /tmp/rulesync-test-runner.tar.gz
 
-      - name: Run full test suite
+      - name: Validate documentation contract
         run: |
           docker run --rm \
-            -v "${{ github.workspace }}:/workspace:ro" \
-            -v "${{ github.workspace }}/test-results:/test-results" \
-            -e TEST_OUTPUT_DIR=/test-results \
-            test-runner:latest \
-            --output /test-results
+            -v "${{ github.workspace }}:/workspace" \
+            -e CI=true \
+            rulesync-test-runner:latest \
+            validate-doc-contract
 
-      - name: Upload test results
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: test-results
-          path: test-results/
-          retention-days: 7
-
-      - name: Display test summary
-        if: always()
-        run: |
-          if [[ -f "test-results/results.json" ]]; then
-            echo "Test Results:"
-            cat test-results/results.json | jq '.'
-          fi
-
-  # Summary job
-  summary:
+  # ============================================================================
+  # Full validation suite (all checks)
+  # ============================================================================
+  validate-all:
+    name: Full Validation Suite
+    needs: [build-images, test-target, determinism, doc-contract]
     runs-on: ubuntu-latest
-    needs: [test-matrix, validate, test-suite]
     if: always()
-
     steps:
-      - name: Test Summary
-        run: |
-          echo "=========================================="
-          echo "Docker Test Matrix Summary"
-          echo "=========================================="
-          echo "Build Base: ${{ needs.build-base.result }}"
-          echo "Test Matrix: ${{ needs.test-matrix.result }}"
-          echo "Validation: ${{ needs.validate.result }}"
-          echo "Test Suite: ${{ needs.test-suite.result }}"
-          echo "=========================================="
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-          if [[ "${{ needs.test-matrix.result }}" == "success" && \
-                "${{ needs.validate.result }}" == "success" && \
-                "${{ needs.test-suite.result }}" == "success" ]]; then
-            echo "All tests passed!"
-            exit 0
-          else
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v3
+
+      - name: Download test runner image
+        uses: actions/download-artifact@v4
+        with:
+          name: test-runner-image
+          path: /tmp
+
+      - name: Load test runner image
+        run: |
+          docker load < /tmp/rulesync-test-runner.tar.gz
+
+      - name: Run full validation
+        run: |
+          docker run --rm \
+            -v "${{ github.workspace }}:/workspace" \
+            -e CI=true \
+            rulesync-test-runner:latest \
+            validate-all
+
+  # ============================================================================
+  # Summary and reporting
+  # ============================================================================
+  summary:
+    name: Test Summary
+    needs: [test-target, determinism, doc-contract, validate-all]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Generate summary
+        run: |
+          echo "# Docker Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Target Tests" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Target | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|--------|--------|" >> $GITHUB_STEP_SUMMARY
+
+          for target in claudecode opencode copilot geminicli codexcli factorydroid antigravity; do
+            status="✅ Passed"
+            # Check if any of the required jobs failed
+            if [[ "${{ needs.test-target.result }}" == "failure" ]]; then
+              status="❌ Failed"
+            fi
+            echo "| $target | $status |" >> $GITHUB_STEP_SUMMARY
+          done
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Other Checks" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          determinism_status="✅ Passed"
+          if [[ "${{ needs.determinism.result }}" == "failure" ]]; then
+            determinism_status="❌ Failed"
+          fi
+          echo "- Determinism Check: $determinism_status" >> $GITHUB_STEP_SUMMARY
+
+          doc_status="✅ Passed"
+          if [[ "${{ needs.doc-contract.result }}" == "failure" ]]; then
+            doc_status="❌ Failed"
+          fi
+          echo "- Documentation Contract: $doc_status" >> $GITHUB_STEP_SUMMARY
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## RuleSync Version" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- Version: ${{ env.RULESYNC_VERSION }}" >> $GITHUB_STEP_SUMMARY
+
+      - name: Report overall status
+        run: |
+          if [[ "${{ needs.test-target.result }}" == "failure" ]] || \
+             [[ "${{ needs.determinism.result }}" == "failure" ]] || \
+             [[ "${{ needs.doc-contract.result }}" == "failure" ]]; then
             echo "Some tests failed!"
             exit 1
           fi
+          echo "All tests passed!"

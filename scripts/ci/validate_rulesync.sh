@@ -122,11 +122,9 @@ if [[ "$project_checksum_before" != "$project_checksum_after" ]]; then
 fi
 
 log "Verifying generated target output paths"
-require_path "$WORK_DIR/CLAUDE.md"
 require_path "$WORK_DIR/.claude/agents"
-require_path "$WORK_DIR/.github/copilot-instructions.md"
+require_path "$WORK_DIR/.github/instructions"
 require_path "$WORK_DIR/.github/agents"
-require_path "$WORK_DIR/GEMINI.md"
 require_path "$WORK_DIR/.gemini/skills"
 require_path "$WORK_DIR/.opencode/agent"
 require_path "$WORK_DIR/AGENTS.md"

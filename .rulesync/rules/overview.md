@@ -1,6 +1,6 @@
 ---
 root: true
-targets: ['agentsmd']
+targets: ['agentsmd', 'claudecode', 'copilot', 'geminicli', 'codexcli', 'factorydroid', 'antigravity']
 description: 'dotnet-agent-harness: Comprehensive .NET development skills for all AI agents'
 globs: ['**/*']
 antigravity:
@@ -45,8 +45,8 @@ Comprehensive .NET development guidance for modern C#, ASP.NET Core, MAUI, Blazo
 
 This toolkit provides:
 
-- 189 skills
-- 15 specialist agents/subagents
+- 193 skills
+- 18 specialist agents/subagents
 - shared RuleSync rules, commands, hooks, and MCP config
 
 Compatible targets include:

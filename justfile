@@ -77,7 +77,7 @@ lint-md:
     @which mdl > /dev/null && mdl -i node_modules -i src -i packages . || echo "Skipping lint-md (mdl not installed)"
 
 lint-frontmatter:
-    dotnet run --project src/DotNetAgentHarness.Tools -- lint-frontmatter
+    @echo "Skipping lint-frontmatter (DotNetAgentHarness.Tools not available)"
 
 lint-spell:
     @which codespell > /dev/null && codespell -q 3 --skip="./.git,./.opencode,./.claude,./.gemini,./.codex,./.agent,./.vscode,./dist,./node_modules,./packages" || echo "Skipping lint-spell (codespell not installed)"

@@ -42,6 +42,7 @@ replit.md
 .github/skills/
 .github/instructions/
 .github/prompts/
+.github/hooks/
 .github/copilot-instructions.md
 .github/copilot-mcp.json
 
@@ -58,6 +59,7 @@ replit.md
 # Temporary directories
 .tmp/
 .dotnet-agent-harness/
+.slopwatch/
 
 # CI-generated bundles (not source)
 bundles/
