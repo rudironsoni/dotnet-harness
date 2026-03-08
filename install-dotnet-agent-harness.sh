@@ -184,7 +184,7 @@ download_hook_script() {
     local http_code
 
     temp_file=$(mktemp)
-    trap "rm -f '${temp_file}'" RETURN
+    trap 'rm -f "${temp_file}"' RETURN
 
     log_info "Downloading ${script_name}..."
 
@@ -452,9 +452,9 @@ download_hooks() {
     hooks_dir="${INSTALL_PATH}/.rulesync/hooks"
 
     # Create hooks directory if it doesn't exist
-    if [[ ! -d "${hook}s_dir" ]]; then
+    if [[ ! -d "${hooks_dir}" ]]; then
         log_info "Creating hooks directory: ${hooks_dir}"
-        mkdir -p "${hook}s_dir"
+        mkdir -p "${hooks_dir}"
     fi
 
     # Change to target directory for relative paths
@@ -462,7 +462,7 @@ download_hooks() {
 
     # Download each hook script
     for script in "${HOOK_SCRIPTS[@]}"; do
-        if ! download_hook_script "$script" "${SOURCE}" ".rulesync/hooks"; then
+        if ! download_hook_script "${script}" "${SOURCE}" ".rulesync/hooks"; then
             download_failed=1
         fi
     done
@@ -491,8 +491,8 @@ make_hooks_executable() {
     # Make downloaded scripts executable
     for script in "${HOOK_SCRIPTS[@]}"; do
         local script_path=".rulesync/hooks/${script}"
-        if [[ -f "$script_path" ]]; then
-            make_executable "$script_path"
+        if [[ -f "${script_path}" ]]; then
+            make_executable "${script_path}"
         else
             log_warning "Script not found: ${script_path}"
         fi
