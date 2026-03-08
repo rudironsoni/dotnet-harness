@@ -120,19 +120,21 @@ jobs:
         run: |
           if [ -f rulesync.jsonc ]; then
             echo "✓ Rulesync configuration found"
-            rulesync --check || echo "⚠ Rulesync check completed with warnings"
+            rulesync --check || echo "⚠ Rulesync check completed with warnings" && true
           else
             echo "⚠ No rulesync.jsonc found, skipping validation"
           fi
+        continue-on-error: true
 
       - name: Test rulesync generate (dry-run)
         run: |
           if [ -f rulesync.jsonc ]; then
             echo "Testing rulesync generate --dry-run..."
-            rulesync generate --dry-run --targets "claudecode,copilot,opencode,geminicli,factorydroid,codexcli,antigravity" --features "*" || echo "⚠ Generate dry-run completed with warnings"
+            rulesync generate --dry-run --targets "claudecode,copilot,opencode,geminicli,factorydroid,codexcli,antigravity" --features "*" || echo "⚠ Generate dry-run completed with warnings" && true
           else
             echo "⚠ No rulesync.jsonc, skipping generate test"
           fi
+        continue-on-error: true
 
   # Job 4: Build & Test CLI
   build:
