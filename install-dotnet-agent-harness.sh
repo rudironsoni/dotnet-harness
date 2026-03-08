@@ -357,6 +357,8 @@ run_rulesync_generate() {
 
     local original_dir
     local generate_exit_code=0
+    local rulesync_jsonc_path
+    local delete_from_config
 
     original_dir=$(pwd)
 
@@ -368,6 +370,14 @@ run_rulesync_generate() {
         log_error ".rulesync directory not found after fetch"
         cd "$original_dir"
         exit 1
+    fi
+
+    # Check if rulesync.jsonc exists and has delete: true
+    rulesync_jsonc_path=".rulesync/rulesync.jsonc"
+    delete_from_config=""
+    if [[ -f "$rulesync_jsonc_path" ]]; then
+        # Strip C-style comments (// and /* */) and check for delete: true
+        delete_from_config=$(sed 's|//.*$||g; :a; s|/\*[^*]*\*\+/||g; ta' "$rulesync_jsonc_path" | grep -oP '"delete"\s*:\s*\K(true|false)' || true)
     fi
 
     # Define files/directories created by each target
@@ -414,11 +424,19 @@ run_rulesync_generate() {
         fi
     fi
 
-    # Run rulesync generate
-    log_info "Generating files for targets: ${TARGETS}..."
-    if ! rulesync generate --targets "$TARGETS" --features "*"; then
-        log_error "rulesync generate failed"
-        generate_exit_code=1
+    # Run rulesync generate - use config file when delete: true is set
+    if [[ "$delete_from_config" == "true" ]]; then
+        log_info "Found delete: true in rulesync.jsonc. Using config file settings..."
+        if ! rulesync generate; then
+            log_error "rulesync generate failed"
+            generate_exit_code=1
+        fi
+    else
+        log_info "Generating files for targets: ${TARGETS}..."
+        if ! rulesync generate --targets "$TARGETS" --features "*"; then
+            log_error "rulesync generate failed"
+            generate_exit_code=1
+        fi
     fi
 
     cd "$original_dir"
