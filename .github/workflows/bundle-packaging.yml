@@ -19,17 +19,22 @@ jobs:
       
       - name: Generate bundles
         run: |
-          mkdir -p bundles
-          rulesync generate --source . --output bundles/ --targets "*" --features "*"
+          rulesync generate -t "*" -f "*"
       
       - name: Create bundle archives
         run: |
-          cd bundles
-          for dir in */; do
-            target=${dir%/}
-            tar -czf "${target}.tar.gz" "$target"
-            rm -rf "$target"
+          mkdir -p bundles
+          # Archive each generated target directory (these are created by rulesync)
+          for dir in .claude .cline .cursor .junie .kilocode .kiro .roo .agents .clinerules; do
+            if [ -d "$dir" ]; then
+              target_name=$(echo "$dir" | sed 's/^\.//')
+              tar -czf "bundles/${target_name}.tar.gz" "$dir"
+            fi
           done
+          # Archive GitHub Copilot instructions if generated
+          if [ -f ".github/copilot-instructions.md" ]; then
+            tar -czf "bundles/github-copilot.tar.gz" .github/copilot-instructions.md
+          fi
       
       - name: Upload bundle artifacts
         uses: actions/upload-artifact@v4
