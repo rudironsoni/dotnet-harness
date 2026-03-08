@@ -19,7 +19,7 @@ copilot:
 codexcli:
   short-description: 'Read-only evidence-first wiki researcher'
   sandbox_mode: read-only
-gemini:
+geminicli:
   tools: ['read', 'search']
 ---
 

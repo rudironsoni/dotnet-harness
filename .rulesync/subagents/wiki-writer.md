@@ -18,7 +18,7 @@ copilot:
   tools: ['read', 'search', 'execute', 'edit']
 codexcli:
   short-description: 'Wiki documentation writer with diagram support'
-gemini:
+geminicli:
   tools: ['read', 'search', 'execute', 'edit']
 ---
 

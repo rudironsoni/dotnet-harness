@@ -19,7 +19,7 @@ copilot:
 codexcli:
   short-description: 'Read-only wiki architecture specialist'
   sandbox_mode: read-only
-gemini:
+geminicli:
   tools: ['read', 'search']
 ---
 
