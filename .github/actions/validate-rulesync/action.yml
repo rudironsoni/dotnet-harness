@@ -30,4 +30,4 @@ runs:
     - name: Validate runtime contract
       shell: bash
       run: |
-        echo "Skipping runtime contract validation (DotNetAgentHarness.Tools not available in this repository)"
+        echo "Skipping runtime contract validation (not available)"

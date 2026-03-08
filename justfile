@@ -20,32 +20,6 @@ setup:
     @which rulesync > /dev/null || (echo "Please install rulesync (scripts/ci/install_rulesync.sh)"; exit 1)
     @echo "Setup complete."
 
-# --- Evaluation (DotNetAgentHarness.Evals) ---
-
-# Run the evaluation harness in deterministic fixture mode
-eval:
-    dotnet run --project src/DotNetAgentHarness.Evals/DotNetAgentHarness.Evals.csproj -- --dummy-mode true
-
-# Run the evaluation harness against a real provider (requires EVAL_OPENAI_KEY)
-eval-real:
-    dotnet run --project src/DotNetAgentHarness.Evals/DotNetAgentHarness.Evals.csproj -- --real-mode
-
-# Run the evaluation harness and update the baseline
-eval-update-baseline:
-    dotnet run --project src/DotNetAgentHarness.Evals/DotNetAgentHarness.Evals.csproj -- --update-baseline
-
-# Build the evaluation harness
-build-eval:
-    dotnet build src/DotNetAgentHarness.Evals/DotNetAgentHarness.Evals.csproj
-
-# CI-oriented eval entrypoint (defaults to real mode, 3 trials)
-ci-eval:
-    bash scripts/ci/run_evals.sh
-
-# Run tests for the evaluation harness
-test-eval:
-    dotnet test src/DotNetAgentHarness.Evals/DotNetAgentHarness.Evals.csproj
-
 # --- Code Generation & Validation ---
 
 # Validate subagents
@@ -77,7 +51,7 @@ lint-md:
     @which mdl > /dev/null && mdl -i node_modules -i src -i packages . || echo "Skipping lint-md (mdl not installed)"
 
 lint-frontmatter:
-    @echo "Skipping lint-frontmatter (DotNetAgentHarness.Tools not available)"
+    @echo "Skipping lint-frontmatter (no frontmatter linter available)"
 
 lint-spell:
     @which codespell > /dev/null && codespell -q 3 --skip="./.git,./.opencode,./.claude,./.gemini,./.codex,./.agent,./.vscode,./dist,./node_modules,./packages" || echo "Skipping lint-spell (codespell not installed)"

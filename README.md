@@ -13,26 +13,20 @@
 Install the toolkit in your .NET repository:
 
 ```bash
-# Install the tool
-dotnet new tool-manifest
-dotnet tool install Rudironsoni.DotNetAgentHarness
-
 # Bootstrap your repo with agents
-dotnet agent-harness bootstrap
+rulesync fetch rudironsoni/dotnet-agent-harness:.rulesync
+rulesync generate --targets "claudecode,codexcli,opencode,geminicli,antigravity,copilot,factorydroid" --features "*"
 ```
 
 That's it! The bootstrap command will install the appropriate agent configurations for your project.
 
 ## Available Commands
 
-After installation, use these commands:
+After installation, use these RuleSync commands:
 
-- `dotnet agent-harness bootstrap` - Install/update agent configurations
-- `dotnet agent-harness doctor` - Check installation health
-- `dotnet agent-harness recommend` - Get skill recommendations for your project
-- `dotnet agent-harness search <query>` - Search the skill catalog
-- `dotnet agent-harness prepare` - Assemble prompt bundles
-- `dotnet agent-harness validate` - Run validation checks
+- `rulesync generate` - Generate agent configurations
+- `rulesync generate --check` - Validate generation is deterministic
+- `rulesync install` - Install from declarative sources
 
 ## Documentation
 
