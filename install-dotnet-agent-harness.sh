@@ -39,11 +39,11 @@ SCRIPT_VERSION="1.0.0"
 
 # Hook scripts to download (based on hooks.json references)
 HOOK_SCRIPTS=(
-    "session-start.sh"
-    "post-edit-roslyn.sh"
-    "slopwatch-advisory.sh"
-    "inline-error-recovery.sh"
-    "error-recovery.sh"
+    "dotnet-agent-harness-session-start.sh"
+    "dotnet-agent-harness-post-edit-roslyn.sh"
+    "dotnet-agent-harness-slopwatch.sh"
+    "dotnet-agent-harness-inline-error-recovery.sh"
+    "dotnet-agent-harness-error-recovery.sh"
 )
 
 # =============================================================================
