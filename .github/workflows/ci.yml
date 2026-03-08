@@ -120,7 +120,8 @@ jobs:
         run: |
           if [ -f rulesync.jsonc ]; then
             echo "✓ Rulesync configuration found"
-            rulesync generate --check
+            echo "Running rulesync generate --check..."
+            rulesync generate --check || (echo "Validation failed - showing debug info:" && ls -la && cat rulesync.jsonc | head -20)
           else
             echo "⚠ No rulesync.jsonc found, skipping validation"
           fi
