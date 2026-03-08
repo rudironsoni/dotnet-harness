@@ -129,7 +129,7 @@ jobs:
         run: |
           if [ -f rulesync.jsonc ]; then
             echo "Testing rulesync generate --dry-run..."
-            rulesync generate --dry-run --targets "claudecode,copilot,opencode,geminicli,factorydroid,codexcli,antigravity" --features "*"
+            rulesync generate --dry-run
           else
             echo "⚠ No rulesync.jsonc, skipping generate test"
           fi
