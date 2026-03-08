@@ -150,23 +150,39 @@ jobs:
             ## Release ${{ needs.auto-tag.outputs.tag }}
             
             ### Installation
+            
+            #### Via GitHub Packages (Recommended)
             ```bash
-            dotnet tool install -g dotnet-agent-harness
+dotnet tool install -g dotnet-agent-harness \
+  --add-source https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
             ```
             
-            ### NuGet Package
+            #### Via GitHub Releases
+            Download the `.nupkg` from this release and install locally:
+            ```bash
+dotnet tool install -g dotnet-agent-harness \
+  --add-source ./path/to/download
+            ```
+            
+            ### Prerequisites
+            - .NET 9.0 SDK or later
+            - Node.js 22 or later (for rulesync)
+            
+            ### Package Contents
             - DotnetAgentHarness.Cli.${{ needs.auto-tag.outputs.version }}.nupkg
             - rules-bundle.zip
           files: |
             artifacts/*.nupkg
             rules-bundle.zip
 
-  # Job 5: Publish to NuGet
+  # Job 5: Publish to GitHub Packages
   publish:
-    name: Publish to NuGet
+    name: Publish to GitHub Packages
     needs: [release]
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && secrets.NUGET_API_KEY != ''
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    permissions:
+      packages: write
     steps:
       - name: Download artifacts
         uses: actions/download-artifact@v4
@@ -179,9 +195,9 @@ jobs:
         with:
           dotnet-version: '9.0.x'
 
-      - name: Publish to NuGet
+      - name: Publish to GitHub Packages
         run: |
           dotnet nuget push artifacts/*.nupkg \
-            --api-key ${{ secrets.NUGET_API_KEY }} \
-            --source https://api.nuget.org/v3/index.json \
+            --api-key ${{ secrets.GITHUB_TOKEN }} \
+            --source https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json \
             --skip-duplicate
