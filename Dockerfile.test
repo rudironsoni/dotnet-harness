@@ -78,10 +78,7 @@ COPY --chmod=755 docker/test-scripts/ /usr/local/lib/rulesync-tests/
 RUN ln -s /usr/local/lib/rulesync-tests/validate-target.sh /usr/local/bin/validate-target && \
     ln -s /usr/local/lib/rulesync-tests/validate-all.sh /usr/local/bin/validate-all && \
     ln -s /usr/local/lib/rulesync-tests/check-determinism.sh /usr/local/bin/check-determinism && \
-    ln -s /usr/local/lib/rulesync-tests/validate-doc-contract.sh /usr/local/bin/validate-doc-contract && \
-    ln -s /usr/local/lib/rulesync-tests/test-skills.sh /usr/local/bin/test-skills && \
-    ln -s /usr/local/lib/rulesync-tests/test-commands.sh /usr/local/bin/test-commands && \
-    ln -s /usr/local/lib/rulesync-tests/test-subagents.sh /usr/local/bin/test-subagents
+    ln -s /usr/local/lib/rulesync-tests/validate-doc-contract.sh /usr/local/bin/validate-doc-contract
 
 # Create workspace directory
 WORKDIR /workspace
