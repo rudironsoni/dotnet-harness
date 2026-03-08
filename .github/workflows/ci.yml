@@ -91,7 +91,6 @@ jobs:
   rulesync:
     name: Validate RuleSync
     runs-on: ubuntu-latest
-    continue-on-error: true
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -121,21 +120,19 @@ jobs:
         run: |
           if [ -f rulesync.jsonc ]; then
             echo "✓ Rulesync configuration found"
-            rulesync --check || echo "⚠ Rulesync check completed with warnings" && true
+            rulesync --check
           else
             echo "⚠ No rulesync.jsonc found, skipping validation"
           fi
-        continue-on-error: true
 
       - name: Test rulesync generate (dry-run)
         run: |
           if [ -f rulesync.jsonc ]; then
             echo "Testing rulesync generate --dry-run..."
-            rulesync generate --dry-run --targets "claudecode,copilot,opencode,geminicli,factorydroid,codexcli,antigravity" --features "*" || echo "⚠ Generate dry-run completed with warnings" && true
+            rulesync generate --dry-run --targets "claudecode,copilot,opencode,geminicli,factorydroid,codexcli,antigravity" --features "*"
           else
             echo "⚠ No rulesync.jsonc, skipping generate test"
           fi
-        continue-on-error: true
 
   # Job 4: Build & Test CLI
   build:
