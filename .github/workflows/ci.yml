@@ -171,11 +171,7 @@ jobs:
         run: dotnet build dotnet-agent-harness.slnx --no-restore -c Release
 
       - name: Test
-        run: |
-          dotnet test dotnet-agent-harness.slnx \
-            --no-build -c Release \
-            --logger trx \
-            --results-directory TestResults
+        run: dotnet test dotnet-agent-harness.slnx --no-build -c Release --logger trx --results-directory TestResults
 
       - name: Pack
         if: matrix.os == 'ubuntu-latest'
