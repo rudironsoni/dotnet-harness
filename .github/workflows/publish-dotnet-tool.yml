@@ -37,7 +37,7 @@ jobs:
       
       - name: Install RuleSync
         run: |
-          curl -L https://github.com/rudironsoni/rulesync/releases/latest/download/rulesync-linux-x64 -o /usr/local/bin/rulesync
+          curl -L https://github.com/dyoshikawa/rulesync/releases/latest/download/rulesync-linux-x64 -o /usr/local/bin/rulesync
           chmod +x /usr/local/bin/rulesync
       
       - name: Generate bundles
