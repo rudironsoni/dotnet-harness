@@ -52,13 +52,14 @@ HOOK_SCRIPTS=(
 
 if [ -t 1 ]; then
     # Terminal supports colors
-    COLOR_RESET='\033[0m'
-    COLOR_RED='\033[0;31m'
-    COLOR_GREEN='\033[0;32m'
-    COLOR_YELLOW='\033[1;33m'
-    COLOR_BLUE='\033[0;34m'
-    COLOR_CYAN='\033[0;36m'
-    COLOR_BOLD='\033[1m'
+    # Use $'...' syntax to properly interpret escape sequences
+    COLOR_RESET=$'\033[0m'
+    COLOR_RED=$'\033[0;31m'
+    COLOR_GREEN=$'\033[0;32m'
+    COLOR_YELLOW=$'\033[1;33m'
+    COLOR_BLUE=$'\033[0;34m'
+    COLOR_CYAN=$'\033[0;36m'
+    COLOR_BOLD=$'\033[1m'
 else
     # No color support
     COLOR_RESET=''
