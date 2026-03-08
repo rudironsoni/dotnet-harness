@@ -76,7 +76,7 @@ jobs:
   # Job 3: Build and pack
   build:
     name: Build & Pack
-    needs: [wait-for-ci, auto-tag]
+    needs: [verify-ci, auto-tag]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
