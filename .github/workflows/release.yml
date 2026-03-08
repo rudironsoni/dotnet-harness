@@ -18,11 +18,9 @@ env:
   DOTNET_CLI_TELEMETRY_OPTOUT: true
 
 jobs:
-  # Job 1: Wait for CI (skip for tag pushes, assume CI passed on main)
+  # Job 1: Wait for CI
   wait-for-ci:
     name: Wait for CI
-    # Skip for tag pushes - CI already ran on main
-    if: github.ref_type != 'tag'
     runs-on: ubuntu-latest
     steps:
       - name: Wait for CI workflow
@@ -33,11 +31,10 @@ jobs:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           wait-interval: 10
 
-  # Job 2: Auto-tag (skip for tag pushes - tag already exists)
+  # Job 2: Auto-tag
   auto-tag:
     name: Auto Tag
     needs: [wait-for-ci]
-    if: github.ref_type != 'tag'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -86,10 +83,6 @@ jobs:
   build:
     name: Build & Pack
     needs: [wait-for-ci, auto-tag]
-    # Run if auto-tag created a tag, OR if triggered by a tag push
-    if: |
-      always() && 
-      (needs.auto-tag.outputs.tag != '' || github.ref_type == 'tag')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
