@@ -1,0 +1,197 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  NODE_VERSION: '20'
+
+jobs:
+  # Job 1: Safety Checks (from repo-safety.yml + dependency-review.yml)
+  safety:
+    name: Safety Checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check no .env files committed
+        run: |
+          if [ -f .env ]; then
+            echo "❌ Error: .env file should not be committed"
+            exit 1
+          fi
+          echo "✓ No .env file found"
+
+      - name: Dependency Review
+        if: github.event_name == 'pull_request'
+        uses: actions/dependency-review-action@v4
+        with:
+          fail-on-severity: moderate
+
+  # Job 2: Lint & Format (from lint.yml)
+  lint:
+    name: Lint & Format
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Cache npm
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ env.NODE_VERSION }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-${{ env.NODE_VERSION }}-
+
+      - name: Install dependencies
+        run: |
+          if [ -f package.json ]; then
+            npm ci
+          fi
+
+      - name: Run lint-staged (on changed files)
+        run: |
+          if [ -f package.json ]; then
+            if npm run | grep -q "lint"; then
+              npm run lint
+            else
+              echo "No lint script found, skipping"
+            fi
+          fi
+
+      - name: Check shell scripts
+        run: |
+          if command -v shellcheck &> /dev/null; then
+            shellcheck install-dotnet-agent-harness.sh || true
+          else
+            echo "shellcheck not installed, skipping"
+          fi
+
+      - name: Check code formatting
+        run: |
+          if command -v dotnet &> /dev/null && [ -f "dotnet-agent-harness.slnx" ]; then
+            dotnet format --verify-no-changes --severity warn || true
+          fi
+
+  # Job 3: RuleSync Validation (from rulesync-validate.yml)
+  rulesync:
+    name: Validate RuleSync
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Cache npm
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ env.NODE_VERSION }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-${{ env.NODE_VERSION }}-
+
+      - name: Install rulesync
+        run: npm install -g @codewyre/rulesync
+
+      - name: Check rulesync version
+        run: |
+          echo "Checking rulesync version..."
+          rulesync --version
+
+      - name: Validate rulesync configuration
+        run: |
+          if [ -f rulesync.jsonc ]; then
+            echo "✓ Rulesync configuration found"
+            rulesync --check
+          else
+            echo "⚠ No rulesync.jsonc found, skipping validation"
+          fi
+
+      - name: Test rulesync generate (dry-run)
+        run: |
+          if [ -f rulesync.jsonc ]; then
+            echo "Testing rulesync generate --dry-run..."
+            rulesync generate --dry-run --targets "claudecode,copilot,opencode,geminicli,factorydroid,codexcli,antigravity" --features "*"
+          else
+            echo "⚠ No rulesync.jsonc, skipping generate test"
+          fi
+
+  # Job 4: Build & Test CLI
+  build:
+    name: Build & Test
+    needs: [safety, lint, rulesync]
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Restore
+        run: dotnet restore dotnet-agent-harness.slnx
+
+      - name: Build
+        run: dotnet build dotnet-agent-harness.slnx --no-restore -c Release
+
+      - name: Test
+        run: |
+          dotnet test dotnet-agent-harness.slnx \
+            --no-build -c Release \
+            --logger trx \
+            --results-directory TestResults
+
+      - name: Pack
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          dotnet pack src/DotnetAgentHarness.Cli/ \
+            --no-build -c Release \
+            -o artifacts
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results-${{ matrix.os }}
+          path: TestResults/**/*.trx
+
+      - name: Upload NuGet packages
+        uses: actions/upload-artifact@v4
+        if: matrix.os == 'ubuntu-latest'
+        with:
+          name: nuget-packages
+          path: artifacts/*.nupkg
+          retention-days: 30
