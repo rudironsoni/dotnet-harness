@@ -4,9 +4,16 @@
 
 set -uo pipefail
 
-# Configuration
-MCP_CONFIG="${MCP_CONFIG:-.rulesync/mcp.json}"
+# Get the directory where this script is located
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SCRIPT_NAME="$(basename "$0")"
+
+# Configuration - use script location to find mcp.json, fall back to relative path
+if [ -f "${SCRIPT_DIR}/../mcp.json" ]; then
+    MCP_CONFIG="${SCRIPT_DIR}/../mcp.json"
+else
+    MCP_CONFIG="${MCP_CONFIG:-.rulesync/mcp.json}"
+fi
 
 # Colors for output (if terminal)
 if [ -t 1 ]; then
