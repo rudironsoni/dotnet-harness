@@ -38,6 +38,7 @@ rm -rf \
     .agent \
     .claude \
     .codex \
+    .factory \
     .gemini \
     .opencode \
     .vscode \
@@ -73,7 +74,8 @@ validate_target_output() {
             [[ -d ".claude/skills" ]] || { log_warn "Missing .claude/skills (may be expected if no skills)"; }
             ;;
         opencode)
-            [[ -f "AGENTS.md" ]] || { log_error "Missing AGENTS.md"; failed=1; }
+            # RuleSync generates .opencode/agent/ and other directories under .opencode/
+            # It does NOT generate root AGENTS.md for opencode target
             [[ -d ".opencode/agent" ]] || { log_error "Missing .opencode/agent"; failed=1; }
             ;;
         copilot)
@@ -88,8 +90,10 @@ validate_target_output() {
             [[ -d ".codex/agents" ]] || { log_error "Missing .codex/agents"; failed=1; }
             ;;
         factorydroid)
-            [[ -d ".agent/rules" ]] || { log_error "Missing .agent/rules"; failed=1; }
-            [[ -d ".agent/skills" ]] || { log_warn "Missing .agent/skills (may be expected)"; }
+            # RuleSync generates .factory/ directory for factorydroid target
+            # Contains: mcp.json, settings.json, and rules/ subdirectory
+            [[ -d ".factory" ]] || { log_error "Missing .factory directory"; failed=1; }
+            [[ -f ".factory/mcp.json" ]] || { log_error "Missing .factory/mcp.json"; failed=1; }
             ;;
         antigravity)
             [[ -d ".gemini/antigravity/skills" ]] || { log_warn "Missing .gemini/antigravity/skills (may be expected)"; }
