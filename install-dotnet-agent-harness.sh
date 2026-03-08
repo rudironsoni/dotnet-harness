@@ -230,7 +230,7 @@ make_executable() {
 # =============================================================================
 
 parse_args() {
-    SOURCE="$DEFAULT_SOURCE"
+    SOURCE="${DEFAULT_SOURCE}"
     TARGETS="$DEFAULT_TARGETS"
     INSTALL_PATH="$DEFAULT_PATH"
 
