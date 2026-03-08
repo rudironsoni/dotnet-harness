@@ -50,7 +50,7 @@ HOOK_SCRIPTS=(
 # Color Output
 # =============================================================================
 
-if [ -t 1 ]; then
+if [[ -t 1 ]]; then
     # Terminal supports colors
     # Use $'...' syntax to properly interpret escape sequences
     COLOR_RESET=$'\033[0m'
@@ -151,8 +151,8 @@ command_exists() {
 validate_source() {
     local source="$1"
     # Basic validation: must contain exactly one slash
-    if [[ ! "$source" =~ ^[^/]+/[^/]+$ ]]; then
-        log_error "Invalid source format: $source"
+    if [[ ! "${source}" =~ ^[^/]+/[^/]+$ ]]; then
+        log_error "Invalid source format: ${source}"
         log_error "Expected format: owner/repo"
         exit 1
     fi
@@ -161,14 +161,14 @@ validate_source() {
 validate_path() {
     local path="$1"
     # Check if path is writable
-    if [[ ! -d "$path" ]]; then
+    if [[ ! -d "${path}" ]]; then
         log_info "Creating directory: $path"
-        if ! mkdir -p "$path"; then
+        if ! mkdir -p "${path}"; then
             log_error "Failed to create directory: $path"
             exit 1
         fi
     fi
-    if [[ ! -w "$path" ]]; then
+    if [[ ! -w "${path}" ]]; then
         log_error "Directory is not writable: $path"
         exit 1
     fi
@@ -184,12 +184,12 @@ download_hook_script() {
     local http_code
 
     temp_file=$(mktemp)
-    trap "rm -f '$temp_file'" RETURN
+    trap "rm -f '${temp_file}'" RETURN
 
     log_info "Downloading ${script_name}..."
 
     # Download with curl, capture HTTP status code
-    http_code=$(curl -sL -w "%{http_code}" -o "$temp_file" "$url" 2>/dev/null)
+    http_code=$(curl -sL -w "%{http_code}" -o "${temp_file}" "${url}" 2>/dev/null)
 
     if [[ "$http_code" -ne 200 ]]; then
         log_error "Failed to download ${script_name} (HTTP ${http_code})"
@@ -198,17 +198,17 @@ download_hook_script() {
     fi
 
     # Validate it's a shell script
-    if [[ ! -s "$temp_file" ]]; then
+    if [[ ! -s "${temp_file}" ]]; then
         log_error "Downloaded file is empty: ${script_name}"
         return 1
     fi
 
-    if ! head -1 "$temp_file" | grep -qE '^#!.*(bash|sh)'; then
+    if ! head -1 "${temp_file}" | grep -qE '^#!.*(bash|sh)'; then
         log_warning "Downloaded file doesn't look like a shell script: ${script_name}"
     fi
 
     # Move to final location
-    if ! mv "$temp_file" "$output_path"; then
+    if ! mv "${temp_file}" "$output_path"; then
         log_error "Failed to write: ${output_path}"
         return 1
     fi
