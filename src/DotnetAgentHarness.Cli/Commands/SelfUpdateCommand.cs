@@ -17,22 +17,22 @@ public class SelfUpdateCommand : Command
 
         this.SetHandler(async (bool force) =>
         {
-            await this.ExecuteAsync(force);
+            await ExecuteAsync(force);
         }, forceOption);
     }
 
-    private async Task ExecuteAsync(bool force)
+    private static async Task ExecuteAsync(bool force)
     {
-        Console.WriteLine("Updating dotnet-agent-harness tool...");
-        Console.WriteLine();
+        await Console.Out.WriteLineAsync("Updating dotnet-agent-harness tool...");
+        await Console.Out.WriteLineAsync();
 
         if (!force)
         {
-            Console.Write("  This will update the global tool. Continue? [y/N] ");
+            await Console.Out.WriteAsync("  This will update the global tool. Continue? [y/N] ");
             string? response = Console.ReadLine();
             if (!response?.Equals("y", StringComparison.OrdinalIgnoreCase) == true)
             {
-                Console.WriteLine("Update cancelled.");
+                await Console.Out.WriteLineAsync("Update cancelled.");
                 return;
             }
         }
@@ -41,30 +41,30 @@ public class SelfUpdateCommand : Command
         {
             ProcessRunner runner = new();
 
-            Console.WriteLine("  Running: dotnet tool update -g dotnet-agent-harness");
+            await Console.Out.WriteLineAsync("  Running: dotnet tool update -g dotnet-agent-harness");
             ProcessResult result = await runner.RunAsync(
                 "dotnet",
                 "tool update -g dotnet-agent-harness");
 
             if (result.ExitCode != 0)
             {
-                Console.Error.WriteLine($"  Update failed: {result.Error}");
-                Console.Error.WriteLine();
-                Console.Error.WriteLine("You can manually update with:");
-                Console.Error.WriteLine("  dotnet tool update -g dotnet-agent-harness");
+                await Console.Error.WriteLineAsync($"  Update failed: {result.Error}");
+                await Console.Error.WriteLineAsync();
+                await Console.Error.WriteLineAsync("You can manually update with:");
+                await Console.Error.WriteLineAsync("  dotnet tool update -g dotnet-agent-harness");
                 Environment.Exit(1);
             }
 
-            Console.WriteLine();
-            Console.WriteLine("Self-update complete!");
-            Console.WriteLine("Run 'dotnet-agent-harness --version' to verify.");
+            await Console.Out.WriteLineAsync();
+            await Console.Out.WriteLineAsync("Self-update complete!");
+            await Console.Out.WriteLineAsync("Run 'dotnet-agent-harness --version' to verify.");
         }
         catch (Exception ex)
         {
-            Console.Error.WriteLine($"Error: {ex.Message}");
-            Console.Error.WriteLine();
-            Console.Error.WriteLine("You can manually update with:");
-            Console.Error.WriteLine("  dotnet tool update -g dotnet-agent-harness");
+            await Console.Error.WriteLineAsync($"Error: {ex.Message}");
+            await Console.Error.WriteLineAsync();
+            await Console.Error.WriteLineAsync("You can manually update with:");
+            await Console.Error.WriteLineAsync("  dotnet tool update -g dotnet-agent-harness");
             Environment.Exit(1);
         }
     }

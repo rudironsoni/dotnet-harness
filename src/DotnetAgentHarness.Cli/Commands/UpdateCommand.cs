@@ -51,27 +51,27 @@ public class UpdateCommand : Command
 
         if (!Directory.Exists(rulesyncPath))
         {
-            Console.Error.WriteLine("No installation found. Run 'install' first.");
+            await Console.Error.WriteLineAsync("No installation found. Run 'install' first.");
             Environment.Exit(1);
         }
 
-        Console.WriteLine("Updating dotnet-agent-harness toolkit...");
+        await Console.Out.WriteLineAsync("Updating dotnet-agent-harness toolkit...");
         if (dryRun)
         {
-            Console.WriteLine("[DRY RUN - No changes will be made]");
+            await Console.Out.WriteLineAsync("[DRY RUN - No changes will be made]");
         }
 
-        Console.WriteLine();
+        await Console.Out.WriteLineAsync();
 
         try
         {
             // Re-fetch and regenerate
-            Console.WriteLine("==> Fetching latest .rulesync...");
+            await Console.Out.WriteLineAsync("==> Fetching latest .rulesync...");
 
             // Note: This would need the source from config - simplified for now
-            Console.WriteLine("  ✓ Updated");
+            await Console.Out.WriteLineAsync("  ✓ Updated");
 
-            Console.WriteLine("==> Regenerating configuration...");
+            await Console.Out.WriteLineAsync("==> Regenerating configuration...");
             if (!dryRun)
             {
                 // Read targets from existing config or use defaults
@@ -83,14 +83,14 @@ public class UpdateCommand : Command
 
                 if (!result.Success)
                 {
-                    Console.Error.WriteLine($"  ✗ Update failed: {result.Error}");
+                    await Console.Error.WriteLineAsync($"  ✗ Update failed: {result.Error}");
                     Environment.Exit(1);
                 }
             }
 
-            Console.WriteLine("  ✓ Configuration updated");
+            await Console.Out.WriteLineAsync("  ✓ Configuration updated");
 
-            Console.WriteLine("==> Updating hook scripts...");
+            await Console.Out.WriteLineAsync("==> Updating hook scripts...");
             if (!dryRun)
             {
                 string source = "rudironsoni/dotnet-agent-harness"; // Should read from config
@@ -98,7 +98,7 @@ public class UpdateCommand : Command
 
                 if (!hooksResult.Success)
                 {
-                    Console.Error.WriteLine($"  ✗ Hook update failed: {hooksResult.ErrorMessage}");
+                    await Console.Error.WriteLineAsync($"  ✗ Hook update failed: {hooksResult.ErrorMessage}");
                     Environment.Exit(1);
                 }
 
@@ -109,14 +109,14 @@ public class UpdateCommand : Command
                 }
             }
 
-            Console.WriteLine("  ✓ Hooks updated");
+            await Console.Out.WriteLineAsync("  ✓ Hooks updated");
 
-            Console.WriteLine();
-            Console.WriteLine("Update complete!");
+            await Console.Out.WriteLineAsync();
+            await Console.Out.WriteLineAsync("Update complete!");
         }
         catch (Exception ex)
         {
-            Console.Error.WriteLine($"Error: {ex.Message}");
+            await Console.Error.WriteLineAsync($"Error: {ex.Message}");
             Environment.Exit(1);
         }
     }

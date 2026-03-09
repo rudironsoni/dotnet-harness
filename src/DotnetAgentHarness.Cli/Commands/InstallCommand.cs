@@ -83,119 +83,117 @@ public class InstallCommand : Command
     {
         string fullPath = Path.GetFullPath(path);
 
-        Console.WriteLine("Installing dotnet-agent-harness toolkit...");
-        Console.WriteLine($"  Source: {source}");
-        Console.WriteLine($"  Targets: {targets}");
-        Console.WriteLine($"  Path: {fullPath}");
+        await Console.Out.WriteLineAsync("Installing dotnet-agent-harness toolkit...");
+        await Console.Out.WriteLineAsync($"  Source: {source}");
+        await Console.Out.WriteLineAsync($"  Targets: {targets}");
+        await Console.Out.WriteLineAsync($"  Path: {fullPath}");
         if (dryRun)
         {
-            Console.WriteLine("  [DRY RUN - No changes will be made]");
+            await Console.Out.WriteLineAsync("  [DRY RUN - No changes will be made]");
         }
 
-        Console.WriteLine();
+        await Console.Out.WriteLineAsync();
 
         try
         {
             // Step 1: Check prerequisites
-            Console.WriteLine("==> Checking prerequisites...");
+            await Console.Out.WriteLineAsync("==> Checking prerequisites...");
             PrerequisiteResult prereqResult = await this.prerequisiteChecker.CheckAsync();
             if (!prereqResult.Success)
             {
-                Console.Error.WriteLine($"Error: {prereqResult.ErrorMessage}");
+                await Console.Error.WriteLineAsync($"Error: {prereqResult.ErrorMessage}");
                 Environment.Exit(1);
             }
 
-            Console.WriteLine($"  ✓ rulesync {prereqResult.RulesyncVersion} installed");
+            await Console.Out.WriteLineAsync($"  ✓ rulesync {prereqResult.RulesyncVersion} installed");
 
             // Step 2: Check for existing installation
             string rulesyncPath = Path.Combine(fullPath, ".rulesync");
             string backupPath = string.Empty;
 
-            if (Directory.Exists(rulesyncPath) && !force)
+            // S1066: Merge nested if statements
+            if (Directory.Exists(rulesyncPath) && !force && !dryRun)
             {
-                if (!dryRun)
+                await Console.Out.WriteAsync("  .rulesync directory already exists. Overwrite? [y/N] ");
+                string? response = Console.ReadLine();
+                if (!response?.Equals("y", StringComparison.OrdinalIgnoreCase) == true)
                 {
-                    Console.Write("  .rulesync directory already exists. Overwrite? [y/N] ");
-                    string? response = Console.ReadLine();
-                    if (!response?.Equals("y", StringComparison.OrdinalIgnoreCase) == true)
-                    {
-                        Console.WriteLine("Installation cancelled.");
-                        return;
-                    }
+                    await Console.Out.WriteLineAsync("Installation cancelled.");
+                    return;
                 }
             }
 
             // Step 3: Backup (unless dry-run)
             if (!dryRun)
             {
-                Console.WriteLine("==> Creating backup...");
+                await Console.Out.WriteLineAsync("==> Creating backup...");
                 backupPath = await this.transactionManager.BackupAsync(fullPath);
                 if (!string.IsNullOrEmpty(backupPath))
                 {
-                    Console.WriteLine($"  ✓ Backup created: {backupPath}");
+                    await Console.Out.WriteLineAsync($"  ✓ Backup created: {backupPath}");
                 }
             }
 
             // Step 4: Fetch .rulesync
-            Console.WriteLine("==> Fetching .rulesync...");
+            await Console.Out.WriteLineAsync("==> Fetching .rulesync...");
             if (!dryRun)
             {
                 RulesyncResult fetchResult = await this.rulesyncRunner.FetchAsync(source, fullPath);
                 if (!fetchResult.Success)
                 {
-                    Console.Error.WriteLine($"  ✗ Fetch failed: {fetchResult.Error}");
-                    await this.RollbackAsync(backupPath, fullPath);
+                    await Console.Error.WriteLineAsync($"  ✗ Fetch failed: {fetchResult.Error}");
+                    await this.RollbackAsync(backupPath);
                     Environment.Exit(1);
                 }
             }
 
-            Console.WriteLine($"  ✓ Fetched from {source}");
+            await Console.Out.WriteLineAsync($"  ✓ Fetched from {source}");
 
             // Step 5: Check for declarative sources
-            Console.WriteLine("==> Checking for declarative sources...");
+            await Console.Out.WriteLineAsync("==> Checking for declarative sources...");
             bool hasDeleteTrue = await this.configDetector.HasDeleteTrueAsync(fullPath);
             if (hasDeleteTrue)
             {
-                Console.WriteLine("  ✓ rulesync.jsonc has delete: true");
+                await Console.Out.WriteLineAsync("  ✓ rulesync.jsonc has delete: true");
             }
 
             // Step 6: Run rulesync install (for declarative sources)
-            Console.WriteLine("==> Installing declarative sources...");
+            await Console.Out.WriteLineAsync("==> Installing declarative sources...");
             if (!dryRun)
             {
                 RulesyncResult installResult = await this.rulesyncRunner.InstallAsync(fullPath);
                 if (!installResult.Success && verbose)
                 {
-                    Console.WriteLine($"  Note: {installResult.Error}");
+                    await Console.Out.WriteLineAsync($"  Note: {installResult.Error}");
                 }
             }
 
-            Console.WriteLine("  ✓ Install complete");
+            await Console.Out.WriteLineAsync("  ✓ Install complete");
 
             // Step 7: Run rulesync generate
-            Console.WriteLine("==> Generating configuration...");
+            await Console.Out.WriteLineAsync("==> Generating configuration...");
             if (!dryRun)
             {
                 RulesyncResult generateResult = await this.rulesyncRunner.GenerateAsync(targets, fullPath, hasDeleteTrue, dryRun);
                 if (!generateResult.Success)
                 {
-                    Console.Error.WriteLine($"  ✗ Generate failed: {generateResult.Error}");
-                    await this.RollbackAsync(backupPath, fullPath);
+                    await Console.Error.WriteLineAsync($"  ✗ Generate failed: {generateResult.Error}");
+                    await this.RollbackAsync(backupPath);
                     Environment.Exit(1);
                 }
             }
 
-            Console.WriteLine($"  ✓ Generated for: {targets}");
+            await Console.Out.WriteLineAsync($"  ✓ Generated for: {targets}");
 
             // Step 8: Download hooks
-            Console.WriteLine("==> Downloading hook scripts...");
+            await Console.Out.WriteLineAsync("==> Downloading hook scripts...");
             if (!dryRun)
             {
                 HookDownloadResult hooksResult = await this.hookDownloader.DownloadHooksAsync(HookScripts, source, fullPath);
                 if (!hooksResult.Success)
                 {
-                    Console.Error.WriteLine($"  ✗ Hook download failed: {hooksResult.ErrorMessage}");
-                    await this.RollbackAsync(backupPath, fullPath);
+                    await Console.Error.WriteLineAsync($"  ✗ Hook download failed: {hooksResult.ErrorMessage}");
+                    await this.RollbackAsync(backupPath);
                     Environment.Exit(1);
                 }
 
@@ -207,7 +205,7 @@ public class InstallCommand : Command
                 }
             }
 
-            Console.WriteLine($"  ✓ Downloaded {HookScripts.Length} hook scripts");
+            await Console.Out.WriteLineAsync($"  ✓ Downloaded {HookScripts.Length} hook scripts");
 
             // Step 9: Cleanup backup on success
             if (!dryRun && !string.IsNullOrEmpty(backupPath))
@@ -216,48 +214,48 @@ public class InstallCommand : Command
             }
 
             // Summary
-            Console.WriteLine();
-            Console.WriteLine("Installation Complete!");
-            Console.WriteLine();
-            Console.WriteLine("Configuration:");
-            Console.WriteLine($"  Source: {source}");
-            Console.WriteLine($"  Targets: {targets}");
-            Console.WriteLine($"  Path: {fullPath}/.rulesync");
-            Console.WriteLine();
-            Console.WriteLine("Next Steps:");
-            Console.WriteLine("  1. Review the generated configuration");
-            Console.WriteLine("  2. Restart your AI coding tool session");
-            Console.WriteLine("  3. Run 'rulesync generate --check' to verify");
+            await Console.Out.WriteLineAsync();
+            await Console.Out.WriteLineAsync("Installation Complete!");
+            await Console.Out.WriteLineAsync();
+            await Console.Out.WriteLineAsync("Configuration:");
+            await Console.Out.WriteLineAsync($"  Source: {source}");
+            await Console.Out.WriteLineAsync($"  Targets: {targets}");
+            await Console.Out.WriteLineAsync($"  Path: {fullPath}/.rulesync");
+            await Console.Out.WriteLineAsync();
+            await Console.Out.WriteLineAsync("Next Steps:");
+            await Console.Out.WriteLineAsync("  1. Review the generated configuration");
+            await Console.Out.WriteLineAsync("  2. Restart your AI coding tool session");
+            await Console.Out.WriteLineAsync("  3. Run 'rulesync generate --check' to verify");
         }
         catch (Exception ex)
         {
-            Console.Error.WriteLine($"\nError: {ex.Message}");
+            await Console.Error.WriteLineAsync($"\nError: {ex.Message}");
             if (verbose)
             {
-                Console.Error.WriteLine(ex.StackTrace);
+                await Console.Error.WriteLineAsync(ex.StackTrace);
             }
 
             Environment.Exit(1);
         }
     }
 
-    private async Task RollbackAsync(string backupPath, string fullPath)
+    private async Task RollbackAsync(string backupPath)
     {
         if (string.IsNullOrEmpty(backupPath))
         {
             return;
         }
 
-        Console.WriteLine("==> Rolling back changes...");
+        await Console.Out.WriteLineAsync("==> Rolling back changes...");
         try
         {
             await this.transactionManager.RestoreAsync(backupPath);
-            Console.WriteLine("  ✓ Rollback complete");
+            await Console.Out.WriteLineAsync("  ✓ Rollback complete");
         }
         catch (Exception ex)
         {
-            Console.Error.WriteLine($"  ✗ Rollback failed: {ex.Message}");
-            Console.Error.WriteLine($"  Manual restore may be needed from: {backupPath}");
+            await Console.Error.WriteLineAsync($"  ✗ Rollback failed: {ex.Message}");
+            await Console.Error.WriteLineAsync($"  Manual restore may be needed from: {backupPath}");
         }
     }
 }

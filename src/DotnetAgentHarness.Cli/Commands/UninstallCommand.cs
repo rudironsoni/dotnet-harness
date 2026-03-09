@@ -29,30 +29,30 @@ public class UninstallCommand : Command
 
         this.SetHandler(async (string path, bool force, bool clean) =>
         {
-            await this.ExecuteAsync(path, force, clean);
+            await ExecuteAsync(path, force, clean);
         }, pathOption, forceOption, cleanOption);
     }
 
-    private async Task ExecuteAsync(string path, bool force, bool clean)
+    private static async Task ExecuteAsync(string path, bool force, bool clean)
     {
         string fullPath = Path.GetFullPath(path);
         string rulesyncPath = Path.Combine(fullPath, ".rulesync");
 
         if (!Directory.Exists(rulesyncPath))
         {
-            Console.WriteLine("No installation found.");
+            await Console.Out.WriteLineAsync("No installation found.");
             return;
         }
 
-        Console.WriteLine($"Uninstalling dotnet-agent-harness toolkit from {fullPath}...");
+        await Console.Out.WriteLineAsync($"Uninstalling dotnet-agent-harness toolkit from {fullPath}...");
 
         if (!force)
         {
-            Console.Write("  Are you sure? [y/N] ");
+            await Console.Out.WriteAsync("  Are you sure? [y/N] ");
             string? response = Console.ReadLine();
             if (!response?.Equals("y", StringComparison.OrdinalIgnoreCase) == true)
             {
-                Console.WriteLine("Uninstall cancelled.");
+                await Console.Out.WriteLineAsync("Uninstall cancelled.");
                 return;
             }
         }
@@ -60,14 +60,14 @@ public class UninstallCommand : Command
         try
         {
             // Remove .rulesync directory
-            Console.WriteLine("  Removing .rulesync directory...");
+            await Console.Out.WriteLineAsync("  Removing .rulesync directory...");
             await Task.Run(() => Directory.Delete(rulesyncPath, true));
-            Console.WriteLine("  ✓ .rulesync removed");
+            await Console.Out.WriteLineAsync("  ✓ .rulesync removed");
 
             // Optionally clean generated files
             if (clean)
             {
-                Console.WriteLine("  Removing generated files...");
+                await Console.Out.WriteLineAsync("  Removing generated files...");
                 string[] filesToClean = new[]
                 {
                     "AGENTS.md",
@@ -85,22 +85,22 @@ public class UninstallCommand : Command
                     if (File.Exists(filePath))
                     {
                         File.Delete(filePath);
-                        Console.WriteLine($"    ✓ Removed {file}");
+                        await Console.Out.WriteLineAsync($"    ✓ Removed {file}");
                     }
                     else if (Directory.Exists(filePath))
                     {
                         Directory.Delete(filePath, true);
-                        Console.WriteLine($"    ✓ Removed {file}/");
+                        await Console.Out.WriteLineAsync($"    ✓ Removed {file}/");
                     }
                 }
             }
 
-            Console.WriteLine();
-            Console.WriteLine("Uninstall complete!");
+            await Console.Out.WriteLineAsync();
+            await Console.Out.WriteLineAsync("Uninstall complete!");
         }
         catch (Exception ex)
         {
-            Console.Error.WriteLine($"Error: {ex.Message}");
+            await Console.Error.WriteLineAsync($"Error: {ex.Message}");
             Environment.Exit(1);
         }
     }
