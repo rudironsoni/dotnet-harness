@@ -1,0 +1,21 @@
+bug:
+  - head-branch: ['^fix/', '^bugfix/', '^hotfix/']
+  - title: ['^fix:', '^bugfix:', '^hotfix:']
+
+feature:
+  - head-branch: ['^feat/', '^feature/']
+  - title: ['^feat:', '^feature:']
+
+documentation:
+  - head-branch: ['^docs/']
+  - title: ['^docs:', '^doc:']
+  - files:
+      - '*.md'
+      - 'docs/**'
+
+improvement:
+  - head-branch: ['^refactor/', '^perf/', '^improve/']
+  - title: ['^refactor:', '^perf:', '^improve:', '^perf\\(']
+
+breaking-change:
+  - title: ['^BREAKING CHANGE:', '^\\w+\\!:']
