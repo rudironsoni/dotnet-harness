@@ -42,10 +42,18 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Get version from CLI project
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Restore tools
+        run: dotnet tool restore
+
+      - name: Get version from GitVersion
         id: version
         run: |
-          VERSION=$(grep -oP '(?<=<Version>)[^<]+' src/DotnetAgentHarness.Cli/DotnetAgentHarness.Cli.csproj)
+          VERSION=$(dotnet dotnet-gitversion /showvariable SemVer)
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "Detected version: $VERSION"
 
