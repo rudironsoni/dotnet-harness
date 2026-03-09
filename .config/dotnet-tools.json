@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "isRoot": true,
+  "tools": {
+    "gitreleasemanager.tool": {
+      "version": "0.18.0",
+      "commands": [
+        "grm"
+      ],
+      "rollForward": false
+    }
+  }
+}

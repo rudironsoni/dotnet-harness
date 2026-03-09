@@ -1,0 +1,56 @@
+# GitReleaseManager Configuration
+# https://gittools.github.io/GitReleaseManager/docs/configuration
+
+create:
+  include-footer: true
+  footer-heading: "Where to get it"
+  footer-content: |
+    ## Installation
+    
+    ### Via NuGet
+    ```bash
+    dotnet tool install -g dotnet-agent-harness --version {milestone}
+    ```
+    
+    ### Via GitHub Packages
+    ```bash
+    dotnet tool install -g dotnet-agent-harness \
+      --add-source https://nuget.pkg.github.com/rudironsoni/index.json \
+      --version {milestone}
+    ```
+  
+  close-milestone: true
+  include-sha-section: true
+  sha-section-heading: "Commits in this Release"
+  sha-section-line-format: "- `{0}`: {1}"
+
+issue-labels-include:
+  - breaking-change
+  - feature
+  - improvement
+  - documentation
+  - bug
+
+issue-labels-exclude:
+  - duplicate
+  - question
+  - wontfix
+  - invalid
+  - release
+
+issue-labels-alias:
+  breaking-change: "⚠️ Breaking Changes"
+  feature: "✨ New Features"
+  improvement: "🔧 Improvements"
+  documentation: "📚 Documentation"
+  bug: "🐛 Bug Fixes"
+
+query-prerelease-issues: false
+
+export:
+  include-created-date-in-title: true
+  created-date-string-format: "yyyy-MM-dd"
+  perform-regex-removal: false
+
+milestone:
+  close: true
