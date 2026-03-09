@@ -36,7 +36,7 @@ jobs:
       - name: Get Version
         id: version
         run: |
-          VERSION=$(dotnet gitversion /showvariable SemVer)
+          VERSION=$(dotnet dotnet-gitversion /showvariable SemVer)
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "Milestone: $VERSION"
 
@@ -64,7 +64,7 @@ jobs:
           VERSION="${{ steps.version.outputs.version }}"
           
           # Create release using GRM
-          dotnet grm create \
+          dotnet dotnet-gitreleasemanager create \
             --owner ${{ github.repository_owner }} \
             --repository ${{ github.event.repository.name }} \
             --token $GITHUB_TOKEN \
@@ -73,7 +73,7 @@ jobs:
             --targetDirectory .
           
           # Upload assets
-          dotnet grm addasset \
+          dotnet dotnet-gitreleasemanager addasset \
             --owner ${{ github.repository_owner }} \
             --repository ${{ github.event.repository.name }} \
             --token $GITHUB_TOKEN \
