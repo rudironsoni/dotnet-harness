@@ -115,17 +115,16 @@ public class ConfigDetectorTests : IDisposable
 
     protected virtual void Dispose(bool disposing)
     {
-        if (!this.disposedValue)
+        if (this.disposedValue)
         {
-            if (disposing)
-            {
-                if (Directory.Exists(this.testDir))
-                {
-                    Directory.Delete(this.testDir, true);
-                }
-            }
-
-            this.disposedValue = true;
+            return;
         }
+
+        if (disposing && Directory.Exists(this.testDir))
+        {
+            Directory.Delete(this.testDir, true);
+        }
+
+        this.disposedValue = true;
     }
 }
