@@ -2,12 +2,6 @@
   "version": 1,
   "isRoot": true,
   "tools": {
-    "rudironsoni.dotnetagentharness": {
-      "version": "1.0.0",
-      "commands": [
-        "dotnet-agent-harness"
-      ]
-    },
     "gitreleasemanager.tool": {
       "version": "0.18.0",
       "commands": [
