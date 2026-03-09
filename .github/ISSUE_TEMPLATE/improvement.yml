@@ -1,0 +1,32 @@
+name: "🔧 Improvement"
+description: "Suggest an improvement to existing functionality"
+labels: ["improvement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting an improvement!
+        
+  - type: textarea
+    id: description
+    attributes:
+      label: "Improvement Description"
+      description: "What would you like to improve?"
+    validations:
+      required: true
+      
+  - type: textarea
+    id: current
+    attributes:
+      label: "Current Behavior"
+      description: "How does it work currently?"
+    validations:
+      required: true
+      
+  - type: textarea
+    id: proposed
+    attributes:
+      label: "Proposed Behavior"
+      description: "How should it work instead?"
+    validations:
+      required: true

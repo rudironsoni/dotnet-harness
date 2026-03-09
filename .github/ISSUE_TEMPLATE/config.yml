@@ -1,0 +1,10 @@
+# Force template use - disable blank issues
+blank_issues_enabled: false
+
+contact_links:
+  - name: "📖 Documentation"
+    url: https://github.com/rudironsoni/dotnet-agent-harness/blob/main/README.md
+    about: Check the documentation before opening an issue
+  - name: "💬 Discussions"
+    url: https://github.com/rudironsoni/dotnet-agent-harness/discussions
+    about: Ask questions and discuss ideas here

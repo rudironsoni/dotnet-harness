@@ -1,0 +1,49 @@
+name: "🐛 Bug Report"
+description: "Report something that's not working correctly"
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug!
+        
+  - type: textarea
+    id: description
+    attributes:
+      label: "Bug Description"
+      description: "A clear description of what the bug is"
+      placeholder: "When I run the install command, it fails with..."
+    validations:
+      required: true
+      
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: "Steps to Reproduce"
+      description: "Steps to reproduce the behavior"
+      placeholder: |
+        1. Run command '...'
+        2. With options '...'
+        3. See error
+    validations:
+      required: true
+      
+  - type: textarea
+    id: expected
+    attributes:
+      label: "Expected Behavior"
+      description: "What you expected to happen"
+    validations:
+      required: true
+      
+  - type: textarea
+    id: environment
+    attributes:
+      label: "Environment"
+      description: "Your environment details"
+      value: |
+        - OS: [e.g., Ubuntu 24.04]
+        - .NET Version: [e.g., 9.0.100]
+        - Tool Version: [e.g., 0.2.1]
+    validations:
+      required: true
