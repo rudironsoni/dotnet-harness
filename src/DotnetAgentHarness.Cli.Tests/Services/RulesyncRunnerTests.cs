@@ -8,6 +8,7 @@ using Xunit;
 public class RulesyncRunnerTests : IDisposable
 {
     private readonly string testDir;
+    private bool disposedValue;
 
     public RulesyncRunnerTests()
     {
@@ -17,10 +18,8 @@ public class RulesyncRunnerTests : IDisposable
 
     public void Dispose()
     {
-        if (Directory.Exists(this.testDir))
-        {
-            Directory.Delete(this.testDir, true);
-        }
+        this.Dispose(true);
+        GC.SuppressFinalize(this);
     }
 
     [Fact]
@@ -66,5 +65,21 @@ public class RulesyncRunnerTests : IDisposable
         // Assert
         Assert.False(result.Success);
         Assert.Contains(".rulesync directory does not exist", result.Error);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!this.disposedValue)
+        {
+            if (disposing)
+            {
+                if (Directory.Exists(this.testDir))
+                {
+                    Directory.Delete(this.testDir, true);
+                }
+            }
+
+            this.disposedValue = true;
+        }
     }
 }

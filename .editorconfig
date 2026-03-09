@@ -197,6 +197,3 @@ dotnet_diagnostic.SA1650.severity = none
 
 # File naming (we use different conventions)
 dotnet_diagnostic.IDE1006.severity = none
-
-# Test-specific: Disable overly pedantic IDisposable pattern for xUnit tests
-dotnet_diagnostic.S3881.severity = none

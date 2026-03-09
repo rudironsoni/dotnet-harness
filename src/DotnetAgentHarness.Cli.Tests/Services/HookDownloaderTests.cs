@@ -9,6 +9,7 @@ public class HookDownloaderTests : IDisposable
 {
     private readonly HttpClient httpClient;
     private readonly HookDownloader downloader;
+    private bool disposedValue;
 
     public HookDownloaderTests()
     {
@@ -18,7 +19,8 @@ public class HookDownloaderTests : IDisposable
 
     public void Dispose()
     {
-        this.httpClient.Dispose();
+        this.Dispose(true);
+        GC.SuppressFinalize(this);
     }
 
     [Fact]
@@ -35,5 +37,18 @@ public class HookDownloaderTests : IDisposable
         // This test would need a mock HTTP server
         // For now, just verify the method signature is correct
         Assert.NotNull(this.downloader);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!this.disposedValue)
+        {
+            if (disposing)
+            {
+                this.httpClient.Dispose();
+            }
+
+            this.disposedValue = true;
+        }
     }
 }

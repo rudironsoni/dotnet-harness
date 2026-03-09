@@ -8,6 +8,7 @@ public class ConfigDetectorTests : IDisposable
 {
     private readonly string testDir;
     private readonly ConfigDetector detector;
+    private bool disposedValue;
 
     public ConfigDetectorTests()
     {
@@ -18,10 +19,8 @@ public class ConfigDetectorTests : IDisposable
 
     public void Dispose()
     {
-        if (Directory.Exists(this.testDir))
-        {
-            Directory.Delete(this.testDir, true);
-        }
+        this.Dispose(true);
+        GC.SuppressFinalize(this);
     }
 
     [Fact]
@@ -112,5 +111,21 @@ public class ConfigDetectorTests : IDisposable
 
         // Assert
         Assert.Equal(new[] { "claudecode", "copilot" }, result);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!this.disposedValue)
+        {
+            if (disposing)
+            {
+                if (Directory.Exists(this.testDir))
+                {
+                    Directory.Delete(this.testDir, true);
+                }
+            }
+
+            this.disposedValue = true;
+        }
     }
 }

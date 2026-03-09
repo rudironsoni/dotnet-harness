@@ -7,6 +7,7 @@ public class TransactionManagerTests : IDisposable
 {
     private readonly string testDir;
     private readonly TransactionManager manager;
+    private bool disposedValue;
 
     public TransactionManagerTests()
     {
@@ -17,10 +18,8 @@ public class TransactionManagerTests : IDisposable
 
     public void Dispose()
     {
-        if (Directory.Exists(this.testDir))
-        {
-            Directory.Delete(this.testDir, true);
-        }
+        this.Dispose(true);
+        GC.SuppressFinalize(this);
     }
 
     [Fact]
@@ -99,5 +98,21 @@ public class TransactionManagerTests : IDisposable
 
         // Assert
         Assert.False(Directory.Exists(backupPath));
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!this.disposedValue)
+        {
+            if (disposing)
+            {
+                if (Directory.Exists(this.testDir))
+                {
+                    Directory.Delete(this.testDir, true);
+                }
+            }
+
+            this.disposedValue = true;
+        }
     }
 }
