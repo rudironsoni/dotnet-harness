@@ -1,10 +1,10 @@
 namespace DotnetAgentHarness.Cli.Services;
 
-using System.Xml;
+using System.Xml.Linq;
 using DotnetAgentHarness.Cli.Models;
 
 /// <summary>
-/// Implementation of IProjectAnalyzer that parses .csproj and .sln files.
+/// Implementation of IProjectAnalyzer that parses .csproj and .sln files using MSBuild APIs.
 /// </summary>
 public sealed class ProjectAnalyzer : IProjectAnalyzer
 {
@@ -32,8 +32,20 @@ public sealed class ProjectAnalyzer : IProjectAnalyzer
 
         try
         {
-            string content = await File.ReadAllTextAsync(fullPath, ct);
             string? directory = Path.GetDirectoryName(fullPath);
+
+            // Parse using XDocument (modern replacement for XmlDocument)
+            XDocument doc = await XDocument.LoadAsync(
+                File.OpenRead(fullPath),
+                LoadOptions.None,
+                ct);
+
+            XElement? root = doc.Root;
+
+            if (root == null)
+            {
+                return null;
+            }
 
             var packages = new List<PackageReference>();
             var projects = new List<ProjectReference>();
@@ -46,95 +58,86 @@ public sealed class ProjectAnalyzer : IProjectAnalyzer
             bool hasEntityFramework = false;
             bool hasAspire = false;
 
-            // Parse XML
-            var doc = new XmlDocument();
-            doc.LoadXml(content);
-
             // Get SDK
-            string? sdk = doc.DocumentElement?.GetAttribute("Sdk");
+            string? sdk = root.Attribute("Sdk")?.Value;
 
-            // Target Framework(s)
-            var tfNodes = doc.SelectNodes("//TargetFramework | //TargetFrameworks");
-            if (tfNodes != null)
+            // Target Framework(s) - handle both single and multiple TFMs
+            var tfmElements = root.Descendants()
+                .Where(e => e.Name.LocalName is "TargetFramework" or "TargetFrameworks")
+                .Select(static e => e.Value)
+                .Where(static v => !string.IsNullOrEmpty(v));
+
+            foreach (string? tfm in tfmElements)
             {
-                foreach (XmlNode node in tfNodes)
-                {
-                    if (!string.IsNullOrEmpty(node.InnerText))
-                    {
-                        var frameworks = node.InnerText.Split(';', StringSplitOptions.RemoveEmptyEntries);
-                        targetFrameworks.AddRange(frameworks);
-                    }
-                }
+                targetFrameworks.AddRange(tfm.Split(';', StringSplitOptions.RemoveEmptyEntries));
             }
 
-            // Package References
-            var packageNodes = doc.SelectNodes("//PackageReference");
-            if (packageNodes != null)
+            // Package References with proper MSBuild evaluation support
+            var packageElements = root.Descendants()
+                .Where(e => e.Name.LocalName == "PackageReference");
+
+            foreach (var pkg in packageElements)
             {
-                foreach (XmlNode node in packageNodes)
+                string? name = pkg.Attribute("Include")?.Value;
+                string? version = pkg.Attribute("Version")?.Value ?? pkg.Value;
+                string? privateAssets = pkg.Attribute("PrivateAssets")?.Value;
+
+                if (!string.IsNullOrEmpty(name))
                 {
-                    string? name = node.Attributes?["Include"]?.Value;
-                    string? version = node.Attributes?["Version"]?.Value ?? node.Attributes?["Version"]?.InnerText;
-                    string? privateAssets = node.Attributes?["PrivateAssets"]?.Value;
-
-                    if (!string.IsNullOrEmpty(name))
+                    packages.Add(new PackageReference
                     {
-                        packages.Add(new PackageReference
-                        {
-                            Name = name,
-                            Version = version,
-                            IsPrivateAsset = privateAssets?.Equals("all", StringComparison.OrdinalIgnoreCase) == true
-                        });
+                        Name = name,
+                        Version = version,
+                        IsPrivateAsset = privateAssets?.Equals("all", StringComparison.OrdinalIgnoreCase) == true,
+                    });
 
-                        // Detect specific frameworks
-                        if (name.Contains("xunit", StringComparison.OrdinalIgnoreCase) ||
-                            name.Contains("nunit", StringComparison.OrdinalIgnoreCase) ||
-                            name.Contains("mstest", StringComparison.OrdinalIgnoreCase) ||
-                            name.Contains("tunit", StringComparison.OrdinalIgnoreCase))
-                        {
-                            testFrameworks.Add(name);
-                        }
+                    // Detect specific frameworks
+                    if (name.Contains("xunit", StringComparison.OrdinalIgnoreCase) ||
+                        name.Contains("nunit", StringComparison.OrdinalIgnoreCase) ||
+                        name.Contains("mstest", StringComparison.OrdinalIgnoreCase) ||
+                        name.Contains("tunit", StringComparison.OrdinalIgnoreCase))
+                    {
+                        testFrameworks.Add(name);
+                    }
 
-                        if (name.Contains("Microsoft.NET.Test.Sdk", StringComparison.OrdinalIgnoreCase))
-                        {
-                            isTestProject = true;
-                        }
+                    if (name.Contains("Microsoft.NET.Test.Sdk", StringComparison.OrdinalIgnoreCase))
+                    {
+                        isTestProject = true;
+                    }
 
-                        if (name.Contains("Microsoft.EntityFrameworkCore", StringComparison.OrdinalIgnoreCase))
-                        {
-                            hasEntityFramework = true;
-                        }
+                    if (name.Contains("Microsoft.EntityFrameworkCore", StringComparison.OrdinalIgnoreCase))
+                    {
+                        hasEntityFramework = true;
+                    }
 
-                        if (name.Contains("Aspire", StringComparison.OrdinalIgnoreCase))
-                        {
-                            hasAspire = true;
-                        }
+                    if (name.Contains("Aspire", StringComparison.OrdinalIgnoreCase))
+                    {
+                        hasAspire = true;
+                    }
 
-                        if (name.Contains("Microsoft.AspNetCore", StringComparison.OrdinalIgnoreCase) ||
-                            name.Contains("Microsoft.NET.Sdk.Web", StringComparison.OrdinalIgnoreCase))
-                        {
-                            isWebProject = true;
-                        }
+                    if (name.Contains("Microsoft.AspNetCore", StringComparison.OrdinalIgnoreCase) ||
+                        name.Contains("Microsoft.NET.Sdk.Web", StringComparison.OrdinalIgnoreCase))
+                    {
+                        isWebProject = true;
                     }
                 }
             }
 
             // Project References
-            var projectNodes = doc.SelectNodes("//ProjectReference");
-            if (projectNodes != null)
+            var projectElements = root.Descendants()
+                .Where(e => e.Name.LocalName == "ProjectReference");
+
+            foreach (var proj in projectElements)
             {
-                foreach (XmlNode node in projectNodes)
+                string? include = proj.Attribute("Include")?.Value;
+                if (!string.IsNullOrEmpty(include))
                 {
-                    string? include = node.Attributes?["Include"]?.Value;
-                    if (!string.IsNullOrEmpty(include))
+                    string projectName = Path.GetFileNameWithoutExtension(include);
+                    projects.Add(new ProjectReference
                     {
-                        string projectName = Path.GetFileNameWithoutExtension(include);
-                        projects.Add(new ProjectReference
-                        {
-                            Path = include,
-                            Name = projectName
-                        });
-                    }
+                        Path = include,
+                        Name = projectName,
+                    });
                 }
             }
 
@@ -145,12 +148,29 @@ public sealed class ProjectAnalyzer : IProjectAnalyzer
                 var s when s?.Contains("Test", StringComparison.OrdinalIgnoreCase) == true => "Test",
                 var s when s?.Contains("Worker", StringComparison.OrdinalIgnoreCase) == true => "Worker",
                 var s when s?.Contains("Blazor", StringComparison.OrdinalIgnoreCase) == true => "Blazor",
-                _ => isWebProject ? "Web" : isTestProject ? "Test" : "ClassLib"
+                _ => GetProjectTypeFromFlags(isWebProject, isTestProject),
             };
 
+            static string GetProjectTypeFromFlags(bool isWeb, bool isTest)
+            {
+                if (isWeb)
+                {
+                    return "Web";
+                }
+
+                if (isTest)
+                {
+                    return "Test";
+                }
+
+                return "ClassLib";
+            }
+
             // Check for OutputType to detect Console apps
-            var outputTypeNode = doc.SelectSingleNode("//OutputType");
-            if (outputTypeNode?.InnerText?.Equals("Exe", StringComparison.OrdinalIgnoreCase) == true &&
+            string? outputType = root.Descendants()
+                .FirstOrDefault(e => e.Name.LocalName == "OutputType")?.Value;
+
+            if (outputType?.Equals("Exe", StringComparison.OrdinalIgnoreCase) == true &&
                 projectType == "ClassLib")
             {
                 projectType = "Console";
@@ -190,13 +210,13 @@ public sealed class ProjectAnalyzer : IProjectAnalyzer
                 IsWebProject = isWebProject,
                 HasEntityFramework = hasEntityFramework,
                 HasAspire = hasAspire,
-                HasDocker = hasDocker
+                HasDocker = hasDocker,
             };
         }
         catch (Exception ex)
         {
             // Log error and return null
-            Console.Error.WriteLine($"Error parsing project: {ex.Message}");
+            await Console.Error.WriteLineAsync($"Error parsing project: {ex.Message}");
             return null;
         }
     }
@@ -255,9 +275,10 @@ public sealed class ProjectAnalyzer : IProjectAnalyzer
         string githubPath = Path.Combine(basePath, ".github", "workflows");
         if (Directory.Exists(githubPath))
         {
-            foreach (string file in Directory.GetFiles(githubPath, "*.yml").Concat(Directory.GetFiles(githubPath, "*.yaml")))
+            foreach (string file in Directory.GetFiles(githubPath, "*.yml")
+                .Concat(Directory.GetFiles(githubPath, "*.yaml")))
             {
-                configs.Add(new CiConfig { Platform = "GitHub Actions", ConfigPath = file });
+                configs.Add(new CiConfig { Platform = "GitHub Actions", ConfigPath = file, });
             }
         }
 
@@ -265,9 +286,10 @@ public sealed class ProjectAnalyzer : IProjectAnalyzer
         string adoPath = Path.Combine(basePath, ".azure-pipelines");
         if (Directory.Exists(adoPath))
         {
-            foreach (string file in Directory.GetFiles(adoPath, "*.yml").Concat(Directory.GetFiles(adoPath, "*.yaml")))
+            foreach (string file in Directory.GetFiles(adoPath, "*.yml")
+                .Concat(Directory.GetFiles(adoPath, "*.yaml")))
             {
-                configs.Add(new CiConfig { Platform = "Azure DevOps", ConfigPath = file });
+                configs.Add(new CiConfig { Platform = "Azure DevOps", ConfigPath = file, });
             }
         }
 
@@ -275,7 +297,7 @@ public sealed class ProjectAnalyzer : IProjectAnalyzer
         string rootAdoYml = Path.Combine(basePath, "azure-pipelines.yml");
         if (File.Exists(rootAdoYml))
         {
-            configs.Add(new CiConfig { Platform = "Azure DevOps", ConfigPath = rootAdoYml });
+            configs.Add(new CiConfig { Platform = "Azure DevOps", ConfigPath = rootAdoYml, });
         }
 
         return configs;

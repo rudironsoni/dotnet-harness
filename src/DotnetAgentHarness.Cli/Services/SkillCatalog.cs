@@ -1,22 +1,16 @@
 namespace DotnetAgentHarness.Cli.Services;
 
-using System.Text;
-using System.Text.RegularExpressions;
 using DotnetAgentHarness.Cli.Models;
+using Markdig;
+using Markdig.Extensions.Yaml;
+using Markdig.Syntax;
+using YamlDotNet.RepresentationModel;
 
 /// <summary>
 /// Implementation of ISkillCatalog that parses YAML frontmatter from markdown files.
 /// </summary>
-public sealed partial class SkillCatalog : ISkillCatalog
+public sealed class SkillCatalog : ISkillCatalog
 {
-    // Regex to match YAML frontmatter: --- at start and end
-    [GeneratedRegex(@"^---\s*\n(.*?)^---\s*\n(.*)$", RegexOptions.Singleline | RegexOptions.Multiline)]
-    private static partial Regex FrontmatterRegex();
-
-    // Regex to parse simple YAML key-value pairs
-    [GeneratedRegex(@"^(\w+):\s*(.*)$", RegexOptions.Multiline)]
-    private static partial Regex YamlKeyValueRegex();
-
     private readonly string basePath;
     private readonly string rulesyncPath;
 
@@ -43,11 +37,10 @@ public sealed partial class SkillCatalog : ISkillCatalog
             return skills;
         }
 
-        // Find all SKILL.md files recursively
         foreach (string skillFile in Directory.GetFiles(skillsPath, "SKILL.md", SearchOption.AllDirectories))
         {
             ct.ThrowIfCancellationRequested();
-            SkillInfo? skill = await this.ParseSkillFileAsync(skillFile, ct);
+            SkillInfo? skill = await ParseSkillFileAsync(skillFile, ct);
             if (skill != null)
             {
                 skills.Add(skill);
@@ -68,11 +61,10 @@ public sealed partial class SkillCatalog : ISkillCatalog
             return subagents;
         }
 
-        // Find all markdown files in subagents directory
         foreach (string subagentFile in Directory.GetFiles(subagentsPath, "*.md", SearchOption.TopDirectoryOnly))
         {
             ct.ThrowIfCancellationRequested();
-            SubagentInfo? subagent = await this.ParseSubagentFileAsync(subagentFile, ct);
+            SubagentInfo? subagent = await ParseSubagentFileAsync(subagentFile, ct);
             if (subagent != null)
             {
                 subagents.Add(subagent);
@@ -93,11 +85,10 @@ public sealed partial class SkillCatalog : ISkillCatalog
             return commands;
         }
 
-        // Find all markdown files in commands directory
         foreach (string commandFile in Directory.GetFiles(commandsPath, "*.md", SearchOption.TopDirectoryOnly))
         {
             ct.ThrowIfCancellationRequested();
-            CommandInfo? command = await this.ParseCommandFileAsync(commandFile, ct);
+            CommandInfo? command = await ParseCommandFileAsync(commandFile, ct);
             if (command != null)
             {
                 commands.Add(command);
@@ -120,7 +111,6 @@ public sealed partial class SkillCatalog : ISkillCatalog
         var skills = await this.GetSkillsAsync(ct);
         var results = skills.AsEnumerable();
 
-        // Apply query filter
         if (!string.IsNullOrWhiteSpace(query))
         {
             string normalizedQuery = query.ToLowerInvariant();
@@ -130,28 +120,24 @@ public sealed partial class SkillCatalog : ISkillCatalog
                 s.Tags.Any(t => t.Contains(normalizedQuery, StringComparison.OrdinalIgnoreCase)));
         }
 
-        // Apply category filter
         if (!string.IsNullOrWhiteSpace(category))
         {
             results = results.Where(s =>
                 s.Category?.Equals(category, StringComparison.OrdinalIgnoreCase) == true);
         }
 
-        // Apply subcategory filter
         if (!string.IsNullOrWhiteSpace(subcategory))
         {
             results = results.Where(s =>
                 s.Subcategory?.Equals(subcategory, StringComparison.OrdinalIgnoreCase) == true);
         }
 
-        // Apply complexity filter
         if (!string.IsNullOrWhiteSpace(complexity))
         {
             results = results.Where(s =>
                 s.Complexity?.Equals(complexity, StringComparison.OrdinalIgnoreCase) == true);
         }
 
-        // Apply platform filter
         if (!string.IsNullOrWhiteSpace(platform))
         {
             results = results.Where(s =>
@@ -282,18 +268,18 @@ public sealed partial class SkillCatalog : ISkillCatalog
             SkillsByCategory = skillsByCategory,
             SkillsByComplexity = skillsByComplexity,
             TotalTags = allTags.Distinct().Count(),
-            TopTags = topTags
+            TopTags = topTags,
         };
     }
 
-    private async Task<SkillInfo?> ParseSkillFileAsync(string filePath, CancellationToken ct)
+    private static async Task<SkillInfo?> ParseSkillFileAsync(string filePath, CancellationToken ct)
     {
         try
         {
             string content = await File.ReadAllTextAsync(filePath, ct);
-            var frontmatter = this.ParseFrontmatter(content);
+            var frontmatter = ParseFrontmatter(content);
 
-            if (frontmatter == null || !frontmatter.ContainsKey("name"))
+            if (frontmatter?.ContainsKey("name") != true)
             {
                 return null;
             }
@@ -302,22 +288,22 @@ public sealed partial class SkillCatalog : ISkillCatalog
 
             return new SkillInfo
             {
-                Name = frontmatter.GetValueOrDefault("name")?.ToString() ?? directoryName ?? "unknown",
-                Title = frontmatter.GetValueOrDefault("title")?.ToString(),
-                Category = frontmatter.GetValueOrDefault("category")?.ToString(),
-                Subcategory = frontmatter.GetValueOrDefault("subcategory")?.ToString(),
-                Description = frontmatter.GetValueOrDefault("description")?.ToString(),
-                Tags = this.ParseStringList(frontmatter.GetValueOrDefault("tags")),
-                Targets = this.ParseStringList(frontmatter.GetValueOrDefault("targets")),
-                Version = frontmatter.GetValueOrDefault("version")?.ToString(),
-                Author = frontmatter.GetValueOrDefault("author")?.ToString(),
-                Invocable = this.ParseBool(frontmatter.GetValueOrDefault("invocable")),
-                Complexity = frontmatter.GetValueOrDefault("complexity")?.ToString(),
-                RelatedSkills = this.ParseStringList(frontmatter.GetValueOrDefault("related_skills")),
+                Name = GetString(frontmatter, "name") ?? directoryName ?? "unknown",
+                Title = GetString(frontmatter, "title"),
+                Category = GetString(frontmatter, "category"),
+                Subcategory = GetString(frontmatter, "subcategory"),
+                Description = GetString(frontmatter, "description"),
+                Tags = GetStringList(frontmatter, "tags"),
+                Targets = GetStringList(frontmatter, "targets"),
+                Version = GetString(frontmatter, "version"),
+                Author = GetString(frontmatter, "author"),
+                Invocable = GetBool(frontmatter, "invocable"),
+                Complexity = GetString(frontmatter, "complexity"),
+                RelatedSkills = GetStringList(frontmatter, "related_skills"),
                 FilePath = filePath,
                 DirectoryPath = Path.GetDirectoryName(filePath),
-                LineCount = content.Split(['\n']).Length,
-                PlatformConfig = this.ParsePlatformBlocks(frontmatter)
+                LineCount = content.Split(new[] { "\r\n", "\n", "\r" }, StringSplitOptions.None).Length,
+                PlatformConfig = GetPlatformBlocks(frontmatter),
             };
         }
         catch
@@ -326,14 +312,14 @@ public sealed partial class SkillCatalog : ISkillCatalog
         }
     }
 
-    private async Task<SubagentInfo?> ParseSubagentFileAsync(string filePath, CancellationToken ct)
+    private static async Task<SubagentInfo?> ParseSubagentFileAsync(string filePath, CancellationToken ct)
     {
         try
         {
             string content = await File.ReadAllTextAsync(filePath, ct);
-            var frontmatter = this.ParseFrontmatter(content);
+            var frontmatter = ParseFrontmatter(content);
 
-            if (frontmatter == null || !frontmatter.ContainsKey("name"))
+            if (frontmatter?.ContainsKey("name") != true)
             {
                 return null;
             }
@@ -342,16 +328,16 @@ public sealed partial class SkillCatalog : ISkillCatalog
 
             return new SubagentInfo
             {
-                Name = frontmatter.GetValueOrDefault("name")?.ToString() ?? fileName,
-                Description = frontmatter.GetValueOrDefault("description")?.ToString(),
-                Targets = this.ParseStringList(frontmatter.GetValueOrDefault("targets")),
-                Version = frontmatter.GetValueOrDefault("version")?.ToString(),
-                Author = frontmatter.GetValueOrDefault("author")?.ToString(),
-                Role = frontmatter.GetValueOrDefault("role")?.ToString(),
-                Tags = this.ParseStringList(frontmatter.GetValueOrDefault("tags")),
+                Name = GetString(frontmatter, "name") ?? fileName,
+                Description = GetString(frontmatter, "description"),
+                Targets = GetStringList(frontmatter, "targets"),
+                Version = GetString(frontmatter, "version"),
+                Author = GetString(frontmatter, "author"),
+                Role = GetString(frontmatter, "role"),
+                Tags = GetStringList(frontmatter, "tags"),
                 FilePath = filePath,
-                LineCount = content.Split(['\n']).Length,
-                PlatformConfig = this.ParsePlatformBlocks(frontmatter)
+                LineCount = content.Split(new[] { "\r\n", "\n", "\r" }, StringSplitOptions.None).Length,
+                PlatformConfig = GetPlatformBlocks(frontmatter),
             };
         }
         catch
@@ -360,14 +346,14 @@ public sealed partial class SkillCatalog : ISkillCatalog
         }
     }
 
-    private async Task<CommandInfo?> ParseCommandFileAsync(string filePath, CancellationToken ct)
+    private static async Task<CommandInfo?> ParseCommandFileAsync(string filePath, CancellationToken ct)
     {
         try
         {
             string content = await File.ReadAllTextAsync(filePath, ct);
-            var frontmatter = this.ParseFrontmatter(content);
+            var frontmatter = ParseFrontmatter(content);
 
-            if (frontmatter == null || !frontmatter.ContainsKey("name"))
+            if (frontmatter?.ContainsKey("name") != true)
             {
                 return null;
             }
@@ -376,18 +362,18 @@ public sealed partial class SkillCatalog : ISkillCatalog
 
             return new CommandInfo
             {
-                Name = frontmatter.GetValueOrDefault("name")?.ToString() ?? fileName,
-                Description = frontmatter.GetValueOrDefault("description")?.ToString(),
-                Targets = this.ParseStringList(frontmatter.GetValueOrDefault("targets")),
-                Portability = frontmatter.GetValueOrDefault("portability")?.ToString(),
-                FlatteningRisk = frontmatter.GetValueOrDefault("flattening-risk")?.ToString(),
-                Simulated = this.ParseBool(frontmatter.GetValueOrDefault("simulated")),
-                Version = frontmatter.GetValueOrDefault("version")?.ToString(),
-                Author = frontmatter.GetValueOrDefault("author")?.ToString(),
-                Tags = this.ParseStringList(frontmatter.GetValueOrDefault("tags")),
+                Name = GetString(frontmatter, "name") ?? fileName,
+                Description = GetString(frontmatter, "description"),
+                Targets = GetStringList(frontmatter, "targets"),
+                Portability = GetString(frontmatter, "portability"),
+                FlatteningRisk = GetString(frontmatter, "flattening-risk"),
+                Simulated = GetBool(frontmatter, "simulated"),
+                Version = GetString(frontmatter, "version"),
+                Author = GetString(frontmatter, "author"),
+                Tags = GetStringList(frontmatter, "tags"),
                 FilePath = filePath,
-                LineCount = content.Split(['\n']).Length,
-                PlatformConfig = this.ParsePlatformBlocks(frontmatter)
+                LineCount = content.Split(new[] { "\r\n", "\n", "\r" }, StringSplitOptions.None).Length,
+                PlatformConfig = GetPlatformBlocks(frontmatter),
             };
         }
         catch
@@ -396,94 +382,91 @@ public sealed partial class SkillCatalog : ISkillCatalog
         }
     }
 
-    private Dictionary<string, object>? ParseFrontmatter(string content)
+    private static Dictionary<string, object>? ParseFrontmatter(string content)
     {
-        var match = FrontmatterRegex().Match(content);
-        if (!match.Success)
+        // Use Markdig to parse YAML frontmatter
+        MarkdownDocument document = Markdown.Parse(content);
+        YamlFrontMatterBlock? yamlBlock = document.Descendants<YamlFrontMatterBlock>().FirstOrDefault();
+
+        if (yamlBlock == null)
         {
             return null;
         }
 
-        string yamlContent = match.Groups[1].Value;
-        var result = new Dictionary<string, object>();
+        // Extract YAML content from the lines
+        string yamlContent = string.Join("\n", yamlBlock.Lines);
+        var yaml = new YamlStream();
+        yaml.Load(new StringReader(yamlContent));
 
-        // Simple YAML parsing - key-value pairs
-        foreach (Match m in YamlKeyValueRegex().Matches(yamlContent))
+        if (yaml.Documents.Count == 0)
         {
-            string key = m.Groups[1].Value.Trim();
-            string value = m.Groups[2].Value.Trim();
-            result[key] = this.ParseYamlValue(value);
+            return null;
+        }
+
+        if (yaml.Documents[0].RootNode is not YamlMappingNode root)
+        {
+            return null;
+        }
+
+        var result = new Dictionary<string, object>();
+        foreach (var entry in root.Children)
+        {
+            string key = entry.Key.ToString();
+            result[key] = ConvertYamlNode(entry.Value);
         }
 
         return result;
     }
 
-    private object ParseYamlValue(string value)
+    private static object ConvertYamlNode(YamlNode node)
     {
-        value = value.Trim();
-
-        // Array: [item1, item2, item3]
-        if (value.StartsWith('[') && value.EndsWith(']'))
+        return node switch
         {
-            string inner = value[1..^1];
-            if (string.IsNullOrWhiteSpace(inner))
-            {
-                return Array.Empty<string>();
-            }
+            YamlScalarNode scalar => scalar.Value ?? string.Empty,
+            YamlSequenceNode sequence => sequence.Children.Select(ConvertYamlNode).ToList(),
+            YamlMappingNode mapping => mapping.Children.ToDictionary(
+                kvp => kvp.Key.ToString(),
+                kvp => ConvertYamlNode(kvp.Value)),
+            _ => string.Empty,
+        };
+    }
 
-            return inner.Split(',')
-                .Select(s => s.Trim().Trim('\'', '\"'))
-                .Where(s => !string.IsNullOrEmpty(s))
-                .ToList();
+    private static string? GetString(Dictionary<string, object> dict, string key)
+    {
+        return dict.TryGetValue(key, out var value) ? value?.ToString() : null;
+    }
+
+    private static IReadOnlyList<string> GetStringList(Dictionary<string, object> dict, string key)
+    {
+        if (!dict.TryGetValue(key, out var value))
+        {
+            return Array.Empty<string>();
         }
 
-        // Boolean
-        if (value.Equals("true", StringComparison.OrdinalIgnoreCase))
+        return value switch
         {
-            return true;
-        }
+            List<object> list => list.Select(i => i?.ToString() ?? string.Empty).Where(s => !string.IsNullOrEmpty(s)).ToList(),
+            string str => !string.IsNullOrEmpty(str) ? [str] : Array.Empty<string>(),
+            _ => Array.Empty<string>(),
+        };
+    }
 
-        if (value.Equals("false", StringComparison.OrdinalIgnoreCase))
+    private static bool GetBool(Dictionary<string, object> dict, string key)
+    {
+        if (!dict.TryGetValue(key, out var value))
         {
             return false;
         }
 
-        // Number
-        if (int.TryParse(value, out int intValue))
-        {
-            return intValue;
-        }
-
-        // String (remove quotes if present)
-        return value.Trim('\'', '\"');
+        return value is string str && bool.TryParse(str, out bool result) && result;
     }
 
-    private IReadOnlyList<string> ParseStringList(object? value)
+    private static Dictionary<string, Dictionary<string, object>> GetPlatformBlocks(Dictionary<string, object> frontmatter)
     {
-        if (value is List<string> list)
-        {
-            return list.AsReadOnly();
-        }
-
-        if (value is string str && !string.IsNullOrEmpty(str))
-        {
-            return new[] { str };
-        }
-
-        return Array.Empty<string>();
-    }
-
-    private bool ParseBool(object? value)
-    {
-        return value is bool b && b;
-    }
-
-    private Dictionary<string, Dictionary<string, object>> ParsePlatformBlocks(Dictionary<string, object> frontmatter)
-    {
-        var platforms = new[] { "claudecode", "opencode", "copilot", "codexcli", "geminicli", "antigravity", "factorydroid" };
+        string[] platforms = ["claudecode", "opencode", "copilot", "codexcli", "geminicli", "antigravity", "factorydroid"];
         var result = new Dictionary<string, Dictionary<string, object>>();
 
-        foreach (var platform in platforms)
+        foreach (string platform in platforms)
         {
             if (frontmatter.TryGetValue(platform, out var value) && value is Dictionary<string, object> dict)
             {

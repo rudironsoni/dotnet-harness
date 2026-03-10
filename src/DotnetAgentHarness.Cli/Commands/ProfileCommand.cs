@@ -4,12 +4,19 @@ using System.CommandLine;
 using System.Text.Json;
 using DotnetAgentHarness.Cli.Models;
 using DotnetAgentHarness.Cli.Services;
+using Spectre.Console;
 
 /// <summary>
 /// Command to show catalog statistics and item details.
 /// </summary>
 public class ProfileCommand : Command
 {
+    private static readonly JsonSerializerOptions JsonOptions = new()
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        WriteIndented = true,
+    };
+
     private readonly ISkillCatalog skillCatalog;
 
     /// <summary>
@@ -22,7 +29,7 @@ public class ProfileCommand : Command
 
         Argument<string?> itemArgument = new("item", "Optional item name to get detailed info for")
         {
-            Arity = ArgumentArity.ZeroOrOne
+            Arity = ArgumentArity.ZeroOrOne,
         };
 
         Option<string> kindOption = new(
@@ -55,11 +62,11 @@ public class ProfileCommand : Command
 
                 if (format.Equals("json", StringComparison.OrdinalIgnoreCase))
                 {
-                    await this.OutputStatsJsonAsync(stats);
+                    await OutputStatsJsonAsync(stats);
                 }
                 else
                 {
-                    await this.OutputStatsTextAsync(stats);
+                    OutputStatsText(stats);
                 }
             }
             else
@@ -76,11 +83,11 @@ public class ProfileCommand : Command
 
                 if (format.Equals("json", StringComparison.OrdinalIgnoreCase))
                 {
-                    await this.OutputItemJsonAsync(itemDetails);
+                    await OutputItemJsonAsync(itemDetails);
                 }
                 else
                 {
-                    await this.OutputItemTextAsync(itemDetails);
+                    OutputItemText(itemDetails);
                 }
             }
         }
@@ -101,253 +108,308 @@ public class ProfileCommand : Command
                 "skill" => await this.skillCatalog.GetSkillByNameAsync(item),
                 "subagent" => await this.skillCatalog.GetSubagentByNameAsync(item),
                 "command" => await this.skillCatalog.GetCommandByNameAsync(item),
-                _ => null
+                _ => null,
             };
         }
 
         // Otherwise search all kinds and return first match
         var skill = await this.skillCatalog.GetSkillByNameAsync(item);
-        if (skill != null) return skill;
+        if (skill != null)
+        {
+            return skill;
+        }
 
         var subagent = await this.skillCatalog.GetSubagentByNameAsync(item);
-        if (subagent != null) return subagent;
+        if (subagent != null)
+        {
+            return subagent;
+        }
 
         var command = await this.skillCatalog.GetCommandByNameAsync(item);
         return command;
     }
 
-    private async Task OutputStatsTextAsync(CatalogStats stats)
+    private static void OutputStatsText(CatalogStats stats)
     {
-        await Console.Out.WriteLineAsync("╔══════════════════════════════════════════════════════════╗");
-        await Console.Out.WriteLineAsync("║           Dotnet Agent Harness Catalog Profile           ║");
-        await Console.Out.WriteLineAsync("╚══════════════════════════════════════════════════════════╝");
-        await Console.Out.WriteLineAsync();
+        // Header panel
+        AnsiConsole.Write(
+            new Panel("[bold blue]Dotnet Agent Harness Catalog Profile[/]")
+                .Header("[bold white]Catalog Statistics[/]")
+                .BorderColor(Color.Blue)
+                .Expand());
+
+        AnsiConsole.WriteLine();
 
         // Summary table
-        await Console.Out.WriteLineAsync("Catalog Summary:");
-        await Console.Out.WriteLineAsync(new string('-', 50));
-        await Console.Out.WriteLineAsync($"  Total Skills:     {stats.TotalSkills,4}");
-        await Console.Out.WriteLineAsync($"  Total Subagents:  {stats.TotalSubagents,4}");
-        await Console.Out.WriteLineAsync($"  Total Commands:   {stats.TotalCommands,4}");
-        await Console.Out.WriteLineAsync($"  Total Lines:      {stats.TotalLines,4:N0}");
-        await Console.Out.WriteLineAsync($"  Unique Tags:      {stats.TotalTags,4}");
-        await Console.Out.WriteLineAsync();
+        var summaryTable = new Table()
+            .Border(TableBorder.Rounded)
+            .AddColumn("Metric", c => c.Width(20))
+            .AddColumn("Count", c => c.Width(10).RightAligned());
 
-        // Skills by category
+        summaryTable.AddRow("[green]Total Skills[/]", stats.TotalSkills.ToString());
+        summaryTable.AddRow("[green]Total Subagents[/]", stats.TotalSubagents.ToString());
+        summaryTable.AddRow("[green]Total Commands[/]", stats.TotalCommands.ToString());
+        summaryTable.AddRow("[green]Total Lines[/]", stats.TotalLines.ToString("N0"));
+        summaryTable.AddRow("[green]Unique Tags[/]", stats.TotalTags.ToString());
+
+        AnsiConsole.Write(summaryTable);
+        AnsiConsole.WriteLine();
+
+        // Skills by category with bar chart
         if (stats.SkillsByCategory.Count > 0)
         {
-            await Console.Out.WriteLineAsync("Skills by Category:");
-            await Console.Out.WriteLineAsync(new string('-', 50));
+            var categoryTable = new Table()
+                .Border(TableBorder.Rounded)
+                .AddColumn("Category", c => c.Width(25))
+                .AddColumn("Count", c => c.Width(8).RightAligned())
+                .AddColumn("Distribution", c => c.Width(40));
 
-            foreach (var category in stats.SkillsByCategory.OrderByDescending(kvp => kvp.Value))
+            foreach (var category in stats.SkillsByCategory.OrderByDescending(kvp => kvp.Value).Take(10))
             {
-                string bar = new('█', Math.Min(category.Value, 40));
-                await Console.Out.WriteLineAsync($"  {category.Key,-20} {category.Value,4} {bar}");
+                int barLength = Math.Min(category.Value, 35);
+                string bar = new('█', barLength);
+                string color = category.Value switch
+                {
+                    > 30 => "red",
+                    > 15 => "yellow",
+                    _ => "green",
+                };
+                categoryTable.AddRow(
+                    category.Key,
+                    category.Value.ToString(),
+                    $"[{color}]{bar}[/]");
             }
 
-            await Console.Out.WriteLineAsync();
+            AnsiConsole.Write(categoryTable);
+            AnsiConsole.WriteLine();
         }
 
         // Skills by complexity
         if (stats.SkillsByComplexity.Count > 0)
         {
-            await Console.Out.WriteLineAsync("Skills by Complexity:");
-            await Console.Out.WriteLineAsync(new string('-', 50));
+            var complexityTable = new Table()
+                .Border(TableBorder.Rounded)
+                .AddColumn("Complexity", c => c.Width(25))
+                .AddColumn("Count", c => c.Width(8).RightAligned());
 
             foreach (var complexity in stats.SkillsByComplexity.OrderBy(kvp =>
                 kvp.Key switch { "beginner" => 1, "intermediate" => 2, "advanced" => 3, _ => 4 }))
             {
-                await Console.Out.WriteLineAsync($"  {complexity.Key,-20} {complexity.Value,4}");
+                string color = complexity.Key switch
+                {
+                    "beginner" => "green",
+                    "intermediate" => "yellow",
+                    "advanced" => "red",
+                    _ => "grey",
+                };
+                complexityTable.AddRow(
+                    $"[{color}]{complexity.Key}[/]",
+                    complexity.Value.ToString());
             }
 
-            await Console.Out.WriteLineAsync();
+            AnsiConsole.Write(complexityTable);
+            AnsiConsole.WriteLine();
         }
 
         // Top tags
         if (stats.TopTags.Count > 0)
         {
-            await Console.Out.WriteLineAsync("Top Tags:");
-            await Console.Out.WriteLineAsync(new string('-', 50));
+            var tagsTable = new Table()
+                .Border(TableBorder.Rounded)
+                .AddColumn("Tag", c => c.Width(35))
+                .AddColumn("Count", c => c.Width(10).RightAligned());
 
             foreach (var tag in stats.TopTags.Take(10))
             {
-                await Console.Out.WriteLineAsync($"  {tag.Key,-30} {tag.Value,4}");
+                tagsTable.AddRow(tag.Key, tag.Value.ToString());
             }
 
-            await Console.Out.WriteLineAsync();
+            AnsiConsole.Write(
+                new Panel(tagsTable)
+                    .Header("[bold white]Top Tags[/]")
+                    .BorderColor(Color.Green));
+            AnsiConsole.WriteLine();
         }
 
-        // Calculate approximate tokens
-        double estimatedTokens = stats.TotalLines * 4; // Rough estimate: ~4 tokens per line
-        await Console.Out.WriteLineAsync("Estimates:");
-        await Console.Out.WriteLineAsync(new string('-', 50));
-        await Console.Out.WriteLineAsync($"  Approximate Tokens: {estimatedTokens:N0}");
-        await Console.Out.WriteLineAsync();
+        // Token estimate
+        double estimatedTokens = stats.TotalLines * 4;
+        AnsiConsole.Write(new Panel($"Estimated Tokens: [bold]{estimatedTokens:N0}[/] ( ~4 tokens/line )")
+            .BorderColor(Color.Grey));
     }
 
-    private async Task OutputStatsJsonAsync(CatalogStats stats)
+    private static async Task OutputStatsJsonAsync(CatalogStats stats)
     {
-        var options = new JsonSerializerOptions
-        {
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-            WriteIndented = true
-        };
-
-        string json = JsonSerializer.Serialize(stats, options);
+        string json = JsonSerializer.Serialize(stats, JsonOptions);
         await Console.Out.WriteLineAsync(json);
     }
 
-    private async Task OutputItemTextAsync(object item)
+    private static void OutputItemText(object item)
     {
-        await Console.Out.WriteLineAsync("╔══════════════════════════════════════════════════════════╗");
-        await Console.Out.WriteLineAsync("║               Catalog Item Details                       ║");
-        await Console.Out.WriteLineAsync("╚══════════════════════════════════════════════════════════╝");
-        await Console.Out.WriteLineAsync();
+        AnsiConsole.Write(
+            new Panel("[bold blue]Catalog Item Details[/]")
+                .Header("[bold white]Item Information[/]")
+                .BorderColor(Color.Blue)
+                .Expand());
+
+        AnsiConsole.WriteLine();
 
         switch (item)
         {
             case SkillInfo skill:
-                await this.OutputSkillDetailsAsync(skill);
+                OutputSkillDetails(skill);
                 break;
             case SubagentInfo subagent:
-                await this.OutputSubagentDetailsAsync(subagent);
+                OutputSubagentDetails(subagent);
                 break;
             case CommandInfo command:
-                await this.OutputCommandDetailsAsync(command);
+                OutputCommandDetails(command);
                 break;
         }
     }
 
-    private async Task OutputSkillDetailsAsync(SkillInfo skill)
+    private static void OutputSkillDetails(SkillInfo skill)
     {
-        await Console.Out.WriteLineAsync($"Type:     Skill");
-        await Console.Out.WriteLineAsync($"Name:     {skill.Name}");
-        await Console.Out.WriteLineAsync($"Category: {skill.Category ?? "N/A"}");
-        await Console.Out.WriteLineAsync($"Subcategory: {skill.Subcategory ?? "N/A"}");
-        await Console.Out.WriteLineAsync($"Complexity: {skill.Complexity ?? "N/A"}");
-        await Console.Out.WriteLineAsync($"Version:  {skill.Version ?? "N/A"}");
-        await Console.Out.WriteLineAsync($"Author:   {skill.Author ?? "N/A"}");
-        await Console.Out.WriteLineAsync($"Invocable: {(skill.Invocable ? "Yes" : "No")}");
-        await Console.Out.WriteLineAsync($"Lines:    {skill.LineCount}");
-        await Console.Out.WriteLineAsync();
+        var table = new Table()
+            .Border(TableBorder.Rounded)
+            .AddColumn("Property", c => c.Width(15))
+            .AddColumn("Value");
+
+        table.AddRow("Type", "[green]Skill[/]");
+        table.AddRow("Name", skill.Name);
+        table.AddRow("Category", skill.Category ?? "[grey]N/A[/]");
+        table.AddRow("Subcategory", skill.Subcategory ?? "[grey]N/A[/]");
+        table.AddRow("Complexity", skill.Complexity ?? "[grey]N/A[/]");
+        table.AddRow("Version", skill.Version ?? "[grey]N/A[/]");
+        table.AddRow("Author", skill.Author ?? "[grey]N/A[/]");
+        table.AddRow("Invocable", skill.Invocable ? "[green]Yes[/]" : "[red]No[/]");
+        table.AddRow("Lines", skill.LineCount.ToString());
+
+        AnsiConsole.Write(table);
+        AnsiConsole.WriteLine();
 
         if (!string.IsNullOrEmpty(skill.Description))
         {
-            await Console.Out.WriteLineAsync("Description:");
-            await Console.Out.WriteLineAsync($"  {skill.Description}");
-            await Console.Out.WriteLineAsync();
+            AnsiConsole.Write(
+                new Panel(skill.Description)
+                    .Header("[bold white]Description[/]")
+                    .BorderColor(Color.Green));
+            AnsiConsole.WriteLine();
         }
 
         if (skill.Tags.Count > 0)
         {
-            await Console.Out.WriteLineAsync($"Tags: {string.Join(", ", skill.Tags)}");
-            await Console.Out.WriteLineAsync();
+            AnsiConsole.WriteLine("Tags: " + string.Join(", ", skill.Tags.Select(t => $"[blue]{t}[/]")));
         }
 
         if (skill.Targets.Count > 0)
         {
-            await Console.Out.WriteLineAsync($"Targets: {string.Join(", ", skill.Targets)}");
-            await Console.Out.WriteLineAsync();
+            AnsiConsole.WriteLine("Targets: " + string.Join(", ", skill.Targets.Select(t => $"[yellow]{t}[/]")));
         }
 
         if (skill.RelatedSkills.Count > 0)
         {
-            await Console.Out.WriteLineAsync("Related Skills:");
+            AnsiConsole.WriteLine("Related Skills:");
             foreach (string related in skill.RelatedSkills)
             {
-                await Console.Out.WriteLineAsync($"  - {related}");
+                AnsiConsole.WriteLine($"  • {related}");
             }
-
-            await Console.Out.WriteLineAsync();
         }
 
         if (!string.IsNullOrEmpty(skill.FilePath))
         {
-            await Console.Out.WriteLineAsync($"File: {skill.FilePath}");
+            AnsiConsole.WriteLine($"[grey]File: {skill.FilePath}[/]");
         }
     }
 
-    private async Task OutputSubagentDetailsAsync(SubagentInfo subagent)
+    private static void OutputSubagentDetails(SubagentInfo subagent)
     {
-        await Console.Out.WriteLineAsync($"Type:     Subagent");
-        await Console.Out.WriteLineAsync($"Name:     {subagent.Name}");
-        await Console.Out.WriteLineAsync($"Role:     {subagent.Role ?? "N/A"}");
-        await Console.Out.WriteLineAsync($"Version:  {subagent.Version ?? "N/A"}");
-        await Console.Out.WriteLineAsync($"Author:   {subagent.Author ?? "N/A"}");
-        await Console.Out.WriteLineAsync($"Lines:    {subagent.LineCount}");
-        await Console.Out.WriteLineAsync();
+        var table = new Table()
+            .Border(TableBorder.Rounded)
+            .AddColumn("Property", c => c.Width(15))
+            .AddColumn("Value");
+
+        table.AddRow("Type", "[purple]Subagent[/]");
+        table.AddRow("Name", subagent.Name);
+        table.AddRow("Role", subagent.Role ?? "[grey]N/A[/]");
+        table.AddRow("Version", subagent.Version ?? "[grey]N/A[/]");
+        table.AddRow("Author", subagent.Author ?? "[grey]N/A[/]");
+        table.AddRow("Lines", subagent.LineCount.ToString());
+
+        AnsiConsole.Write(table);
+        AnsiConsole.WriteLine();
 
         if (!string.IsNullOrEmpty(subagent.Description))
         {
-            await Console.Out.WriteLineAsync("Description:");
-            await Console.Out.WriteLineAsync($"  {subagent.Description}");
-            await Console.Out.WriteLineAsync();
+            AnsiConsole.Write(
+                new Panel(subagent.Description)
+                    .Header("[bold white]Description[/]")
+                    .BorderColor(Color.Green));
+            AnsiConsole.WriteLine();
         }
 
         if (subagent.Tags.Count > 0)
         {
-            await Console.Out.WriteLineAsync($"Tags: {string.Join(", ", subagent.Tags)}");
-            await Console.Out.WriteLineAsync();
+            AnsiConsole.WriteLine("Tags: " + string.Join(", ", subagent.Tags.Select(t => $"[blue]{t}[/]")));
         }
 
         if (subagent.Targets.Count > 0)
         {
-            await Console.Out.WriteLineAsync($"Targets: {string.Join(", ", subagent.Targets)}");
-            await Console.Out.WriteLineAsync();
+            AnsiConsole.WriteLine("Targets: " + string.Join(", ", subagent.Targets.Select(t => $"[yellow]{t}[/]")));
         }
 
         if (!string.IsNullOrEmpty(subagent.FilePath))
         {
-            await Console.Out.WriteLineAsync($"File: {subagent.FilePath}");
+            AnsiConsole.WriteLine($"[grey]File: {subagent.FilePath}[/]");
         }
     }
 
-    private async Task OutputCommandDetailsAsync(CommandInfo command)
+    private static void OutputCommandDetails(CommandInfo command)
     {
-        await Console.Out.WriteLineAsync($"Type:     Command");
-        await Console.Out.WriteLineAsync($"Name:     {command.Name}");
-        await Console.Out.WriteLineAsync($"Portability: {command.Portability ?? "N/A"}");
-        await Console.Out.WriteLineAsync($"Flattening Risk: {command.FlatteningRisk ?? "N/A"}");
-        await Console.Out.WriteLineAsync($"Simulated: {(command.Simulated ? "Yes" : "No")}");
-        await Console.Out.WriteLineAsync($"Version:  {command.Version ?? "N/A"}");
-        await Console.Out.WriteLineAsync($"Author:   {command.Author ?? "N/A"}");
-        await Console.Out.WriteLineAsync($"Lines:    {command.LineCount}");
-        await Console.Out.WriteLineAsync();
+        var table = new Table()
+            .Border(TableBorder.Rounded)
+            .AddColumn("Property", c => c.Width(17))
+            .AddColumn("Value");
+
+        table.AddRow("Type", "[yellow]Command[/]");
+        table.AddRow("Name", command.Name);
+        table.AddRow("Portability", command.Portability ?? "[grey]N/A[/]");
+        table.AddRow("Flattening Risk", command.FlatteningRisk ?? "[grey]N/A[/]");
+        table.AddRow("Simulated", command.Simulated ? "[green]Yes[/]" : "[red]No[/]");
+        table.AddRow("Version", command.Version ?? "[grey]N/A[/]");
+        table.AddRow("Author", command.Author ?? "[grey]N/A[/]");
+        table.AddRow("Lines", command.LineCount.ToString());
+
+        AnsiConsole.Write(table);
+        AnsiConsole.WriteLine();
 
         if (!string.IsNullOrEmpty(command.Description))
         {
-            await Console.Out.WriteLineAsync("Description:");
-            await Console.Out.WriteLineAsync($"  {command.Description}");
-            await Console.Out.WriteLineAsync();
+            AnsiConsole.Write(
+                new Panel(command.Description)
+                    .Header("[bold white]Description[/]")
+                    .BorderColor(Color.Green));
+            AnsiConsole.WriteLine();
         }
 
         if (command.Tags.Count > 0)
         {
-            await Console.Out.WriteLineAsync($"Tags: {string.Join(", ", command.Tags)}");
-            await Console.Out.WriteLineAsync();
+            AnsiConsole.WriteLine("Tags: " + string.Join(", ", command.Tags.Select(t => $"[blue]{t}[/]")));
         }
 
         if (command.Targets.Count > 0)
         {
-            await Console.Out.WriteLineAsync($"Targets: {string.Join(", ", command.Targets)}");
-            await Console.Out.WriteLineAsync();
+            AnsiConsole.WriteLine("Targets: " + string.Join(", ", command.Targets.Select(t => $"[yellow]{t}[/]")));
         }
 
         if (!string.IsNullOrEmpty(command.FilePath))
         {
-            await Console.Out.WriteLineAsync($"File: {command.FilePath}");
+            AnsiConsole.WriteLine($"[grey]File: {command.FilePath}[/]");
         }
     }
 
-    private async Task OutputItemJsonAsync(object item)
+    private static async Task OutputItemJsonAsync(object item)
     {
-        var options = new JsonSerializerOptions
-        {
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-            WriteIndented = true
-        };
-
-        string json = JsonSerializer.Serialize(item, options);
+        string json = JsonSerializer.Serialize(item, JsonOptions);
         await Console.Out.WriteLineAsync(json);
     }
 }

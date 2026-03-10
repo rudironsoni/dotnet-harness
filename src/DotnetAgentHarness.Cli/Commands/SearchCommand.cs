@@ -10,6 +10,12 @@ using DotnetAgentHarness.Cli.Services;
 /// </summary>
 public class SearchCommand : Command
 {
+    private static readonly JsonSerializerOptions JsonOptions = new()
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        WriteIndented = true,
+    };
+
     private readonly ISkillCatalog skillCatalog;
 
     /// <summary>
@@ -91,11 +97,11 @@ public class SearchCommand : Command
             // Output results
             if (format.Equals("json", StringComparison.OrdinalIgnoreCase))
             {
-                await this.OutputJsonAsync(results);
+                await OutputJsonAsync(results);
             }
             else
             {
-                await this.OutputTextAsync(results, query, kind);
+                await OutputTextAsync(results, query);
             }
         }
         catch (Exception ex)
@@ -105,7 +111,7 @@ public class SearchCommand : Command
         }
     }
 
-    private async Task OutputTextAsync(SearchResults results, string? query, string kind)
+    private static async Task OutputTextAsync(SearchResults results, string? query)
     {
         string searchTerm = string.IsNullOrWhiteSpace(query) ? "(all)" : $"\"{query}\"";
         await Console.Out.WriteLineAsync($"Search results for {searchTerm}:");
@@ -149,7 +155,7 @@ public class SearchCommand : Command
 
         // Output subagents
         if (results.Subagents.Count > 0)
-            {
+        {
             await Console.Out.WriteLineAsync($"Subagents ({results.Subagents.Count}):");
             await Console.Out.WriteLineAsync(new string('-', 60));
 
@@ -205,23 +211,18 @@ public class SearchCommand : Command
         await Console.Out.WriteLineAsync($"Total: {totalCount} results");
     }
 
-    private async Task OutputJsonAsync(SearchResults results)
+    private static async Task OutputJsonAsync(SearchResults results)
     {
-        var options = new JsonSerializerOptions
-        {
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-            WriteIndented = true
-        };
-
-        string json = JsonSerializer.Serialize(results, options);
+        string json = JsonSerializer.Serialize(results, JsonOptions);
         await Console.Out.WriteLineAsync(json);
     }
 
     private sealed class SearchResults
     {
         public List<SkillInfo> Skills { get; set; } = new();
+
         public List<SubagentInfo> Subagents { get; set; } = new();
+
         public List<CommandInfo> Commands { get; set; } = new();
     }
-
 }

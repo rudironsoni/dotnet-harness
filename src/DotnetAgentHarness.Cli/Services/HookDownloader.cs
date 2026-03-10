@@ -1,11 +1,41 @@
 namespace DotnetAgentHarness.Cli.Services;
 
 using System.Text.Json;
+using System.Text.Json.Serialization;
+using Polly;
+using Polly.Retry;
 
-public class HookDownloader(HttpClient httpClient) : IHookDownloader
+/// <summary>
+/// Downloads hooks from GitHub with resilience policies.
+/// </summary>
+public class HookDownloader : IHookDownloader
 {
-    private readonly HttpClient httpClient = httpClient;
+    private readonly HttpClient httpClient;
+    private readonly IAsyncPolicy<HttpResponseMessage> retryPolicy;
 
+    /// <summary>
+    /// Creates a new HookDownloader instance.
+    /// </summary>
+    /// <param name="httpClient">The HTTP client.</param>
+    public HookDownloader(HttpClient httpClient)
+    {
+        this.httpClient = httpClient;
+
+        // Configure retry policy with exponential backoff
+        this.retryPolicy = Policy
+            .Handle<HttpRequestException>()
+            .OrResult<HttpResponseMessage>(r => !r.IsSuccessStatusCode && (int)r.StatusCode >= 500)
+            .WaitAndRetryAsync(
+                retryCount: 3,
+                sleepDurationProvider: retryAttempt =>
+                    TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
+                onRetry: (outcome, timespan, retryCount, context) =>
+                {
+                    Console.Error.WriteLine($"Retry {retryCount} after {timespan.TotalSeconds}s due to {outcome.Exception?.Message ?? outcome.Result?.StatusCode.ToString()}");
+                });
+    }
+
+    /// <inheritdoc />
     public async Task<HookDownloadResult> DownloadHooksAsync(
         string[] hookScripts,
         string source,
@@ -21,7 +51,11 @@ public class HookDownloader(HttpClient httpClient) : IHookDownloader
             try
             {
                 string url = $"https://raw.githubusercontent.com/{source}/main/hooks/{hook}";
-                HttpResponseMessage response = await this.httpClient.GetAsync(url);
+
+                // Execute with retry policy
+                HttpResponseMessage response = await this.retryPolicy.ExecuteAsync(
+                    async ct => await this.httpClient.GetAsync(url, ct),
+                    CancellationToken.None);
 
                 if (!response.IsSuccessStatusCode)
                 {
@@ -48,6 +82,7 @@ public class HookDownloader(HttpClient httpClient) : IHookDownloader
         return new HookDownloadResult(true, downloadedHooks.ToArray(), string.Empty);
     }
 
+    /// <inheritdoc />
     public async Task<GitHubRelease?> GetLatestReleaseAsync(string repo)
     {
         try
@@ -55,8 +90,11 @@ public class HookDownloader(HttpClient httpClient) : IHookDownloader
             this.httpClient.DefaultRequestHeaders.Add("Accept", "application/vnd.github.v3+json");
             this.httpClient.DefaultRequestHeaders.Add("User-Agent", "dotnet-agent-harness");
 
-            HttpResponseMessage response = await this.httpClient.GetAsync(
-                $"https://api.github.com/repos/{repo}/releases/latest");
+            // Execute with retry policy
+            HttpResponseMessage response = await this.retryPolicy.ExecuteAsync(
+                async ct => await this.httpClient.GetAsync(
+                    $"https://api.github.com/repos/{repo}/releases/latest", ct),
+                CancellationToken.None);
 
             if (!response.IsSuccessStatusCode)
             {
@@ -64,13 +102,7 @@ public class HookDownloader(HttpClient httpClient) : IHookDownloader
             }
 
             string content = await response.Content.ReadAsStringAsync();
-            using JsonDocument doc = JsonDocument.Parse(content);
-            JsonElement root = doc.RootElement;
-
-            return new GitHubRelease(
-                root.GetProperty("tag_name").GetString() ?? string.Empty,
-                root.GetProperty("html_url").GetString() ?? string.Empty,
-                root.GetProperty("published_at").GetString() ?? string.Empty);
+            return JsonSerializer.Deserialize(content, GitHubJsonContext.Default.GitHubRelease);
         }
         catch
         {
@@ -79,11 +111,41 @@ public class HookDownloader(HttpClient httpClient) : IHookDownloader
     }
 }
 
+/// <summary>
+/// GitHub release information.
+/// </summary>
+/// <param name="TagName">The release tag name.</param>
+/// <param name="HtmlUrl">The URL to the release page.</param>
+/// <param name="PublishedAt">The publication date.</param>
 public sealed record GitHubRelease(string TagName, string HtmlUrl, string PublishedAt);
 
+/// <summary>
+/// JSON serialization context for GitHub API responses.
+/// </summary>
+[JsonSourceGenerationOptions(PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase)]
+[JsonSerializable(typeof(GitHubRelease))]
+internal sealed partial class GitHubJsonContext : JsonSerializerContext
+{
+}
+
+/// <summary>
+/// Interface for downloading hooks from remote sources.
+/// </summary>
 public interface IHookDownloader
 {
+    /// <summary>
+    /// Downloads hook scripts from a GitHub repository.
+    /// </summary>
+    /// <param name="hookScripts">Array of hook script names.</param>
+    /// <param name="source">Repository source in format owner/repo.</param>
+    /// <param name="installPath">Local path to install hooks.</param>
+    /// <returns>Download result.</returns>
     Task<HookDownloadResult> DownloadHooksAsync(string[] hookScripts, string source, string installPath);
 
+    /// <summary>
+    /// Gets the latest release from a GitHub repository.
+    /// </summary>
+    /// <param name="repo">Repository in format owner/repo.</param>
+    /// <returns>Latest release info or null.</returns>
     Task<GitHubRelease?> GetLatestReleaseAsync(string repo);
 }

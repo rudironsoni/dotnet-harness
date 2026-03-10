@@ -1,63 +1,47 @@
 namespace DotnetAgentHarness.Cli.Utils;
 
-using System.Diagnostics;
-using System.Text;
+using CliWrap;
+using CliWrap.Buffered;
 
+/// <summary>
+/// Process runner using CliWrap for reliable async process execution.
+/// </summary>
 public class ProcessRunner : IProcessRunner
 {
+    /// <inheritdoc />
     public async Task<ProcessResult> RunAsync(
         string command,
         string arguments,
         string? workingDirectory = null)
     {
-        ProcessStartInfo startInfo = new(command, arguments)
-        {
-            RedirectStandardOutput = true,
-            RedirectStandardError = true,
-            UseShellExecute = false,
-            CreateNoWindow = true,
-        };
+        Command cmd = Cli.Wrap(command)
+            .WithArguments(arguments);
 
         if (!string.IsNullOrEmpty(workingDirectory))
         {
-            startInfo.WorkingDirectory = workingDirectory;
+            cmd = cmd.WithWorkingDirectory(workingDirectory);
         }
 
-        using Process process = new() { StartInfo = startInfo };
-
-        StringBuilder output = new();
-        StringBuilder error = new();
-
-        process.OutputDataReceived += (sender, e) =>
-        {
-            if (e.Data != null)
-            {
-                output.AppendLine(e.Data);
-            }
-        };
-
-        process.ErrorDataReceived += (sender, e) =>
-        {
-            if (e.Data != null)
-            {
-                error.AppendLine(e.Data);
-            }
-        };
-
-        process.Start();
-        process.BeginOutputReadLine();
-        process.BeginErrorReadLine();
-
-        await process.WaitForExitAsync();
+        BufferedCommandResult result = await cmd.ExecuteBufferedAsync();
 
         return new ProcessResult(
-            process.ExitCode,
-            output.ToString().TrimEnd(),
-            error.ToString().TrimEnd());
+            result.ExitCode,
+            result.StandardOutput.TrimEnd(),
+            result.StandardError.TrimEnd());
     }
 }
 
+/// <summary>
+/// Interface for running external processes.
+/// </summary>
 public interface IProcessRunner
 {
+    /// <summary>
+    /// Runs a process asynchronously.
+    /// </summary>
+    /// <param name="command">The command to execute.</param>
+    /// <param name="arguments">The arguments to pass.</param>
+    /// <param name="workingDirectory">Optional working directory.</param>
+    /// <returns>The process result.</returns>
     Task<ProcessResult> RunAsync(string command, string arguments, string? workingDirectory = null);
 }

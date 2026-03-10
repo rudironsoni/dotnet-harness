@@ -10,6 +10,12 @@ using DotnetAgentHarness.Cli.Services;
 /// </summary>
 public class RecommendCommand : Command
 {
+    private static readonly JsonSerializerOptions JsonOptions = new()
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        WriteIndented = true,
+    };
+
     private readonly ISkillCatalog skillCatalog;
     private readonly IProjectAnalyzer projectAnalyzer;
 
@@ -84,7 +90,7 @@ public class RecommendCommand : Command
             }
 
             // Display project info
-            await this.DisplayProjectInfoAsync(profile);
+            await DisplayProjectInfoAsync(profile);
 
             // Generate recommendations
             var recommendations = await this.GenerateRecommendationsAsync(profile, platform, category, limit);
@@ -96,7 +102,7 @@ public class RecommendCommand : Command
             }
             else
             {
-                await this.OutputTextAsync(recommendations);
+                await OutputTextAsync(recommendations);
             }
 
             // Write state if requested
@@ -112,7 +118,7 @@ public class RecommendCommand : Command
         }
     }
 
-    private async Task DisplayProjectInfoAsync(ProjectProfile profile)
+    private static async Task DisplayProjectInfoAsync(ProjectProfile profile)
     {
         await Console.Out.WriteLineAsync("Project Analysis:");
         await Console.Out.WriteLineAsync(new string('-', 50));
@@ -241,8 +247,7 @@ public class RecommendCommand : Command
 
         // Deduplicate and limit
         result.Skills = skills
-            .GroupBy(s => s.Name)
-            .Select(g => g.First())
+            .DistinctBy(s => s.Name)
             .Take(limit)
             .ToList();
 
@@ -255,8 +260,7 @@ public class RecommendCommand : Command
         }
 
         result.Subagents = subagents
-            .GroupBy(s => s.Name)
-            .Select(g => g.First())
+            .DistinctBy(s => s.Name)
             .Take(limit)
             .ToList();
 
@@ -269,15 +273,14 @@ public class RecommendCommand : Command
         }
 
         result.Commands = commands
-            .GroupBy(c => c.Name)
-            .Select(g => g.First())
+            .DistinctBy(c => c.Name)
             .Take(limit)
             .ToList();
 
         return result;
     }
 
-    private async Task OutputTextAsync(RecommendationsResult recommendations)
+    private static async Task OutputTextAsync(RecommendationsResult recommendations)
     {
         await Console.Out.WriteLineAsync("Recommended Skills:");
         await Console.Out.WriteLineAsync(new string('=', 50));
@@ -374,7 +377,7 @@ public class RecommendCommand : Command
                 profile.IsWebProject,
                 profile.HasEntityFramework,
                 profile.HasAspire,
-                profile.HasDocker
+                profile.HasDocker,
             },
             Recommendations = new
             {
@@ -384,30 +387,24 @@ public class RecommendCommand : Command
                     s.Description,
                     s.Category,
                     s.Complexity,
-                    s.Tags
+                    s.Tags,
                 }),
                 Subagents = recommendations.Subagents.Select(s => new
                 {
                     s.Name,
                     s.Description,
-                    s.Role
+                    s.Role,
                 }),
                 Commands = recommendations.Commands.Select(c => new
                 {
                     c.Name,
                     c.Description,
-                    c.Portability
-                })
-            }
+                    c.Portability,
+                }),
+            },
         };
 
-        var options = new JsonSerializerOptions
-        {
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-            WriteIndented = true
-        };
-
-        string json = JsonSerializer.Serialize(output, options);
+        string json = JsonSerializer.Serialize(output, JsonOptions);
         await Console.Out.WriteLineAsync(json);
     }
 
@@ -423,18 +420,12 @@ public class RecommendCommand : Command
             var state = new
             {
                 GeneratedAt = DateTime.UtcNow,
-                Skills = recommendations.Skills.Select(s => s.Name).ToList(),
-                Subagents = recommendations.Subagents.Select(s => s.Name).ToList(),
-                Commands = recommendations.Commands.Select(c => c.Name).ToList()
+                Skills = recommendations.Skills.Select(static s => s.Name).ToList(),
+                Subagents = recommendations.Subagents.Select(static s => s.Name).ToList(),
+                Commands = recommendations.Commands.Select(static c => c.Name).ToList(),
             };
 
-            var options = new JsonSerializerOptions
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                WriteIndented = true
-            };
-
-            await File.WriteAllTextAsync(statePath, JsonSerializer.Serialize(state, options));
+            await File.WriteAllTextAsync(statePath, JsonSerializer.Serialize(state, JsonOptions));
             await Console.Out.WriteLineAsync();
             await Console.Out.WriteLineAsync($"Recommendations saved to: {statePath}");
         }
@@ -447,8 +438,9 @@ public class RecommendCommand : Command
     private sealed class RecommendationsResult
     {
         public List<SkillInfo> Skills { get; set; } = new();
+
         public List<SubagentInfo> Subagents { get; set; } = new();
+
         public List<CommandInfo> Commands { get; set; } = new();
     }
-
 }

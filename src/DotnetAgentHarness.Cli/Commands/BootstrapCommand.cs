@@ -22,7 +22,6 @@ public class BootstrapCommand : Command
         "dotnet-agent-harness-inline-error-recovery.sh",
     };
 
-
     /// <summary>
     /// Initializes a new instance of the <see cref="BootstrapCommand"/> class.
     /// </summary>
@@ -34,7 +33,7 @@ public class BootstrapCommand : Command
 
         Argument<string> nameArgument = new("name", "Name of the new project")
         {
-            Arity = ArgumentArity.ExactlyOne
+            Arity = ArgumentArity.ExactlyOne,
         };
 
         Option<string> templateOption = new(
@@ -95,7 +94,7 @@ public class BootstrapCommand : Command
 
             // Step 1: Create project using dotnet new
             await Console.Out.WriteLineAsync("==> Creating project from template...");
-            bool projectCreated = await this.CreateProjectAsync(name, template, outputPath, verbose);
+            bool projectCreated = await CreateProjectAsync(name, template, outputPath);
             if (!projectCreated)
             {
                 Environment.Exit(1);
@@ -106,7 +105,7 @@ public class BootstrapCommand : Command
 
             // Step 2: Initialize git repo if not exists
             await Console.Out.WriteLineAsync("==> Initializing git repository...");
-            bool gitInitialized = await this.InitializeGitAsync(projectPath, verbose);
+            bool gitInitialized = await InitializeGitAsync(projectPath);
             if (gitInitialized)
             {
                 await Console.Out.WriteLineAsync("  ✓ Git repository initialized");
@@ -175,7 +174,7 @@ public class BootstrapCommand : Command
 
             // Step 7: Create starter CLAUDE.md
             await Console.Out.WriteLineAsync("==> Creating starter documentation...");
-            await this.CreateStarterDocsAsync(projectPath, name, template);
+            await CreateStarterDocsAsync(projectPath, name, template);
             await Console.Out.WriteLineAsync("  ✓ Created CLAUDE.md");
 
             // Summary
@@ -206,7 +205,7 @@ public class BootstrapCommand : Command
         }
     }
 
-    private async Task<bool> CreateProjectAsync(string name, string template, string outputPath, bool verbose)
+    private static async Task<bool> CreateProjectAsync(string name, string template, string outputPath)
     {
         try
         {
@@ -231,7 +230,7 @@ public class BootstrapCommand : Command
         }
     }
 
-    private async Task<bool> InitializeGitAsync(string projectPath, bool verbose)
+    private static async Task<bool> InitializeGitAsync(string projectPath)
     {
         try
         {
@@ -252,7 +251,7 @@ public class BootstrapCommand : Command
         }
     }
 
-    private async Task CreateStarterDocsAsync(string projectPath, string name, string template)
+    private static async Task CreateStarterDocsAsync(string projectPath, string name, string template)
     {
         string claudeMdPath = Path.Combine(projectPath, "CLAUDE.md");
 
@@ -267,7 +266,7 @@ public class BootstrapCommand : Command
             "xunit" => "xUnit test project",
             "nunit" => "NUnit test project",
             "mstest" => "MSTest project",
-            _ => $"{template} project"
+            _ => $"{template} project",
         };
 
         string content = $"# {name}\n" +
