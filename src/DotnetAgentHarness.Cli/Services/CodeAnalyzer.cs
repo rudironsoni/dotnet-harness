@@ -240,9 +240,14 @@ public sealed class CodeAnalyzer : ICodeAnalyzer
         {
             await cmd.ExecuteAsync(ct);
         }
-        catch
+        catch (Exception ex)
         {
-            // Build may fail, but we still want to capture the output
+            // Build may fail, but we still want to capture the output for analysis
+            // Log at debug level since build failures are expected when analyzers find issues
+            if (options.Verbose)
+            {
+                await Console.Error.WriteLineAsync($"Build process exited with: {ex.Message}");
+            }
         }
 
         // Parse output for issues

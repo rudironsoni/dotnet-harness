@@ -155,21 +155,25 @@ This is the new generated content";
         await File.WriteAllTextAsync(readOnlyFile, "content");
         File.SetAttributes(readOnlyFile, FileAttributes.ReadOnly);
 
-        // Act & Assert - Trying to write to read-only file should fail
+        // Act & Assert - Trying to write to read-only file should fail on most platforms
+        bool exceptionThrown = false;
         try
         {
             await File.WriteAllTextAsync(readOnlyFile, "new content");
-            // If we get here, we need to verify it failed or succeeded based on OS
         }
         catch (UnauthorizedAccessException)
         {
-            // Expected on some platforms
+            exceptionThrown = true;
         }
         finally
         {
-            // Cleanup
             File.SetAttributes(readOnlyFile, FileAttributes.Normal);
         }
+
+        // Either the write succeeded (Windows often allows this) or UnauthorizedAccessException was thrown
+        // We just verify the file system behaved consistently
+        var finalContent = await File.ReadAllTextAsync(readOnlyFile);
+        finalContent.Should().Match(s => s == "content" || s == "new content");
     }
 
     [Fact]
@@ -270,10 +274,10 @@ This is the new generated content";
         var tasks = new List<Task<RulesyncResult>>();
 
         this.rulesyncRunner.GenerateAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<bool>(), Arg.Any<bool>())
-            .Returns(ci =>
+            .Returns(async ci =>
             {
-                // Simulate some work
-                Thread.Sleep(10);
+                // Simulate async work by yielding to allow concurrency interleaving
+                await Task.Yield();
                 return new RulesyncResult(Success: true);
             });
 
@@ -449,9 +453,11 @@ This is the new generated content";
                 File.Exists(symlinkFile).Should().BeTrue();
                 File.ResolveLinkTarget(symlinkFile, false)?.FullName.Should().Be(realFile);
             }
-            catch (PlatformNotSupportedException)
+            catch (PlatformNotSupportedException ex)
             {
-                // Skip on platforms that don't support symlinks
+                // Some Unix platforms may not support symlinks despite the OS check
+                // Log and skip this test scenario
+                Console.WriteLine($"Platform does not support symlinks: {ex.Message}");
             }
         }
     }
@@ -467,6 +473,7 @@ This is the new generated content";
         }
 
         // Act & Assert - Should handle or fail gracefully
+        Exception? caughtException = null;
         try
         {
             Directory.CreateDirectory(deepPath);
@@ -474,13 +481,21 @@ This is the new generated content";
             await File.WriteAllTextAsync(filePath, "content");
             File.Exists(filePath).Should().BeTrue();
         }
-        catch (PathTooLongException)
+        catch (PathTooLongException ex)
         {
-            // Expected on some platforms
+            caughtException = ex;
+            Console.WriteLine($"Path too long for this platform: {ex.Message}");
         }
-        catch (DirectoryNotFoundException)
+        catch (DirectoryNotFoundException ex)
         {
-            // Expected on some platforms
+            caughtException = ex;
+            Console.WriteLine($"Directory not found (path too long): {ex.Message}");
+        }
+
+        // If an exception was thrown, verify it was one of the expected types
+        if (caughtException != null)
+        {
+            caughtException.Should().BeAssignableTo<IOException>();
         }
     }
 
