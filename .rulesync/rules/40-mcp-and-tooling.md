@@ -16,10 +16,7 @@ The following MCP servers are configured in `.rulesync/mcp.json`:
 | Server | Type | Primary Role | Best Use Cases |
 |--------|------|--------------|----------------|
 | **serena** | stdio | Semantic code analysis | Symbol-level navigation, refactoring, dependency analysis, precise code edits |
-| **context7** | http | Documentation intelligence | Up-to-date library/framework documentation queries, API discovery |
 | **microsoftdocs-mcp** | http | Official Microsoft documentation | First-party .NET/ASP.NET/Azure docs, authoritative API references |
-| **deepwiki** | http | Repository documentation | Project-specific docs, wiki content, generated documentation |
-| **github** | http | Repository operations | PRs, issues, Actions, repository metadata |
 
 ## MCP Routing Guide
 
@@ -34,17 +31,12 @@ Need official Microsoft documentation?
   YES -> [mcp:microsoftdocs-mcp] for .NET/Azure docs
   NO -> Continue...
 
-Need third-party library documentation?
-  YES -> [mcp:context7] for up-to-date API docs
-  NO -> Continue...
-
-Need project-specific documentation?
-  YES -> [mcp:deepwiki] for repo wiki/docs
-  NO -> Continue...
-
-Need GitHub operations?
-  YES -> [mcp:github] for repos, PRs, issues
-  NO -> Traditional tools (Read, Grep, Glob, Bash)
+Need documentation?
+  Official Microsoft docs -> [mcp:microsoftdocs-mcp] for .NET/Azure docs
+  Third-party libraries -> Use web search with library READMEs
+  Project-specific docs -> Read markdown files from docs/, wiki/, or repo
+  GitHub operations -> Use gh CLI or GitHub web interface
+  Other -> Traditional tools (Read, Grep, Glob, Bash)
 ```
 
 ### Server-Specific Guidance
@@ -95,55 +87,23 @@ Need GitHub operations?
 
 **Fallback:** Use web search with official microsoft.com/learn sources.
 
-#### Context7
+#### Documentation Strategy
 
-**Preferred for:**
-- Third-party library documentation (NuGet packages)
-- Framework-specific patterns and examples
-- Recent documentation updates not in offline caches
-- Community-contributed documentation
+**For Official Microsoft Documentation:**
+- Use [mcp:microsoftdocs-mcp] for .NET, ASP.NET Core, and Azure SDK docs
+- Fallback: Web search with site:microsoft.com/learn
 
-**When to use:**
-- ✅ Questions about specific library versions
-- ✅ Comparing library alternatives
-- ✅ Finding usage examples for OSS packages
+**For Third-Party Libraries:**
+- Use web search targeting GitHub repos, official docs, or NuGet.org
+- Read README.md and API documentation directly
 
-**Fallback:** Use web search with github.com or official library docs.
+**For Project Documentation:**
+- Read markdown files from docs/, wiki/, or repository root
+- Use Grep to search for patterns across documentation
 
-#### DeepWiki
-
-**Preferred for:**
-- Repository-specific documentation
-- Generated API docs for this project
-- Architecture decision records (ADRs)
-- Contribution guidelines and workflows
-
-**When to use:**
-- ✅ Understanding project conventions
-- ✅ Finding internal documentation
-- ✅ Navigating generated docs
-
-**Fallback:** Read files from docs/ or wiki/ directories directly.
-
-#### GitHub MCP
-
-**Preferred for:**
-- Repository operations
-- Pull request management
-- Issue tracking
-- Actions workflow inspection
-- Release management
-
-**Tool mapping:**
-- `github` namespace commands
-- PR creation, review, and merge operations
-
-**When to use:**
-- ✅ Creating or reviewing PRs
-- ✅ Querying issue status
-- ✅ Repository metadata inspection
-
-**Fallback:** Use gh CLI or web interface.
+**For GitHub Operations:**
+- Use gh CLI (GitHub CLI) for repository operations
+- Use web interface for complex PR reviews or issue management
 
 ## Target-Specific Tool Filtering
 
@@ -196,14 +156,9 @@ Every session should validate MCP server health:
 {
     "mcpHealth": {
     "serena": { "status": "available", "type": "stdio" },
-    "microsoftdocs-mcp": { "status": "available", "type": "http" },
-    "context7": { "status": "unavailable", "type": "http", "reason": "network_timeout" },
-    "deepwiki": { "status": "available", "type": "http" },
-    "github": { "status": "available", "type": "http" }
+    "microsoftdocs-mcp": { "status": "available", "type": "http" }
   },
-  "recommendations": [
-    "context7 unavailable: Use web search for third-party docs"
-  ]
+  "recommendations": []
 }
 ```
 
@@ -213,9 +168,6 @@ Every session should validate MCP server health:
 |-------------|--------|------------|
 | serena | Cannot perform symbol navigation | Use Read + Grep for finding code |
 | microsoftdocs-mcp | No official doc queries | Use web search with microsoft.com/learn |
-| context7 | No third-party docs | Use web search or library READMEs |
-| deepwiki | No repo docs | Read markdown files directly |
-| github | No repo operations | Use gh CLI or web interface |
 
 ## MCP Usage Patterns by Agent
 
@@ -224,13 +176,13 @@ Every session should validate MCP server health:
 **Preferred MCPs:**
 1. **serena** - Analyze existing solution structure
 2. **microsoftdocs-mcp** - Validate framework choices against official guidance
-3. **deepwiki** - Check project conventions
 
 **Example workflow:**
 ```
 1. [mcp:serena] Analyze solution structure
 2. [mcp:microsoftdocs-mcp] Query official architecture guidance
-3. Recommend approach based on findings
+3. Read project docs/ or wiki/ for conventions
+4. Recommend approach based on findings
 ```
 
 ### dotnet-code-review-agent
@@ -238,13 +190,13 @@ Every session should validate MCP server health:
 **Preferred MCPs:**
 1. **serena** - Navigate code under review
 2. **microsoftdocs-mcp** - Verify API usage against docs
-3. **context7** - Check third-party library patterns
 
 **Example workflow:**
 ```
 1. [mcp:serena] Find symbols in changed files
 2. Review code with symbol context
 3. [mcp:microsoftdocs-mcp] Validate API usage
+4. Web search for third-party library patterns if needed
 ```
 
 ### dotnet-advisor (Router)
@@ -277,8 +229,8 @@ When adding new MCP servers:
 | Category | Servers | Use When |
 |----------|---------|----------|
 | **Code Intelligence** | serena | Navigation, refactoring, analysis |
-| **Documentation** | microsoftdocs-mcp, context7, deepwiki | Research, validation, examples |
-| **Operations** | github | Repository management |
+| **Documentation** | microsoftdocs-mcp | Official Microsoft docs, research |
+| **Operations** | (Use gh CLI) | GitHub repository management |
 
 ### Performance Considerations
 

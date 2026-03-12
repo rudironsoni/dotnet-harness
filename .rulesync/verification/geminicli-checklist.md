@@ -202,10 +202,7 @@ grep -E '(python|node|npm|pip)' .rulesync/hooks.json && echo "NON-PORTABLE" || e
 | Server | Type | Status |
 |--------|------|--------|
 | serena | stdio | [ ] |
-| context7 | http | [ ] |
 | microsoftdocs-mcp | http | [ ] |
-| deepwiki | http | [ ] |
-| github | http | [ ] |
 
 ### MCP Connection Test
 ```bash

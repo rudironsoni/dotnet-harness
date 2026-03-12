@@ -196,10 +196,7 @@ Load skill dotnet-testing
 | Server | Type | Status |
 |--------|------|--------|
 | serena | stdio | [ ] |
-| context7 | http | [ ] |
 | microsoftdocs-mcp | http | [ ] |
-| deepwiki | http | [ ] |
-| github | http | [ ] |
 
 ### MCP Connection Test
 - [ ] MCP servers connect successfully

@@ -76,14 +76,10 @@ For code review, prioritize these MCPs in order:
    - Tools: `microsoftdocs-mcp_microsoft_docs_search`
    - When: Reviewing usage of Microsoft APIs
 
-3. **[mcp:context7]** -- Third-party library documentation
-   - Use for: Validating OSS library usage patterns
-   - When: Reviewing code using external NuGet packages
-
 **MCP Routing:**
 - Symbol navigation → serena
 - API validation → microsoftdocs-mcp
-- Library patterns → context7
+- Third-party libraries → Web search or library docs
 - Fallback → Read + Grep
 
 ## Triage Workflow

@@ -151,10 +151,7 @@ Copilot may not have explicit skill loading. Instead:
 | Server | Type | Status |
 |--------|------|--------|
 | serena | stdio | [ ] |
-| context7 | http | [ ] |
 | microsoftdocs-mcp | http | [ ] |
-| deepwiki | http | [ ] |
-| github | http | [ ] |
 
 ### MCP Connection Test
 - [ ] MCP servers configured correctly

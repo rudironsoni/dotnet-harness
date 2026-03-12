@@ -170,10 +170,7 @@ codex "Use skill dotnet-testing to analyze test strategy"
 | Server | Type | Status |
 |--------|------|--------|
 | serena | stdio | [ ] |
-| context7 | http | [ ] |
 | microsoftdocs-mcp | http | [ ] |
-| deepwiki | http | [ ] |
-| github | http | [ ] |
 
 ### MCP Connection Test
 ```bash

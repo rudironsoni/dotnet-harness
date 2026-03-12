@@ -82,18 +82,16 @@ To re-enable hooks after disabling, remove the `disableAllHooks` setting or togg
 
 The plugin configures the following MCP server in `.mcp.json`.
 
-### Context7
+### Documentation Strategy
 
-| Property  | Value                                                                                 |
-| --------- | ------------------------------------------------------------------------------------- |
-| Transport | stdio                                                                                 |
-| Command   | `npx -y @upstash/context7-mcp@latest`                                                 |
-| Purpose   | Library documentation lookup covering Microsoft Learn, NuGet, and .NET ecosystem docs |
+Since external MCP documentation servers have been removed, use these alternatives:
 
-Context7 provides on-demand documentation lookups that enhance skill guidance with live, up-to-date library references.
-
-**Version note**: The plugin currently uses `@latest` for initial ship. After stabilization, the version may be pinned
-(for example `@1.x.x`) to prevent upstream breaking changes.
+| Documentation Type | Approach | Tools |
+| ------------------ | -------- | ----- |
+| Microsoft Docs | [mcp:microsoftdocs-mcp] | `microsoftdocs-mcp_microsoft_docs_search` |
+| Third-party libraries | Web search + GitHub | `google_search`, `Bash` (gh, curl) |
+| Project docs | Read files directly | `Read`, `Grep` on docs/, wiki/ |
+| GitHub operations | gh CLI | `Bash` with `gh` commands |
 
 ### Requirements
 

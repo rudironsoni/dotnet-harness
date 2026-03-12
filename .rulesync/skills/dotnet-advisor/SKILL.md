@@ -283,9 +283,9 @@ The dotnet-agent-harness supports multiple MCP servers for enhanced functionalit
 |------|-------------|----------|------|
 | Code navigation | serena | Read + Grep | `serena_find_symbol`, `serena_get_symbols_overview` |
 | Official docs | microsoftdocs-mcp | Web search | `microsoftdocs-mcp_microsoft_docs_search` |
-| Third-party docs | context7 | Web search | Context7 API |
-| Project docs | deepwiki | Read markdown | DeepWiki API |
-| GitHub ops | github | gh CLI | GitHub MCP |
+| Third-party docs | Web search | Library READMEs | Web search |
+| Project docs | Read markdown | Grep docs | Read, Grep |
+| GitHub ops | gh CLI | Web interface | gh command |
 
 ### Code Navigation (Serena MCP)
 

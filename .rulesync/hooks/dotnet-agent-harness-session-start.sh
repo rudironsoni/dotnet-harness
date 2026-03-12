@@ -195,15 +195,7 @@ get_fallback_recommendation() {
         microsoftdocs-mcp)
             echo "Use web search with microsoft.com/learn sources"
             ;;
-        context7)
-            echo "Use web search for third-party library docs"
-            ;;
-        deepwiki)
-            echo "Read markdown files from docs/ or wiki/ directories"
-            ;;
-        github)
-            echo "Use gh CLI or web interface for GitHub operations"
-            ;;
+
         *)
             echo "No fallback available"
             ;;

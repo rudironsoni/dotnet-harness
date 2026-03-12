@@ -61,9 +61,9 @@ For architecture analysis, prioritize these MCPs in order:
    - Tools: `microsoftdocs-mcp_microsoft_docs_search`
    - When: Recommending patterns or validating architectural decisions
 
-3. **[mcp:deepwiki]** -- Repository documentation
-   - Use for: Checking project-specific conventions and ADRs
-   - When: Understanding existing project patterns
+**Project Documentation:**
+- Read docs/, wiki/, or markdown files directly for project conventions
+- Use Grep to search for patterns across documentation
 
 **Fallback:** If MCPs unavailable, use traditional Read/Grep/Glob tools.
 
