@@ -4,6 +4,7 @@ node_modules/
 # RuleSync generated files and directories
 # These are generated from .rulesync/ via `npx rulesync generate`
 .claude/
+.claude-plugin/
 .opencode/
 .vscode/
 .clinerules/
@@ -30,6 +31,7 @@ node_modules/
 AGENTS.md
 CLAUDE.md
 opencode.json
+opencode.jsonc
 GEMINI.md
 QWEN.md
 WARP.md

@@ -1,8 +1,6 @@
 namespace DotnetAgentHarness.Cli.Tests.Services;
 
 using DotnetAgentHarness.Cli.Services;
-using DotnetAgentHarness.Cli.Utils;
-using NSubstitute;
 using Xunit;
 
 public class RulesyncRunnerTests : IDisposable
@@ -26,8 +24,7 @@ public class RulesyncRunnerTests : IDisposable
     public async Task FetchAsync_WithInvalidSource_ReturnsFailure()
     {
         // Arrange
-        IProcessRunner processRunner = Substitute.For<IProcessRunner>();
-        RulesyncRunner runner = new(processRunner);
+        using RulesyncRunner runner = new();
 
         // Act
         RulesyncResult result = await runner.FetchAsync("invalid-source", this.testDir);
@@ -41,8 +38,7 @@ public class RulesyncRunnerTests : IDisposable
     public async Task GenerateAsync_WhenRulesyncNotExists_ReturnsFailure()
     {
         // Arrange
-        IProcessRunner processRunner = Substitute.For<IProcessRunner>();
-        RulesyncRunner runner = new(processRunner);
+        using RulesyncRunner runner = new();
 
         // Act
         RulesyncResult result = await runner.GenerateAsync("claudecode", this.testDir);
@@ -56,8 +52,7 @@ public class RulesyncRunnerTests : IDisposable
     public async Task InstallAsync_WhenRulesyncNotExists_ReturnsFailure()
     {
         // Arrange
-        IProcessRunner processRunner = Substitute.For<IProcessRunner>();
-        RulesyncRunner runner = new(processRunner);
+        using RulesyncRunner runner = new();
 
         // Act
         RulesyncResult result = await runner.InstallAsync(this.testDir);

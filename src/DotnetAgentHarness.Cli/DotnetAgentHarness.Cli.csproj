@@ -19,5 +19,6 @@
       <PrivateAssets>all</PrivateAssets>
       <ExcludeAssets>runtime</ExcludeAssets>
     </PackageReference>
+    <PackageReference Include="RuleSync.Sdk.DotNet" />
   </ItemGroup>
 </Project>

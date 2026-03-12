@@ -11,10 +11,9 @@ internal static class Program
     {
         // Setup dependency injection (manual for simplicity)
         HttpClient httpClient = new();
-        ProcessRunner processRunner = new();
 
-        PrerequisiteChecker prerequisiteChecker = new(processRunner);
-        RulesyncRunner rulesyncRunner = new(processRunner);
+        PrerequisiteChecker prerequisiteChecker = new();
+        using RulesyncRunner rulesyncRunner = new();
         ConfigDetector configDetector = new();
         TransactionManager transactionManager = new();
         HookDownloader hookDownloader = new(httpClient);

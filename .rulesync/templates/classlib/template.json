@@ -1,6 +1,0 @@
-{
-  "id": "classlib",
-  "displayName": "Class Library",
-  "description": "Scaffold a class library with xUnit tests and harness bootstrap files.",
-  "dotNetTemplate": "classlib"
-}

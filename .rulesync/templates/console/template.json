@@ -1,6 +1,0 @@
-{
-  "id": "console",
-  "displayName": "Console App",
-  "description": "Scaffold a console app with xUnit tests and harness bootstrap files.",
-  "dotNetTemplate": "console"
-}
