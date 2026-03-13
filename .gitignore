@@ -72,10 +72,15 @@ packages/dotnet-agent-harness-*/bundled/
 /artifacts/
 
 # .NET build intermediates (repo-local)
-src/**/bin/
-src/**/obj/
-tests/**/bin/
-tests/**/obj/
+# Note: src/ directory removed - project now rulesync-only
+# Keeping standard dotnet ignores for any future .NET development
+**/bin/
+**/obj/
+*.dll
+*.exe
+*.pdb
+*.user
+*.suo
 
 # Repo-local tool manifests used only for maintainer smoke/bootstrap work
 /.config/dotnet-tools.json

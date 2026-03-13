@@ -118,9 +118,3 @@ runs:
         if [ ! -f "AGENTS.md" ]; then
           echo "Warning: AGENTS.md not generated"
         fi
-
-    - name: Build skill manifest
-      if: ${{ inputs.validate-only != 'true' }}
-      shell: bash
-      run: |
-        dotnet run --project src/DotNetAgentHarness.Tools -- build-manifest

@@ -45,9 +45,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: |
-            7.0.x
-            10.0.x
+          dotnet-version: '10.0.x'
 
       - name: Restore tools
         run: dotnet tool restore
@@ -83,50 +81,10 @@ jobs:
           echo "tag=v$VERSION" >> $GITHUB_OUTPUT
           echo "Created tag: v$VERSION"
 
-  # Job 3: Build and pack
-  build:
-    name: Build & Pack
-    needs: [verify-ci, auto-tag]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: |
-            7.0.x
-            10.0.x
-
-      - name: Restore
-        run: dotnet restore dotnet-agent-harness.slnx
-
-      - name: Build
-        run: dotnet build dotnet-agent-harness.slnx --no-restore -c Release
-
-      - name: Test
-        run: dotnet test dotnet-agent-harness.slnx --no-build -c Release
-
-      - name: Pack
-        run: |
-          dotnet pack src/DotnetAgentHarness.Cli/ \
-            --no-build -c Release \
-            -o artifacts \
-            -p:Version=${{ needs.auto-tag.outputs.version }}
-
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: nuget-packages
-          path: artifacts/*.nupkg
-
-  # Job 4: Create GitHub Release with GitReleaseManager
+  # Job 3: Create GitHub Release
   release:
     name: Create Release
-    needs: [build, auto-tag]
+    needs: [auto-tag]
     if: needs.auto-tag.outputs.tag != ''
     runs-on: ubuntu-latest
     permissions:
@@ -139,16 +97,13 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
+      - name: Setup Node.js for rulesync
+        uses: actions/setup-node@v4
         with:
-          dotnet-version: '10.0.x'
+          node-version: '22'
 
-      - name: Download artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: nuget-packages
-          path: artifacts
+      - name: Install rulesync
+        run: npm install -g rulesync
 
       - name: Package rules bundle
         run: |
@@ -162,53 +117,31 @@ jobs:
           name: Release ${{ needs.auto-tag.outputs.tag }}
           body: |
             ## Release ${{ needs.auto-tag.outputs.tag }}
-            
+
             ### Installation
-            
-            #### Via GitHub Packages (Recommended)
+
+            Install the toolkit in your .NET repository using curl:
+
             ```bash
-            dotnet tool install -g dotnet-agent-harness --add-source https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
+            # One-line installer
+            curl -fsSL https://raw.githubusercontent.com/${{ github.repository_owner }}/${{ github.event.repository.name }}/main/install-dotnet-agent-harness.sh | bash
             ```
-            
-            #### Via GitHub Releases
-            Download the `.nupkg` from this release and install locally:
+
+            Or with options:
+
             ```bash
-            dotnet tool install -g dotnet-agent-harness --add-source ./path/to/download
+            # Download and run with specific targets
+            curl -fsSL https://raw.githubusercontent.com/${{ github.repository_owner }}/${{ github.event.repository.name }}/main/install-dotnet-agent-harness.sh | bash -s -- --targets claudecode,copilot,opencode
             ```
-            
-            ### Prerequisites
-            - .NET 10.0 SDK or later
-            - Node.js 22 or later (for rulesync)
-            
+
+            The installer will:
+            1. Fetch the `.rulesync/` configuration from this repository
+            2. Download required hook scripts
+            3. Generate agent configurations for your specified targets
+
+            That's it! The toolkit is now installed and ready to use.
+
             ### Package Contents
-            - DotnetAgentHarness.Cli.${{ needs.auto-tag.outputs.version }}.nupkg
-            - rules-bundle.zip
+            - rules-bundle.zip - Contains all skills, subagents, commands, and hooks
           files: |
-            artifacts/*.nupkg
             rules-bundle.zip
-
-  # Job 5: Publish to GitHub Packages
-  publish:
-    name: Publish to GitHub Packages
-    needs: [release]
-    runs-on: ubuntu-latest
-    permissions:
-      packages: write
-    steps:
-      - name: Download artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: nuget-packages
-          path: artifacts
-
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '10.0.x'
-
-      - name: Publish to GitHub Packages
-        run: |
-          dotnet nuget push artifacts/*.nupkg \
-            --api-key ${{ secrets.GITHUB_TOKEN }} \
-            --source https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json \
-            --skip-duplicate

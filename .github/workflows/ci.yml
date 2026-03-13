@@ -26,7 +26,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        
+
       - name: Check Conventional Commit Format
         uses: amannn/action-semantic-pull-request@v5
         env:
@@ -52,7 +52,7 @@ jobs:
           disallowScopes: |
             release
           validateSingleCommit: false
-          
+
       - name: Label PR
         uses: actions/labeler@v4
         with:
@@ -119,58 +119,6 @@ jobs:
             echo "⚠ shellcheck not installed, skipping"
           fi
 
-  # Job 2: Build, Test, and Smoke Test CLI
-  build:
-    name: Build & Test
-    needs: [validate]
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0  # Required for GitVersion to calculate versions
-
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '10.0.x'
-
-      - name: Install GitVersion
-        uses: gittools/actions/gitversion/setup@v0.10.2
-        with:
-          versionSpec: '5.x'
-
-      - name: Determine Version
-        id: gitversion
-        uses: gittools/actions/gitversion/execute@v0.10.2
-
-      - name: Cache NuGet packages
-        uses: actions/cache@v4
-        with:
-          path: ~/.nuget/packages
-          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
-          restore-keys: |
-            ${{ runner.os }}-nuget-
-
-      - name: Restore
-        run: dotnet restore dotnet-agent-harness.slnx
-
-      - name: Build
-        run: dotnet build dotnet-agent-harness.slnx --no-restore -c Release
-
-      - name: Test
-        run: dotnet test dotnet-agent-harness.slnx --no-build -c Release --logger trx --results-directory TestResults
-
-      - name: Smoke Test - CLI Version
-        run: |
-          cd src/DotnetAgentHarness.Cli
-          dotnet run -- version
-
       - name: Setup Node.js for rulesync
         uses: actions/setup-node@v4
         with:
@@ -179,49 +127,27 @@ jobs:
       - name: Install rulesync
         run: npm install -g rulesync
 
-      - name: Smoke Test - CLI Install (dry-run)
-        if: runner.os == 'Linux'
+      - name: Validate rulesync generation
         run: |
-          mkdir -p /tmp/test-install
-          cd src/DotnetAgentHarness.Cli
-          dotnet run -- install --dry-run --force --path /tmp/test-install --targets claudecode
-
-      - name: Pack CLI Tool
-        if: matrix.os == 'ubuntu-latest'
-        run: |
-          dotnet pack src/DotnetAgentHarness.Cli/ \
-            --no-build -c Release \
-            -o artifacts \
-            -p:Version=${{ steps.gitversion.outputs.semVer }}
-
-      - name: Upload test results
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: test-results-${{ matrix.os }}
-          path: TestResults/**/*.trx
-
-      - name: Upload NuGet packages
-        uses: actions/upload-artifact@v4
-        if: matrix.os == 'ubuntu-latest'
-        with:
-          name: nuget-packages
-          path: artifacts/*.nupkg
-          retention-days: 30
+          echo "Validating rulesync generation..."
+          rulesync generate --check
+          echo "✓ Rulesync generation is deterministic"
 
       - name: Create Milestone
-        if: matrix.os == 'ubuntu-latest' && github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/main'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          VERSION="${{ steps.gitversion.outputs.semVer }}"
-          
+          # Get version from GitVersion
+          dotnet tool install --global GitVersion.Tool --version 5.*
+          VERSION=$(dotnet gitversion /showvariable SemVer)
+
           # Check if milestone exists
           MILESTONE_EXISTS=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
             -H "Accept: application/vnd.github.v3+json" \
             "https://api.github.com/repos/${{ github.repository }}/milestones?state=all" | \
             jq -r --arg v "$VERSION" '.[] | select(.title == $v) | .title')
-          
+
           if [ -z "$MILESTONE_EXISTS" ]; then
             echo "Creating milestone $VERSION"
             curl -X POST \
